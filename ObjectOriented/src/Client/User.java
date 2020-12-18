@@ -3,9 +3,8 @@ package Client;
 import java.io.Serializable;
 
 public class User implements Serializable {
-    private String name;
-    private String password;
     private String UID;
+    private String password;
     private String serverIP;
     private int serverPort;
 
@@ -13,20 +12,11 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String name, String password, String UID, String serverIP, int serverPort) {//UID默认写"0"
-        this.name = name;
-        this.password = password;
+    public User(String UID, String password,  String serverIP, int serverPort) {//UID默认写"0"
         this.UID = UID;
+        this.password = password;
         this.serverIP = serverIP;
         this.serverPort = serverPort;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getPassword() {
@@ -64,9 +54,8 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "UID='" + UID + '\'' +
                 ", password='" + password + '\'' +
-                ", UID='" + UID + '\'' +
                 ", serverIP='" + serverIP + '\'' +
                 ", serverPort=" + serverPort +
                 '}';
