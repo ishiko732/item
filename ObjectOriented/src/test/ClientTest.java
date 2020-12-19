@@ -28,7 +28,7 @@ public class ClientTest {
     }
 
     @Test
-    void testLogin() {
+    void testLogin() {//测试登录
         for (int i = 1; i < 10; i++) {
             User user = new User(String.valueOf(i), "2019112", "127.0.0.1", 8089);
             Client client = new Client(user);
@@ -53,16 +53,22 @@ public class ClientTest {
             assertTrue(clients.get(i).loginUser());
             clients.get(i).messageListener();
         }
-        for (int i = 0; i < 3; i++) {
-            clients.get(0).sendMessage("hello,我是一号机 " + i, "UID-"+(int)(Math.random()*10)%5);
+        for (int i = 0; i < 3; i++) {//与客户端交流
+            clients.get(0).sendMessage("hello,我是"+ clients.get(0).getUser().getUID()
+                     , "UID-"+(int)(Math.random()*10)%5);
         }
         clients.get(0).sendMessage("hello,服务器，我是客户端 ", "Server");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 
     @Test
     void testUserList(){
-        ArrayList<Client> clients = new ArrayList<Client>();
+        ArrayList<Client> clients = new ArrayList<Client>();//获取客户端在线列表
         for (int i = 0; i < 5; i++) {
             User user = new User("UID-" + i, "2019110" + i, "127.0.0.1", 8089);
             clients.add(new Client(user));
@@ -70,8 +76,8 @@ public class ClientTest {
             assertTrue(clients.get(i).loginUser());
             clients.get(i).messageListener();
         }
-        System.out.println("UserList:");
         ArrayList<String> userList = clients.get(0).getUserList();
+        System.out.println("UserList="+userList);
         for (int i = 1; i <userList.size() ; i++) {
             clients.get(0).sendMessage("请求与"+userList.get(i)+"对战!",userList.get(i));
             try {
@@ -80,7 +86,6 @@ public class ClientTest {
                 e.printStackTrace();
             }
         }
-        System.out.println("--End--UserList");
 
         try {
             Thread.sleep(2000);

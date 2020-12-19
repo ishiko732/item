@@ -92,9 +92,11 @@ public class GameGUI extends JFrame implements MouseListener {
             this.repaint();
             if (a == 1) {
                 JOptionPane.showMessageDialog(null,"白棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
+                timeclock.setExist(true);
             }
             if(a==2) {
                 JOptionPane.showMessageDialog(null,"黑棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
+                timeclock.setExist(true);
             }
             if(a!=-1) {
                 if(var==1) var=2;

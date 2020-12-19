@@ -56,7 +56,7 @@ public class Server {
             return 0;
         } else {
             userMap.put(user.getUID(), user);
-            System.out.println("Server:导入用户对象,length="+userMap.size());
+//            System.out.println("Server:导入用户对象,length="+userMap.size());
             return 1;
         }
     }
