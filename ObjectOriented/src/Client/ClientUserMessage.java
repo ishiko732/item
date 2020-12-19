@@ -41,7 +41,10 @@ public class ClientUserMessage extends Thread {
                         System.out.println("Client-" + user.getUID() + ":来自" + arrayList.get(0) + "客户端的消息:" + arrayList.get(1));
                     } else if ("sendMessage:(Yes)".equals(message)) {
                         System.out.println("Client-" + user.getUID() + ":sendMessage=" + message);
-                    }
+                    }//else if("command:Server!sendUserList".equals(message)){
+
+                   // }
+
                 }
             } catch (SocketException e) {
                 System.err.println("Client-" + user.getUID() + ":" + "与服务器断开了连接");

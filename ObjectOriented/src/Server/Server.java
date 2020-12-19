@@ -9,11 +9,12 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Server {
-    private static final Map<String, User> userlist = new LinkedHashMap<>();
+    private static final Map<String, User> userMap = new LinkedHashMap<>();
 
     public Server() {
         try {
@@ -42,18 +43,21 @@ public class Server {
 
     public static User getUser(InputStream in) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(in);
-        return (User) ois.readObject();
+        User user= (User) ois.readObject();
+//        ois.close();
+        return user;
     }
 
     public static void removeConnection(String UID) {
-        userlist.remove(UID);
+        userMap.remove(UID);
     }
 
     public static int islogin(User user) {//登录
-        if (userlist.containsKey(user.getUID())) {
+        if (userMap.containsKey(user.getUID())) {
             return 0;
         } else {
-            userlist.put(user.getUID(), user);
+            userMap.put(user.getUID(), user);
+            System.out.println("Server:导入用户对象,length="+userMap.size());
             return 1;
         }
     }
@@ -70,18 +74,18 @@ public class Server {
             System.err.println("Server:收到来自(" + user.getUID() + ")错误的聊天信息:" + message);
         }
 
-        if (user.getUID().equals(arrayList.get(0)) && (userlist.containsKey(arrayList.get(2)) || "Server".equals(arrayList.get(2)))) {//发送信息到user2 (服务器接受还未处理)
+        if (user.getUID().equals(arrayList.get(0)) && (userMap.containsKey(arrayList.get(2)) || "Server".equals(arrayList.get(2)))) {//发送信息到user2 (服务器接受还未处理)
             try {
                 String sendMessage = "get-chat[" + arrayList.get(0) + "],send=[" + arrayList.get(1) + "];";
                 if ("Server".equals(arrayList.get(2))) {//我就是服务器，我应该如何处理呢？
                     System.out.println("Server：服务器收到来自" + arrayList.get(0) + "的信息：" + arrayList.get(1));
-                    userlist.get(arrayList.get(0)).getDos().writeUTF("sendMessage:(Yes)");
-                    userlist.get(arrayList.get(0)).getDos().writeUTF("get-chat[Server],send=[goodClient!];");
+                    userMap.get(arrayList.get(0)).getDos().writeUTF("sendMessage:(Yes)");
+                    userMap.get(arrayList.get(0)).getDos().writeUTF("get-chat[Server],send=[goodClient!];");
                 } else {
-                    userlist.get(arrayList.get(2)).getDos().writeUTF(sendMessage);
+                    userMap.get(arrayList.get(2)).getDos().writeUTF(sendMessage);
                     //user1 -(Message)-> user2
                     //message: get char[(User1.uid)],send=[(message)];
-                    userlist.get(arrayList.get(0)).getDos().writeUTF("sendMessage:(Yes)");
+                    userMap.get(arrayList.get(0)).getDos().writeUTF("sendMessage:(Yes)");
                     //Server -( sendMessage:(Yes) )-> user1
                 }
             } catch (SocketException e) {
@@ -90,9 +94,12 @@ public class Server {
                 e.printStackTrace();
             }
         } else {
-            System.err.println("Server:发送信息失败的原因为(发送端情况:" + user.getUID().equals(arrayList.get(0)) + ",接受端情况:" + userlist.containsKey(arrayList.get(2)) + ");");
+            System.err.println("Server:发送信息失败的原因为(发送端情况:" + user.getUID().equals(arrayList.get(0)) + ",接受端情况:" + userMap.containsKey(arrayList.get(2)) + ");");
         }
 
     }
 
+    public static Map<String, User> getUserMap() {
+        return userMap;
+    }
 }

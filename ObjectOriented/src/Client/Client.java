@@ -3,8 +3,6 @@ package Client;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Client {
     private Socket client;
@@ -80,6 +78,21 @@ public class Client {
         System.out.println("Client-" + user.getUID() + ":listener message ing..");
         new Thread(userMessage).start();
 
+    }
+    public ArrayList<String> getUserList(){
+        ArrayList<String> arraylist=null;
+        try {
+            dos.writeUTF("command:Client!getUserList");//写入命令--命令:客户端!获取用户列表
+
+            ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
+//            System.out.println("test-read-obj");
+            arraylist=(ArrayList<String>)ois.readObject();
+//            System.out.println("test-obj");
+//            ois.close();
+        } catch (IOException | ClassNotFoundException ioException) {
+            ioException.printStackTrace();
+        }
+        return arraylist;
     }
 
     public OutputStream getOutputStream() {
