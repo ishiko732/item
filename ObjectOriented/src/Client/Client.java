@@ -2,12 +2,15 @@ package Client;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Client {
     private Socket client;
     private DataOutputStream dos;
     private DataInputStream dis;
-    private User user;
+    private final User user;
     private boolean push;
 
     public Client(User user) {
@@ -51,6 +54,32 @@ public class Client {
             }
         }
         return islogin;
+    }
+
+    public void sendMessage(String value, String acceptUser) {
+
+        String message = "Chat-[(UID)]:send=[(value)],obj=[(UID/Server)];";
+        message = message.replace("(UID)", user.getUID());
+        message = message.replace("(value)", value);
+        message = message.replace("(UID/Server)", acceptUser);
+        try {
+            dos.writeUTF(message);
+//            String info = dis.readUTF();//读取回执信息
+//            System.out.println(info);
+//            if ("sendMessage:(Yes)".equals(info)) {
+//                System.out.println("Client-" + user.getUID() + ":sendMessage=" + message);
+//            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+
+    }
+
+    public void messageListener() {
+        ClientUserMessage userMessage = new ClientUserMessage(user, dis);
+        System.out.println("Client-" + user.getUID() + ":listener message ing..");
+        new Thread(userMessage).start();
+
     }
 
     public OutputStream getOutputStream() {

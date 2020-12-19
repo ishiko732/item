@@ -1,5 +1,7 @@
 package Client;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -7,12 +9,20 @@ public class User implements Serializable {
     private String password;
     private String serverIP;
     private int serverPort;
+    private DataOutputStream dos = null;
 
+    public DataOutputStream getDos() {
+        return dos;
+    }
+
+    public void setDos(DataOutputStream dos) {
+        this.dos = dos;
+    }
 
     public User() {
     }
 
-    public User(String UID, String password,  String serverIP, int serverPort) {//UID默认写"0"
+    public User(String UID, String password, String serverIP, int serverPort) {//UID默认写"0"
         this.UID = UID;
         this.password = password;
         this.serverIP = serverIP;
