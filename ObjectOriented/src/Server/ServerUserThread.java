@@ -10,8 +10,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ServerUserThread extends Thread {
@@ -40,7 +38,7 @@ public class ServerUserThread extends Thread {
                 info = dis.readUTF();
                 System.out.println("Client-" + uid + ":" + info);
                 if (("login-" + uid).equals(info)) {//登录
-                    synchronized (user){
+                    synchronized (user) {
                         if (Server.islogin(user) == 1) {//成功导入列表，登录成功
                             dos.writeUTF("login(YES):" + user.getUID());
                         } else {
@@ -50,16 +48,16 @@ public class ServerUserThread extends Thread {
                 } else if (info.indexOf("Chat-[" + uid + "]:") == 0) {//发送信息到服务器处理
                     //Chat-[(UID)]:send=[(value)],obj=[(UID/Server)];
                     Server.sendMessage(user, info);
-                }else if("command:Client!getUserList".equals(info)){//读取命令--命令:客户端!获取用户列表
+                } else if ("command:Client!getUserList".equals(info)) {//读取命令--命令:客户端!获取用户列表
                     Iterator<String> it = Server.getUserMap().keySet().iterator();
-                    ArrayList<String> userList=new ArrayList<>();
-                    while(it.hasNext()){
+                    ArrayList<String> userList = new ArrayList<>();
+                    while (it.hasNext()) {
                         userList.add(it.next());
                     }
-                    synchronized (this){
-                        ObjectOutputStream oos= new ObjectOutputStream(client.getOutputStream());
+                    synchronized (this) {
+                        ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
                         oos.writeObject(userList);
-                        System.out.println("Server:sendMessage=" +userList);
+                        System.out.println("Server:sendMessage=" + userList);
                     }
 //                    oos.close();
                 }

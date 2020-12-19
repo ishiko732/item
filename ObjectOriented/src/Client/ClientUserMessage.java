@@ -1,7 +1,5 @@
 package Client;
 
-import Server.Server;
-
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.SocketException;
@@ -43,7 +41,7 @@ public class ClientUserMessage extends Thread {
                         System.out.println("Client-" + user.getUID() + ":sendMessage=" + message);
                     }//else if("command:Server!sendUserList".equals(message)){
 
-                   // }
+                    // }
 
                 }
             } catch (SocketException e) {
