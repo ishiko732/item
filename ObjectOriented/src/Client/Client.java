@@ -74,25 +74,39 @@ public class Client {
     }
 
     public void messageListener() {
-        ClientUserMessage userMessage = new ClientUserMessage(user, dis);
+        ClientUserMessage userMessage = new ClientUserMessage(user, dis, dos);
         System.out.println("Client-" + user.getUID() + ":listener message ing..");
         new Thread(userMessage).start();
 
     }
-    public ArrayList<String> getUserList(){
-        ArrayList<String> arraylist=null;
-        try {
-            dos.writeUTF("command:Client!getUserList");//写入命令--命令:客户端!获取用户列表
 
+    public ArrayList<String> getUserList() {
+        ArrayList<String> arraylist = null;
+        try {
+            sendCommand("getUserList");//dos.writeUTF("command:Client!getUserList");写入命令--命令:客户端!获取用户列表
             ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
 //            System.out.println("test-read-obj");
-            arraylist=(ArrayList<String>)ois.readObject();
+            arraylist = (ArrayList<String>) ois.readObject();
 //            System.out.println("test-obj");
 //            ois.close();
         } catch (IOException | ClassNotFoundException ioException) {
             ioException.printStackTrace();
         }
         return arraylist;
+    }
+
+    public void sendCommand(String command) throws IOException {//写入命令--命令:客户端! (命令指令)
+        dos.writeUTF("command:Client!" + command + ";");//写入命令--命令:客户端!
+        // 获取用户列表 getUserList
+        // 请求对战 attackUser:[(UID),(attackUserUID)]
+    }
+
+    public void applyAttack(String attackUserUID) {
+        try {
+            sendCommand("attackUser:[" + user.getUID() + "," + attackUserUID + "]");//command:Client!attackUser:[(UID),(attackUserUID)];
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public OutputStream getOutputStream() {
