@@ -12,6 +12,7 @@ public class Client {
     private final User user;
     private boolean push;
     private boolean create=true;
+    private PrintStream ps;
 
     public Client(User user) {
         this.user = user;
@@ -137,5 +138,12 @@ public class Client {
 
     public User getUser() {
         return user;
+    }
+
+    public PrintStream getPs() {
+        return ps;
+    }
+    public void setPs(PrintStream ps) {
+        this.ps = ps;
     }
 }
