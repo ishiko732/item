@@ -3,12 +3,12 @@ package Game;
 import javax.swing.*;
 
 public class TimeClock implements Runnable{
-    private JFrame app;
+    private JPanel app;
     private Clock clock;
     private int[] time;
     private static Thread th;
     private boolean exist=false;
-    public TimeClock(JFrame app,int[] time){
+    public TimeClock(JPanel app,int[] time){
         clock = new Clock(0, 0, 30);
         this.time=time;
         this.app=app;

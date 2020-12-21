@@ -8,26 +8,21 @@ import Game.TimeClock;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.sql.Time;
 
 
 import javax.swing.*;
 
-public class GameGUI extends JFrame implements MouseListener {
+public class GameGUI extends JPanel implements MouseListener {
     public Core core;
     private static final long serialVersionUID = 1L;
     private int var = 1;
     private int[] time=new int[1];
     private Thread th;
     private TimeClock timeclock;
-    public GameGUI(String title) {
-        super(title);
+    public GameGUI() {
         core = new Core(19, 19);
-        this.setSize(800, 650);
-        this.setLocation(800, 300);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setVisible(true);
-        this.setResizable(false);
+//        this.setSize(800, 650);
+//        this.setLocation(800, 300);
         this.addMouseListener(this);
         time[0]=30;//为了传地址,用数组
         timeclock=new TimeClock(this,time);
@@ -42,7 +37,7 @@ public class GameGUI extends JFrame implements MouseListener {
         // TODO Auto-generated method stub
         super.paint(g);
         // 横
-        for (int i = 0; i <= 19; i++)
+        for (int i = 1; i <= 19; i++)
             g.drawLine(30, 30 + i * 30, 570, 30 + i * 30);
         // 竖线
         for (int i = 0; i < 19; i++)
@@ -63,7 +58,6 @@ public class GameGUI extends JFrame implements MouseListener {
             g.drawString(name[i],700,80+i*60);
         }
         String str=((this.var==1)?"白棋":"黑棋")+" 倒计时:";
-        System.out.println("main:"+time[0]);
         g.drawString(str + time[0]+"s", 650,440);
 
     }
