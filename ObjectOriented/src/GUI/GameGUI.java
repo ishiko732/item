@@ -19,8 +19,9 @@ public class GameGUI extends JPanel implements MouseListener {
     private int[] time=new int[1];
     private Thread th;
     private TimeClock timeclock;
-    public GameGUI() {
-        core = new Core(19, 19);
+    public GameGUI(Core core) {
+        this.core=core;
+//        core = new Core(19, 19);
 //        this.setSize(800, 650);
 //        this.setLocation(800, 300);
         this.addMouseListener(this);
@@ -190,5 +191,13 @@ public class GameGUI extends JPanel implements MouseListener {
             return y / 30;
         else
             return y / 30 + 1;
+    }
+
+    public int getVar() {
+        return var;
+    }
+
+    public void setVar(int var) {
+        this.var = var;
     }
 }

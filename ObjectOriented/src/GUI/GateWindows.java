@@ -196,6 +196,7 @@ public class GateWindows extends JFrame {
                     jtp.addTab("五子棋游戏房间 " + (finalI / 2 + 1), new ImageIcon(gui.getClient().getUser().getPassword()), room.jsp1);
                     btnseat[finalI].setIcon(
                             new ImageIcon(gui.getClient().getUser().getPassword()));
+                    btnseat[finalI].setSize(38,38);
                     jtp.setSelectedIndex(1);
                 }
             });
