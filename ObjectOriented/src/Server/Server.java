@@ -17,14 +17,19 @@ public class Server {
     private static final Map<String, User> userMap = new LinkedHashMap<>();
 
     public Server() {
+        ServerSocket server = null;
         try {
-            ServerSocket server = new ServerSocket(8089);
-            System.out.println("---Sever.listener---");
-            while (true) {
+            server = new ServerSocket(8089);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        System.out.println("---Sever.listener---");
+        while (true) {
+            try {
                 Socket client = server.accept();
                 User user = Server.getUser(client.getInputStream());
                 if (user == null) {
-                    System.out.println("Server:未获取到有效的对象信息");
+                    System.err.println("Server:未获取到有效的对象信息");
                     continue;
                 }
 //                userlist.put(uid, user);
@@ -35,17 +40,25 @@ public class Server {
                 user.setDos(dos);
                 dos.writeUTF("Server:get User" + user.getUID() + "(" + client.getInetAddress() + ":" + client.getPort() + ")");//发送给客户端，正常收到用户的对象，开始创建线程
                 new ServerUserThread(user, dos, dis, client).start();
+
+            } catch (SocketException e) {
+                System.err.println("Server:获取对象的时刻,客户端关闭");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
     public static User getUser(InputStream in) throws IOException, ClassNotFoundException {
         ObjectInputStream ois = new ObjectInputStream(in);
-        User user = (User) ois.readObject();
-//        ois.close();
-        return user;
+        Object obj = ois.readObject();
+        if (obj instanceof User) {
+            return (User) obj;
+        } else {
+            return null;
+        }
     }
 
     public static void removeConnection(String UID) {

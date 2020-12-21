@@ -2,6 +2,7 @@ package Client;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 public class Client {
@@ -10,6 +11,7 @@ public class Client {
     private DataInputStream dis;
     private final User user;
     private boolean push;
+    private boolean create=true;
 
     public Client(User user) {
         this.user = user;
@@ -17,13 +19,19 @@ public class Client {
             client = new Socket(user.getServerIP(), user.getServerPort());
             dis = new DataInputStream(client.getInputStream());//read Server Massage->Client
             dos = new DataOutputStream(client.getOutputStream());//write Client Massage->Server
-        } catch (IOException ioException) {
+        }catch (SocketException e) {
+            System.err.println("Client:与服务器通信失败");
+            create=false;
+        }catch (IOException ioException) {
             ioException.printStackTrace();
         }
     }
 
     public boolean pushUser() {//发送对象
         boolean ispush = false;
+        if (!this.create){
+            return false;
+        }
         try {
             ObjectOutputStream obj = new ObjectOutputStream(client.getOutputStream());//write User Object->Server
             obj.writeObject(user);//将对象送到服务器上
@@ -31,7 +39,7 @@ public class Client {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
-        this.push = true;
+        this.push=true;
         return ispush;
     }
 
