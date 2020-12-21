@@ -54,11 +54,11 @@ public class GameGUI extends JPanel implements MouseListener {
         }
         String[] name={"认输","悔棋","申请和棋","重新开始","游戏状态"};
         for (int i=0;i<name.length;i++){
-            g.drawRect(690,60+i*60, 70, 30);
-            g.drawString(name[i],700,80+i*60);
+            g.drawRect(590,60+i*60, 70, 30);
+            g.drawString(name[i],600,80+i*60);
         }
         String str=((this.var==1)?"白棋":"黑棋")+" 倒计时:";
-        g.drawString(str + time[0]+"s", 650,440);
+        g.drawString(str + time[0]+"s", 600,440);
 
     }
     @Override
