@@ -192,7 +192,7 @@ public class GateWindows extends JFrame {
             btnseat[i].addActionListener(new ActionListener() {  //设置“座位”按钮
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    new room(jtp);
+                    new room(jtp,gui);
                     jtp.addTab("五子棋游戏房间 " + (finalI / 2 + 1), new ImageIcon(gui.getClient().getUser().getPassword()), room.jsp1);
                     btnseat[finalI].setIcon(
                             new ImageIcon(gui.getClient().getUser().getPassword()));

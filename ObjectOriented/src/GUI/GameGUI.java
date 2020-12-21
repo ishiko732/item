@@ -58,7 +58,7 @@ public class GameGUI extends JPanel implements MouseListener {
             g.drawString(name[i],600,80+i*60);
         }
         String str=((this.var==1)?"白棋":"黑棋")+" 倒计时:";
-        g.drawString(str + time[0]+"s", 600,440);
+        g.drawString(str + time[0]+"s", 590,440);
 
     }
     @Override
@@ -112,7 +112,7 @@ public class GameGUI extends JPanel implements MouseListener {
                 JOptionPane.showOptionDialog(null,"平局,可以开始新对局!","平局",JOptionPane.YES_NO_OPTION,JOptionPane.CLOSED_OPTION, null,options,options[0]);
             }
         }
-        else if(e.getX()>690&&e.getX()<760&&e.getY()>60&&e.getY()<90) {//认输
+        else if(e.getX()>590&&e.getX()<660&&e.getY()>60&&e.getY()<90) {//认输
             Object[] options = {"确认","取消"};
             String str=(this.var==1)?"白棋":"黑棋";
             int n = JOptionPane.showOptionDialog(null,str+":确认申请认输吗?","申请认输",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE, null,options,options[1]);
@@ -125,7 +125,7 @@ public class GameGUI extends JPanel implements MouseListener {
             }
 
         }
-        else if(e.getX()>690&&e.getX()<760&&e.getY()>120&&e.getY()<150) {//悔棋
+        else if(e.getX()>590&&e.getX()<660&&e.getY()>120&&e.getY()<150) {//悔棋
             core.RetChess();
             if(var==1) var=2;
             else if(var==2) var=1;
@@ -141,7 +141,7 @@ public class GameGUI extends JPanel implements MouseListener {
             th.start();
 //            this.repaint();
         }
-        else if(e.getX()>690&&e.getX()<760&&e.getY()>180&&e.getY()<210) {//申请和棋
+        else if(e.getX()>590&&e.getX()<660&&e.getY()>180&&e.getY()<210) {//申请和棋
             Object[] options = {"确认","取消"};
             int n = JOptionPane.showOptionDialog(null,"确认申请和棋?","申请和棋",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE, null,options,options[0]);
             options = new Object[]{"确认"};
@@ -154,11 +154,11 @@ public class GameGUI extends JPanel implements MouseListener {
                 JOptionPane.showOptionDialog(null,"和棋失败,进行对局","和棋失败",JOptionPane.YES_NO_OPTION,JOptionPane.ERROR_MESSAGE, null,options,options[0]);
             }
         }
-        else if(e.getX()>690&&e.getX()<760&&e.getY()>240&&e.getY()<270) {//重新开始
+        else if(e.getX()>590&&e.getX()<660&&e.getY()>240&&e.getY()<270) {//重新开始
             core.Restart();
             this.repaint();
         }
-        else if(e.getX()>690&&e.getX()<760&&e.getY()>300&&e.getY()<330){//游戏状态
+        else if(e.getX()>590&&e.getX()<660&&e.getY()>300&&e.getY()<330){//游戏状态
             Object[] options = {"白先","黑先"};
             int n = JOptionPane.showOptionDialog(null,"白先还是黑先？","游戏设置",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE, null,options,options[0]);
             if(n==0) this.var=1;
