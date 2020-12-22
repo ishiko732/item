@@ -1,7 +1,7 @@
 package Client;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
+//import java.io.DataOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 
@@ -10,15 +10,6 @@ public class User implements Serializable {
     private String password;
     private String serverIP;
     private int serverPort;
-    private DataOutputStream dos = null;
-
-    public DataOutputStream getDos() {
-        return dos;
-    }
-
-    public void setDos(DataOutputStream dos) {
-        this.dos = dos;
-    }
 
     public User() {
     }

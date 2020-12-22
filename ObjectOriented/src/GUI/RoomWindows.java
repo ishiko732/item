@@ -2,16 +2,18 @@ package GUI;
 
 
 import Game.Core;
+import Game.GameRoomUser;
 import Game.PlayerTime;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 
-public class room extends JPanel implements ActionListener {//由于申请对战的人是黑棋 所以需要再修改
+public class RoomWindows extends JPanel implements ActionListener {//由于申请对战的人是黑棋 所以需要再修改
     //分割界面
     public static JSplitPane jsp1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     JSplitPane jsp2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -48,11 +50,15 @@ public class room extends JPanel implements ActionListener {//由于申请对战
 
     private Core core;
     private GameGUI gobang;
-    private ArrayList<Integer> arrayList;
-    public room(JTabbedPane jtp, ClientGUI gui, ArrayList<Integer> arrayList) {
-        core = new Core(19, 19);
+    private Map<Integer,String> roomMessage;
+    private ClientGUI gui;
+    private GameRoomUser gameRoom;
+    public RoomWindows(JTabbedPane jtp, ClientGUI gui, Map<Integer,String> roomMessage, GameRoomUser gameRoom) {
+        this.gameRoom=gameRoom;
+        this.core = gameRoom.getCore();
         this.jtp = jtp;
-        this.arrayList=arrayList;
+        this.roomMessage =roomMessage;
+        this.gui=gui;
 
         jsp1.setLeftComponent(jsp2);
         jsp2.setRightComponent(jsp3);
@@ -142,13 +148,18 @@ public class room extends JPanel implements ActionListener {//由于申请对战
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == exit) {
             jtp.remove(jsp1);
-            for (int i = arrayList.size()-1; i >=0; i--) {
-                GateWindows.btnseat[arrayList.get(i)].setIcon(new ImageIcon("./src/gobang/img/none.gif"));
-                arrayList.remove(i);
+            String userUID=gui.getClient().getUser().getUID();
+            Iterator<Map.Entry<Integer,String>> it = roomMessage.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<Integer,String> entry = it.next();
+                if (userUID.equals(entry.getValue())) {
+                    GateWindows.btnseat[entry.getKey()].setIcon(new ImageIcon("./src/gobang/img/none.gif"));
+                    it.remove();
+                }
             }
         } else if (e.getSource() == restart) {//重新开始
             core.Restart();
-            this.repaint();
+            gobang.repaint();
         } else if (e.getSource() == summation) {//求和
             Object[] options = {"确认", "取消"};
             int n = JOptionPane.showOptionDialog(null, "确认申请和棋?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);

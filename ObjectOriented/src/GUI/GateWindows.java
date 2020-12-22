@@ -1,12 +1,14 @@
 package GUI;
 
+import Game.Core;
+import Game.GameRoomUser;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
 
 public class GateWindows extends JFrame {
@@ -18,12 +20,13 @@ public class GateWindows extends JFrame {
     JLabel userPicture, userInfo, userImg;//User1 图片,UID,头像
     JPanel user_picture_message, userMessage, serverMessage, rightBorder;
     public static JPanel room1 = new JPanel(new BorderLayout());
-    JButton button_join = new JButton("自动进入");
+    JButton button_flush = new JButton("刷新");
     JButton button_exit = new JButton("退出");
     JTextArea serverTextArea;
 
     public static JButton[] btnseat = new JButton[30];
-    private ArrayList<Integer> finalI_arrayList=new ArrayList<>();
+
+    //    private ArrayList<Integer> finalI_arrayList=new ArrayList<>();
     //END GUI
     private void init() {
         this.setTitle("Client-gate");
@@ -72,8 +75,7 @@ public class GateWindows extends JFrame {
         //左下界面
         serverMessage.setLayout(new BorderLayout());
         serverTextArea = new JTextArea();
-        gui.getClient().messageListener();
-        gui.getClient().setJTextArea(serverTextArea);
+//        gui.getClient().setJTextArea(serverTextArea);
         JTextField jtf = new JTextField();
         JButton send = new JButton("发送");
         JButton clear = new JButton("清空");
@@ -90,8 +92,8 @@ public class GateWindows extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == send) {
-                    String UID=gui.getClient().getUser().getUID();
-                    serverTextArea.append(UID+":"+jtf.getText() + "\n");
+                    String UID = gui.getClient().getUser().getUID();
+                    serverTextArea.append(UID + ":" + jtf.getText() + "\n");
                     gui.getClient().sendMessage(jtf.getText(), "Server");
                 } else if (e.getSource() == clear) {
                     serverTextArea.setText("");
@@ -101,18 +103,10 @@ public class GateWindows extends JFrame {
         send.addActionListener(send_clear_listener);
         clear.addActionListener(send_clear_listener);
 
-        //system.out -> Text
-        PrintStream ps = new PrintStream(System.out) {
-            @Override
-            public void println(String x) {
-                serverTextArea.append(x + "\n");
-            }
-        };
-        System.setOut(ps);
         jsp2.setRightComponent(jtp2);
 
         //右边界面
-//        button_join = new JButton("自动进入");
+        button_flush = new JButton("刷新");
         button_exit = new JButton("退出");
         rightBorder.setLayout(new BorderLayout());
         //右北
@@ -123,7 +117,7 @@ public class GateWindows extends JFrame {
         rightNorth.add(title, "West");
         rightNorth.add(jp, "East");
         jp.setLayout(new FlowLayout());
-        jp.add(button_join);
+        jp.add(button_flush);
         jp.add(button_exit);
         //右中
         JPanel rightCenter = new JPanel();
@@ -188,6 +182,11 @@ public class GateWindows extends JFrame {
         rightBorder.add(rightCenter, "Center");
         game_gate_jsp.setRightComponent(rightBorder);
         //监听
+        button_flush.addActionListener((ActionEvent) -> {
+            System.out.println("new");
+            flushList();
+            System.out.println("new");
+        });
         button_exit.addActionListener((ActionEvent) -> {//退出按钮
             System.exit(0);
         });
@@ -197,21 +196,41 @@ public class GateWindows extends JFrame {
             btnseat[i].addActionListener(new ActionListener() {  //设置“座位”按钮
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    jtp.addTab("五子棋游戏房间 " + (finalI / 2 + 1), new ImageIcon(gui.getClient().getUser().getPassword()), room.jsp1);
+                    jtp.addTab("五子棋游戏房间 " + (finalI / 2 + 1), new ImageIcon(gui.getClient().getUser().getPassword()), RoomWindows.jsp1);
                     btnseat[finalI].setIcon(
                             new ImageIcon(gui.getClient().getUser().getPassword()));
-                    btnseat[finalI].setSize(38,38);
+                    btnseat[finalI].setSize(38, 38);
                     jtp.setSelectedIndex(1);
-                    finalI_arrayList.add(finalI);
-                    new room(jtp,gui,finalI_arrayList);
+                    uid.put(finalI, gui.getClient().getUser().getUID());
+                    String user1 = uid.get(finalI);
+                    String user2 = finalI != 0 && finalI % 2 == 0 ? uid.get(finalI + 1) : uid.get(finalI - 1);
+                    GameRoomUser gameRoom = //gui.getClient().getGameRoom(user1, user2);//创建游戏房间
+                    new GameRoomUser(null,null,new Core(19,19),0);
+                    new RoomWindows(jtp, gui, uid, gameRoom);
                 }
+
             });
         }
         jFrame_operator();
-        newListener();
+//        newListener();
     }
 
-    public void jFrame_operator(){
+    private void flushList() {
+        System.out.println("flush");
+        uid.clear();
+        int t = 0;
+        String str;
+        Map<String, String> seat = gui.getClient().getUserList();
+        for (String s : seat.keySet()) {
+            str = s;
+            btnseat[t].setIcon(new ImageIcon(seat.get(str)));
+            uid.put(t, str);
+            t += 2;
+        }
+
+    }
+
+    public void jFrame_operator() {
         //JFrame 基本操作
         Dimension dim = this.getToolkit().getScreenSize();//获取屏幕大小
         this.setBounds(dim.width / 2 - 450, dim.height / 2 - 450, 900, 900);//设置窗口大小，width和height是取屏幕宽度和高度
@@ -220,40 +239,41 @@ public class GateWindows extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    ArrayList<String> uid=new ArrayList<>();
-    public void newListener(){
-        new Thread(() -> {
-            uid.clear();
-            int t=0;
-            String str;
-            synchronized (this){
-                Map<String,String> seat=gui.getClient().getUserList();
-                for (String s : seat.keySet()) {
-                    str = s;
-                    btnseat[t].setIcon(new ImageIcon(seat.get(str)));
-                    uid.add(str);
-                    t += 2;
-                }
-            }
-            System.out.println(uid);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
-    }
+    Map<Integer, String> uid = new HashMap<>();
+//    public void newListener(){
+//        new Thread(() -> {
+//            flushList();
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
+//    }
 
     public GateWindows(ClientGUI gui) {
         this.gui = gui;
         init();
+        gui.getClient().messageListener();
+        gui.getClient().setjTXT(serverTextArea);
+        //system.out -> Text
+//        PrintStream ps = new PrintStream(System.out) {
+//            @Override
+//            public void println(String x) {
+//                serverTextArea.append(x + "\n");
+//            }
+//        };
+//        System.setOut(ps);
+        int t = 0;
+        String str;
+        Map<String, String> seat = gui.getClient().getUserList();
+        for (String s : seat.keySet()) {
+            str = s;
+            btnseat[t].setIcon(new ImageIcon(seat.get(str)));
+            uid.put(t, str);
+            t += 2;
+        }
     }
 
-    public ArrayList<Integer> getFinalI_arrayList() {
-        return finalI_arrayList;
-    }
 
-    public void setFinalI_arrayList(ArrayList<Integer> finalI_arrayList) {
-        this.finalI_arrayList = finalI_arrayList;
-    }
 }

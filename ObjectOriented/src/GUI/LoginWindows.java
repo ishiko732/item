@@ -118,8 +118,7 @@ public class LoginWindows extends JFrame implements ActionListener{
             String[] server=server_merge.split(":");
             User user = new User(userName.getText(),text, server[0], Integer.parseInt(server[1]));
             gui.setClient(new Client(user));
-            gui.getClient().pushUser();
-            if(gui.getClient().loginUser()) {
+            if(gui.getClient().islogin()) {
                 new GateWindows(gui);
                 setVisible(false);
             }else {
