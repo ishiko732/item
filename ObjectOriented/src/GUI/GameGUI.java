@@ -69,6 +69,7 @@ public class GameGUI extends JPanel implements MouseListener {
     public void mousePressed(MouseEvent e) {
         // TODO Auto-generated method stub
         if (e.getX() < 570 && e.getY() < 600) {
+//            System.out.println("("+e.getX()+","+e.getY()+")");
             int a = core.ChessIt(_CgetX(e.getX()), (_CgetY(e.getY())), var);
             this.repaint();
             if (a == 1) {

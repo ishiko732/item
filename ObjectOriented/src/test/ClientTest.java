@@ -6,11 +6,9 @@ import Client.*;
 import Server.*;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -82,10 +80,6 @@ public class ClientTest {
         Map<String,String> userMap = clients.get(0).getUserList();
         System.out.println("UserList="+userMap);
         Iterator<String> it = userMap.keySet().iterator();
-//        while(it.hasNext()){
-//            String str=it.next();
-//            clients.get(0).sendMessage("请求与"+str+"与联系!",str);
-//        }
         while(true){
             try {
                 Thread.sleep(2000);
@@ -171,5 +165,11 @@ public class ClientTest {
         } catch (IOException | ClassNotFoundException ioException) {
             ioException.printStackTrace();
         }
+    }
+
+    @Test
+    void message(){
+        String a=JOptionPane.showInputDialog(null,"是否同意与"+"对战?(Y/N)","申请对战",JOptionPane.PLAIN_MESSAGE);
+        System.out.println(a);
     }
 }

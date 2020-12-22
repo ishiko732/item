@@ -1,5 +1,6 @@
 package Client;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
@@ -13,6 +14,7 @@ public class Client {
     private boolean push;
     private boolean create=true;
     private PrintStream ps;
+    private ClientUserMessage userMessage=null;
 
     public Client(User user) {
         this.user = user;
@@ -83,10 +85,12 @@ public class Client {
     }
 
     public void messageListener() {
-        ClientUserMessage userMessage = new ClientUserMessage(user, dis, dos);
+        userMessage = new ClientUserMessage(user, dis, dos);
         System.out.println("Client-" + user.getUID() + ":listener message ing..");
         new Thread(userMessage).start();
-
+    }
+    public void setJTextArea(JTextArea jt){
+        userMessage.setjTXT(jt);
     }
 
     public Map<String,String> getUserList() {

@@ -72,6 +72,8 @@ public class GateWindows extends JFrame {
         //左下界面
         serverMessage.setLayout(new BorderLayout());
         serverTextArea = new JTextArea();
+        gui.getClient().messageListener();
+        gui.getClient().setJTextArea(serverTextArea);
         JTextField jtf = new JTextField();
         JButton send = new JButton("发送");
         JButton clear = new JButton("清空");
@@ -155,14 +157,6 @@ public class GateWindows extends JFrame {
                 b++;
             }
         }
-        Map<String,String> seat=gui.getClient().getUserList();
-        Iterator<String> it = seat.keySet().iterator();
-        int t=0;
-        while(it.hasNext()){
-            String str=it.next();
-            btnseat[t].setIcon(new ImageIcon(seat.get(str)));
-            t+=2;
-        }
         a = 0;
         b = 0;
         for (int i = 1; i < btnseat.length; i += 2) {
@@ -213,13 +207,41 @@ public class GateWindows extends JFrame {
                 }
             });
         }
+        jFrame_operator();
+        newListener();
+    }
+
+    public void jFrame_operator(){
         //JFrame 基本操作
         Dimension dim = this.getToolkit().getScreenSize();//获取屏幕大小
         this.setBounds(dim.width / 2 - 450, dim.height / 2 - 450, 900, 900);//设置窗口大小，width和height是取屏幕宽度和高度
         this.add(jtp);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 
+    ArrayList<String> uid=new ArrayList<>();
+    public void newListener(){
+        new Thread(() -> {
+            uid.clear();
+            int t=0;
+            String str;
+            synchronized (this){
+                Map<String,String> seat=gui.getClient().getUserList();
+                for (String s : seat.keySet()) {
+                    str = s;
+                    btnseat[t].setIcon(new ImageIcon(seat.get(str)));
+                    uid.add(str);
+                    t += 2;
+                }
+            }
+            System.out.println(uid);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public GateWindows(ClientGUI gui) {

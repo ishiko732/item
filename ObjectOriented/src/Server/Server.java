@@ -6,16 +6,16 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Server {
     private static final Map<String, User> userMap = new LinkedHashMap<>();
 
+    public static void main(String[] args) {
+        new Server();
+    }
     public Server() {
         ServerSocket server = null;
         try {
@@ -91,10 +91,17 @@ public class Server {
         try {
             if (user.getUID().equals(arrayList.get(0)) && (userMap.containsKey(arrayList.get(2)) || "Server".equals(arrayList.get(2)))) {//发送信息到user2 (服务器接受还未处理)
                 String sendMessage = "get-chat[" + arrayList.get(0) + "],send=[" + arrayList.get(1) + "];";
-                if ("Server".equals(arrayList.get(2))) {//我就是服务器，我应该如何处理呢？
+                if ("Server".equals(arrayList.get(2))) {//我就是服务器，我应该如何处理呢？ 转发给全部人
                     System.out.println("Server：服务器收到来自" + arrayList.get(0) + "的信息：" + arrayList.get(1));
                     userMap.get(arrayList.get(0)).getDos().writeUTF("sendMessage:(Yes)");
-                    userMap.get(arrayList.get(0)).getDos().writeUTF("get-chat[Server],send=[goodClient!];");
+                    Iterator<String> userIt=userMap.keySet().iterator();
+                    while (userIt.hasNext()) {
+                        String uid=userIt.next();
+                        if(!arrayList.get(0).equals(uid)){
+                            userMap.get(uid).getDos().writeUTF(sendMessage);
+                        }
+                    }
+//                    userMap.get(arrayList.get(0)).getDos().writeUTF("get-chat[Server],send=[goodClient!];");
                 } else {
                     userMap.get(arrayList.get(2)).getDos().writeUTF(sendMessage);
                     //user1 -(Message)-> user2

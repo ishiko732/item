@@ -19,8 +19,8 @@ public class room extends JPanel implements ActionListener {//由于申请对战
 
     //选项卡
     JTabbedPane jtp = new JTabbedPane();
-    JTabbedPane jtp1 = new JTabbedPane();
-    JTabbedPane jtp2 = new JTabbedPane();
+    JTabbedPane yourself = new JTabbedPane();
+    JTabbedPane myself = new JTabbedPane();
     JTabbedPane jtp3 = new JTabbedPane();
 
     JLabel userName1 = new JLabel();
@@ -65,8 +65,8 @@ public class room extends JPanel implements ActionListener {//由于申请对战
         jsp2.setDividerLocation(200);
         jsp3.setDividerLocation(200);
         //设置选项卡名字
-        jtp1.addTab("对手", One);
-        jtp2.addTab("自己", Two);
+        yourself.addTab("对手", One);
+        myself.addTab("自己", Two);
         jtp3.addTab("聊天", Three);
         //第一个界面
         One.setLayout(new BorderLayout());//设置边框式布局
@@ -77,12 +77,12 @@ public class room extends JPanel implements ActionListener {//由于申请对战
         North1.add(userName1);
         One.add(North1, "North");
         One.add(time1, "West");
-        //玩家1时间
+        //玩家1时间--他人
         PlayerTime playerTime1=new PlayerTime(true);
         playerTime1.setBounds(100,500,200,100);
         playerTime1.setOpaque(false);
         One.add(playerTime1,"East");
-        jsp2.setLeftComponent(jtp1);
+        jsp2.setLeftComponent(yourself);
 
         //第二个界面
         Two.setLayout(new BorderLayout());//设置边框式布局
@@ -93,7 +93,7 @@ public class room extends JPanel implements ActionListener {//由于申请对战
         North2.add(userImg2);
         North2.add(userName2);
         Two.add(North2, "North");
-        //玩家2时间
+        //玩家2时间--自己
         PlayerTime playerTime2=new PlayerTime(true);
         playerTime2.setBounds(100,500,200,100);
         playerTime2.setOpaque(false);
@@ -101,7 +101,7 @@ public class room extends JPanel implements ActionListener {//由于申请对战
         Two.add(playerTime2,"East");
         //玩家2时间
 
-        jsp3.setLeftComponent(jtp2);
+        jsp3.setLeftComponent(myself);
 
         //第三个界面
         Three.setLayout(new BorderLayout());

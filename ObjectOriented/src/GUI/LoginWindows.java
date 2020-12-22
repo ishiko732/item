@@ -73,7 +73,6 @@ public class LoginWindows extends JFrame implements ActionListener{
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         String msg = e.getActionCommand();
-//                        userImg.setText(msg);
                         text=msg;
                         userImg.setIcon(new ImageIcon(msg));
                     }
@@ -124,7 +123,7 @@ public class LoginWindows extends JFrame implements ActionListener{
                 new GateWindows(gui);
                 setVisible(false);
             }else {
-                System.out.println("连接失败");
+                JOptionPane.showMessageDialog(null, "连接服务器失败!");
             }
 
         } else if (e.getSource() == btnRest) {
@@ -138,6 +137,12 @@ public class LoginWindows extends JFrame implements ActionListener{
     public LoginWindows(ClientGUI GUI) {
         this.ip = "127.0.0.1:8089";
         this.gui=GUI;
+        text="./res/face/1-1.gif";
+        try {//修改为windows画风格
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException exception) {
+            exception.printStackTrace();
+        }
         init();
     }
 
