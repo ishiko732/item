@@ -1,12 +1,13 @@
 package Game;
 
+import java.io.Serializable;
 import java.util.Stack;
 
 /**
  * @author GodofOrange
  * 棋盘数据结构
  */
-public class Core {
+public class Core implements Serializable {
     //棋盘大小
     private int[][] core;
     private int x;
@@ -128,9 +129,9 @@ public class Core {
     //求和
     public boolean checkSum() {
         int flag = 1;//已经和了
-        for (int i = 0; i < core.length; i++) {
+        for (int[] ints : core) {
             for (int j = 0; j < core[0].length; j++) {
-                if (this.core[i][j] == 0) {
+                if (ints[j] == 0) {
                     flag = 0;//未和
                     break;
                 }
