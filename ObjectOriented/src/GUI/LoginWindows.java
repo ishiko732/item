@@ -130,7 +130,7 @@ public class LoginWindows extends JFrame implements ActionListener{
         } else if (e.getSource() == btnRest) {
             userName.setText("");
             userImg.setIcon(new ImageIcon("./res/face/1-1.gif"));
-            serverInfo.setText(ip);
+            severIP.setText(ip);
         } else if (e.getSource() == btnExit) {
             System.exit(0);
         }

@@ -3,7 +3,7 @@ package Client;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
+import java.util.Map;
 
 public class Client {
     private Socket client;
@@ -54,7 +54,7 @@ public class Client {
                 String ret = dis.readUTF();
                 islogin = ("login(YES):" + user.getUID()).equals(ret);//正确登录
                 if (!islogin) {
-                    throw new IOException("Client-" + user.getUID() + ":" + ret);
+                    System.err.println("Client-" + user.getUID() + ":" + ret);
                 }
             } catch (IOException ioException) {
                 ioException.printStackTrace();
@@ -89,19 +89,19 @@ public class Client {
 
     }
 
-    public ArrayList<String> getUserList() {
-        ArrayList<String> arraylist = null;
+    public Map<String,String> getUserList() {
+        Map<String,String> userMap = null;
         try {
             sendCommand("getUserList");//dos.writeUTF("command:Client!getUserList");写入命令--命令:客户端!获取用户列表
             ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
 //            System.out.println("test-read-obj");
-            arraylist = (ArrayList<String>) ois.readObject();
+            userMap = (Map<String,String>) ois.readObject();
 //            System.out.println("test-obj");
 //            ois.close();
         } catch (IOException | ClassNotFoundException ioException) {
             ioException.printStackTrace();
         }
-        return arraylist;
+        return userMap;
     }
 
     public void sendCommand(String command) throws IOException {//写入命令--命令:客户端! (命令指令)

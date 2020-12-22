@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 
 public class room extends JPanel implements ActionListener {//由于申请对战的人是黑棋 所以需要再修改
@@ -47,10 +48,11 @@ public class room extends JPanel implements ActionListener {//由于申请对战
 
     private Core core;
     private GameGUI gobang;
-
-    public room(JTabbedPane jtp, ClientGUI gui) {
+    private ArrayList<Integer> arrayList;
+    public room(JTabbedPane jtp, ClientGUI gui, ArrayList<Integer> arrayList) {
         core = new Core(19, 19);
         this.jtp = jtp;
+        this.arrayList=arrayList;
 
         jsp1.setLeftComponent(jsp2);
         jsp2.setRightComponent(jsp3);
@@ -78,7 +80,6 @@ public class room extends JPanel implements ActionListener {//由于申请对战
         //玩家1时间
         PlayerTime playerTime1=new PlayerTime(true);
         playerTime1.setBounds(100,500,200,100);
-        playerTime1.start_time();
         playerTime1.setOpaque(false);
         One.add(playerTime1,"East");
         jsp2.setLeftComponent(jtp1);
@@ -95,7 +96,6 @@ public class room extends JPanel implements ActionListener {//由于申请对战
         //玩家2时间
         PlayerTime playerTime2=new PlayerTime(true);
         playerTime2.setBounds(100,500,200,100);
-        playerTime2.start_time();
         playerTime2.setOpaque(false);
         Two.add(time2, "West");
         Two.add(playerTime2,"East");
@@ -123,7 +123,7 @@ public class room extends JPanel implements ActionListener {//由于申请对战
         Four.add(title, "North");
         jsp1.setRightComponent(Four);
         //棋盘
-        gobang = new GameGUI(core);
+        gobang = new GameGUI(core,playerTime1,playerTime2);
         Four.add(gobang, "Center");
         South4.add(exit);
         South4.add(restart);
@@ -142,7 +142,10 @@ public class room extends JPanel implements ActionListener {//由于申请对战
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == exit) {
             jtp.remove(jsp1);
-            GateWindows.btnseat[0].setIcon(new ImageIcon("./src/gobang/img/none.gif"));//还需要修改
+            for (int i = arrayList.size()-1; i >=0; i--) {
+                GateWindows.btnseat[arrayList.get(i)].setIcon(new ImageIcon("./src/gobang/img/none.gif"));
+                arrayList.remove(i);
+            }
         } else if (e.getSource() == restart) {//重新开始
             core.Restart();
             this.repaint();

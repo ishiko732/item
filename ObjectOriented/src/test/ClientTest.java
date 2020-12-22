@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -71,28 +73,27 @@ public class ClientTest {
     void testUserList(){
         ArrayList<Client> clients = new ArrayList<Client>();//获取客户端在线列表
         for (int i = 0; i < 5; i++) {
-            User user = new User("UID-" + i, "2019110" + i, "127.0.0.1", 8089);
+            User user = new User("UID-" + i, "./res/face/"+(i+1)+"-1.gif", "127.0.0.1", 8089);
             clients.add(new Client(user));
             clients.get(i).pushUser();
             assertTrue(clients.get(i).loginUser());
             clients.get(i).messageListener();
         }
-        ArrayList<String> userList = clients.get(0).getUserList();
-        System.out.println("UserList="+userList);
-        for (int i = 1; i <userList.size() ; i++) {
-            clients.get(0).sendMessage("请求与"+userList.get(i)+"与联系!",userList.get(i));
+        Map<String,String> userMap = clients.get(0).getUserList();
+        System.out.println("UserList="+userMap);
+        Iterator<String> it = userMap.keySet().iterator();
+//        while(it.hasNext()){
+//            String str=it.next();
+//            clients.get(0).sendMessage("请求与"+str+"与联系!",str);
+//        }
+        while(true){
             try {
-                Thread.sleep(50);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
     }
     @Test

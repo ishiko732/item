@@ -2,6 +2,7 @@ package GUI;
 
 
 import Game.Core;
+import Game.PlayerTime;
 
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -14,10 +15,14 @@ public class GameGUI extends JPanel implements MouseListener {
     public Core core;
     private static final long serialVersionUID = 1L;
     private int var = 1;
+    private PlayerTime playerTime1,playerTime2;
 
-    public GameGUI(Core core) {
+    public GameGUI(Core core,PlayerTime playerTime1,PlayerTime playerTime2) {
         this.core = core;
         this.addMouseListener(this);
+        this.playerTime1=playerTime1;
+        this.playerTime2=playerTime2;
+        playerTime1.start_time();
     }
 
 
@@ -73,8 +78,22 @@ public class GameGUI extends JPanel implements MouseListener {
                 JOptionPane.showMessageDialog(null, "黑棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
             }
             if (a != -1) {
-                if (var == 1) var = 2;
-                else if (var == 2) var = 1;
+                if (var == 1) {
+                    var = 2;
+                    if(playerTime2!=null){
+                        playerTime1.stop_time();
+                        playerTime2.reset_time();
+                        playerTime2.start_time();
+                    }
+                }
+                else if (var == 2) {
+                    var = 1;
+                    if(playerTime1!=null){
+                        playerTime2.stop_time();
+                        playerTime1.reset_time();
+                        playerTime1.start_time();
+                    }
+                }
                 this.repaint();
             }
             if (core.checkSum()) {
@@ -87,8 +106,6 @@ public class GameGUI extends JPanel implements MouseListener {
             if (n == 0) this.var = 1;
             if (n == 1) this.var = 2;
             this.core.Restart();
-//            this.core.setCore();
-//            System.out.println(this.core.checkSum());
             this.repaint();
         }
     }

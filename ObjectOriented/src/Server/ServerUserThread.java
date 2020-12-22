@@ -9,7 +9,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,15 +52,17 @@ public class ServerUserThread extends Thread {
                     //Chat-[(UID)]:send=[(value)],obj=[(UID/Server)];
                     Server.sendMessage(user, info);
                 } else if ("command:Client!getUserList;".equals(info)) {//读取命令--命令:客户端!获取用户列表
-                    Iterator<String> it = Server.getUserMap().keySet().iterator();
-                    ArrayList<String> userList = new ArrayList<>();
+                    Map<String,User> serverMap=Server.getUserMap();
+                    Iterator<String> it = serverMap.keySet().iterator();
+                    Map<String,String> userMap = new HashMap<>();
                     while (it.hasNext()) {
-                        userList.add(it.next());
+                        String str=it.next();
+                        userMap.put(str,serverMap.get(str).getPassword());
                     }
                     synchronized (user) {
                         ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
-                        oos.writeObject(userList);
-                        System.out.println("Server:sendMessage=" + userList);
+                        oos.writeObject(userMap);
+                        System.out.println("Server:sendMessage=" + userMap);
                     }
 //                    oos.close();
                 }else if(info.indexOf("command:Client!attackUser:[")==0){//读取命令--命令:客户端!申请对战(申请人,邀请人)

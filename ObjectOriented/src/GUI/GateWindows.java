@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 public class GateWindows extends JFrame {
     private ClientGUI gui;
@@ -20,7 +23,7 @@ public class GateWindows extends JFrame {
     JTextArea serverTextArea;
 
     public static JButton[] btnseat = new JButton[30];
-
+    private ArrayList<Integer> finalI_arrayList=new ArrayList<>();
     //END GUI
     private void init() {
         this.setTitle("Client-gate");
@@ -152,6 +155,14 @@ public class GateWindows extends JFrame {
                 b++;
             }
         }
+        Map<String,String> seat=gui.getClient().getUserList();
+        Iterator<String> it = seat.keySet().iterator();
+        int t=0;
+        while(it.hasNext()){
+            String str=it.next();
+            btnseat[t].setIcon(new ImageIcon(seat.get(str)));
+            t+=2;
+        }
         a = 0;
         b = 0;
         for (int i = 1; i < btnseat.length; i += 2) {
@@ -192,12 +203,13 @@ public class GateWindows extends JFrame {
             btnseat[i].addActionListener(new ActionListener() {  //设置“座位”按钮
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    new room(jtp,gui);
                     jtp.addTab("五子棋游戏房间 " + (finalI / 2 + 1), new ImageIcon(gui.getClient().getUser().getPassword()), room.jsp1);
                     btnseat[finalI].setIcon(
                             new ImageIcon(gui.getClient().getUser().getPassword()));
                     btnseat[finalI].setSize(38,38);
                     jtp.setSelectedIndex(1);
+                    finalI_arrayList.add(finalI);
+                    new room(jtp,gui,finalI_arrayList);
                 }
             });
         }
@@ -215,4 +227,11 @@ public class GateWindows extends JFrame {
         init();
     }
 
+    public ArrayList<Integer> getFinalI_arrayList() {
+        return finalI_arrayList;
+    }
+
+    public void setFinalI_arrayList(ArrayList<Integer> finalI_arrayList) {
+        this.finalI_arrayList = finalI_arrayList;
+    }
 }
