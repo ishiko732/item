@@ -1,6 +1,7 @@
 package GUI;
 
 import Game.Core;
+import Client.RoomUser;
 import Game.GameRoomUser;
 
 import javax.swing.*;
@@ -204,9 +205,9 @@ public class GateWindows extends JFrame {
                     uid.put(finalI, gui.getClient().getUser().getUID());
                     String user1 = uid.get(finalI);
                     String user2 = finalI != 0 && finalI % 2 == 0 ? uid.get(finalI + 1) : uid.get(finalI - 1);
-                    GameRoomUser gameRoom = //gui.getClient().getGameRoom(user1, user2);//创建游戏房间
-                    new GameRoomUser(null,null,new Core(19,19),0);
-                    new RoomWindows(jtp, gui, uid, gameRoom);
+                    RoomUser gameUser=gui.getClient().getGameRoom(user1,user2);
+                    GameRoomUser gameRoomUser = new GameRoomUser(gameUser.getUser_write(), gameUser.getUser_black(), new Core(19, 19), gameUser.getRoomID());
+                    new RoomWindows(jtp, gui, uid, gameRoomUser);
                 }
 
             });

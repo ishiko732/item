@@ -97,7 +97,7 @@ public class ClientTest {
         }
         for (int i = 0; i < 5; i++) {
             Map<String, String> userMap = clients.get(0).getUserList();
-            System.out.println((i+1)+"UserList=" + userMap);
+            System.out.println((i + 1) + "UserList=" + userMap);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -113,18 +113,18 @@ public class ClientTest {
         Pattern compile = Pattern.compile(regex);
         Matcher matcher = compile.matcher(userStr);
         matcher.find();
-        String[] userList=matcher.group().replaceAll("\\{|\\}", "").split(",");
-        Map<String,String> userMap=new HashMap<>();
+        String[] userList = matcher.group().replaceAll("\\{|\\}", "").split(",");
+        Map<String, String> userMap = new HashMap<>();
         for (String s : userList) {
             String[] user_split = s.split("=");
-            userMap.put(user_split[0],user_split[1]);
+            userMap.put(user_split[0], user_split[1]);
         }
         System.out.println(userMap);
     }
 
     @Test
-    void testUserOnline() {
-        ArrayList<Client> clients = new ArrayList<Client>();//模拟客户端在线列表
+    void testUserOnline() {//模拟客户端在线列表
+        ArrayList<Client> clients = new ArrayList<Client>();
         for (int i = 0; i < 5; i++) {
             User user = new User("UID-" + i, "./res/face/" + (i + 1) + "-1.gif", "127.0.0.1", 8089);
             clients.add(new Client(user));
@@ -141,16 +141,11 @@ public class ClientTest {
     }
 
     @Test
-    void testAttack() {
-        ArrayList<Client> clients = new ArrayList<Client>();//获取客户端在线列表
-        for (int i = 0; i < 2; i++) {
-            User user = new User("UID-" + i, "2019110" + i, "127.0.0.1", 8089);
-            clients.add(new Client(user));
-            assertTrue(clients.get(i).islogin());
-            clients.get(i).messageListener();
-        }
-        System.out.println("UID-0请求与UID-1对战");
-        clients.get(0).applyAttack(clients.get(1).getUser().getUID());
+    void testReceiveAttack() {//客户端1-接受方
+        User user = new User("UID0", "2019110B", "127.0.0.1", 8089);
+        Client client = new Client(user);
+        assertTrue(client.islogin());
+        client.messageListener();
         while (true) {
             try {
                 Thread.sleep(2000);
@@ -158,7 +153,57 @@ public class ClientTest {
                 e.printStackTrace();
             }
         }
+    }
+    @Test
+    void testDoubleattack() {//客户端2-发起方
+        User user = new User("申请人", "2019110A", "127.0.0.1", 8089);
+        Client client = new Client(user);
+        assertTrue(client.islogin());
+        client.messageListener();
+        System.out.println("申请与UID0对战");
+        client.applyAttack("UID0");
+        while (true) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
+    @Test
+    void testTransferRoomUser() {
+        RoomUser roomUser = new RoomUser();
+        String userStr = "gameRoom:RoomUser{user_write=User{UID='UID-1', password='20191101', serverIP='127.0.0.1', serverPort=8089}, user_black=User{UID='UID-0', password='20191100', serverIP='127.0.0.1', serverPort=8089}, roomID=1}";
+        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        Pattern compile = Pattern.compile(regex);
+        Matcher matcher = compile.matcher(userStr);
+        matcher.find();
+        String group = matcher.group();
+        String[] split = group.substring(1, group.length() - 1).split("},");
+        for (int i = 0; i < split.length - 1; i++) {
+            split[i] += "}";
+            matcher = compile.matcher(split[i]);
+            matcher.find();
+            String[] user = matcher.group().replaceAll("\\{|\\}| ", "").split(",");
+            User userMessage = new User();
+            Map<String, String> userMap = new HashMap<>();
+            for (String s : user) {
+                String[] user_split = s.split("=");
+                userMap.put(user_split[0], user_split[1]);
+            }
+            userMessage.setUID(userMap.get("UID"));
+            userMessage.setPassword(userMap.get("password"));
+            userMessage.setServerIP(userMap.get("serverIP"));
+            userMessage.setServerPort(Integer.parseInt(userMap.get("serverPort")));
+            if (i == 0) {
+                roomUser.setUser_black(userMessage);
+            } else {
+                roomUser.setUser_write(userMessage);
+            }
+        }
+        roomUser.setRoomID(Integer.parseInt(split[2].replace(" roomID=", "")));
+        System.out.println(roomUser);
     }
 
     @Test

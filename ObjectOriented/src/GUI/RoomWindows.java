@@ -25,10 +25,10 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     JTabbedPane myself = new JTabbedPane();
     JTabbedPane jtp3 = new JTabbedPane();
 
-    JLabel userName1 = new JLabel();
-    JLabel userName2 = new JLabel();
-    JLabel userImg1 = new JLabel();
-    JLabel userImg2 = new JLabel();
+    JLabel blackUserName = new JLabel();
+    JLabel writeUserName = new JLabel();
+    JLabel blackUserImg = new JLabel();
+    JLabel writeUserImg = new JLabel();
     JLabel time1 = new JLabel("本步剩余时间：");
     JLabel time2 = new JLabel("本步剩余时间：");
     JLabel title = new JLabel("<<<< 五子棋游戏 房间 >>>>");
@@ -50,16 +50,25 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
 
     private Core core;
     private GameGUI gobang;
-    private Map<Integer,String> roomMessage;
+    private Map<Integer, String> roomMessage;
     private ClientGUI gui;
     private GameRoomUser gameRoom;
-    public RoomWindows(JTabbedPane jtp, ClientGUI gui, Map<Integer,String> roomMessage, GameRoomUser gameRoom) {
-        this.gameRoom=gameRoom;
+    private int myBang;//0 黑白都是自己 1是白棋 2是黑棋
+
+    public RoomWindows(JTabbedPane jtp, ClientGUI gui, Map<Integer, String> roomMessage, GameRoomUser gameRoom) {
+        this.gameRoom = gameRoom;
         this.core = gameRoom.getCore();
         this.jtp = jtp;
-        this.roomMessage =roomMessage;
-        this.gui=gui;
+        this.roomMessage = roomMessage;
+        this.gui = gui;
 
+        if(gui.getClient().getUser().getUID().equals(gameRoom.getUser_write().getUID())){//白棋
+            myBang=1;
+        }else if(gui.getClient().getUser().getUID().equals(gameRoom.getUser_black().getUID())){//黑棋
+            myBang=2;
+        }else{
+            myBang=0;
+        }
         jsp1.setLeftComponent(jsp2);
         jsp2.setRightComponent(jsp3);
         //设置分隔条大小
@@ -77,34 +86,34 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         //第一个界面
         One.setLayout(new BorderLayout());//设置边框式布局
         JPanel North1 = new JPanel(); //One界面的北部
-        userImg1 = new JLabel(new ImageIcon("./res/face/1-1.gif"));
-        userName1 = new JLabel("name1");
-        North1.add(userImg1);
-        North1.add(userName1);
+        blackUserImg = new JLabel(new ImageIcon(gameRoom.getUser_write().getPassword()));
+        blackUserName = new JLabel(gameRoom.getUser_write().getUID());
+        North1.add(blackUserImg);
+        North1.add(blackUserName);
         One.add(North1, "North");
         One.add(time1, "West");
         //玩家1时间--他人
-        PlayerTime playerTime1=new PlayerTime(true);
-        playerTime1.setBounds(100,500,200,100);
+        PlayerTime playerTime1 = new PlayerTime(true);
+        playerTime1.setBounds(100, 500, 200, 100);
         playerTime1.setOpaque(false);
-        One.add(playerTime1,"East");
+        One.add(playerTime1, "East");
         jsp2.setLeftComponent(yourself);
 
         //第二个界面
         Two.setLayout(new BorderLayout());//设置边框式布局
         JPanel North2 = new JPanel(); //One界面的北部
-
-        userImg2 = new JLabel(new ImageIcon(gui.getClient().getUser().getPassword()));
-        userName2 = new JLabel(gui.getClient().getUser().getUID());
-        North2.add(userImg2);
-        North2.add(userName2);
+        System.out.println(gameRoom);
+        writeUserImg = new JLabel(new ImageIcon(gameRoom.getUser_black().getPassword()));
+        writeUserName = new JLabel(gameRoom.getUser_black().getUID());
+        North2.add(writeUserImg);
+        North2.add(writeUserName);
         Two.add(North2, "North");
         //玩家2时间--自己
-        PlayerTime playerTime2=new PlayerTime(true);
-        playerTime2.setBounds(100,500,200,100);
+        PlayerTime playerTime2 = new PlayerTime(true);
+        playerTime2.setBounds(100, 500, 200, 100);
         playerTime2.setOpaque(false);
         Two.add(time2, "West");
-        Two.add(playerTime2,"East");
+        Two.add(playerTime2, "East");
         //玩家2时间
 
         jsp3.setLeftComponent(myself);
@@ -116,6 +125,7 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         jtf = new JTextField();
         South3.add(jtf, "Center");
         South3.add(send, "East");
+        send.addActionListener(this);
         Three.add(jta, "Center");
         Three.add(South3, "South");
         jsp3.setRightComponent(jtp3);
@@ -129,7 +139,7 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         Four.add(title, "North");
         jsp1.setRightComponent(Four);
         //棋盘
-        gobang = new GameGUI(core,playerTime1,playerTime2);
+        gobang = new GameGUI(core, playerTime1, playerTime2);
         Four.add(gobang, "Center");
         South4.add(exit);
         South4.add(restart);
@@ -148,10 +158,10 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == exit) {
             jtp.remove(jsp1);
-            String userUID=gui.getClient().getUser().getUID();
-            Iterator<Map.Entry<Integer,String>> it = roomMessage.entrySet().iterator();
+            String userUID = gui.getClient().getUser().getUID();
+            Iterator<Map.Entry<Integer, String>> it = roomMessage.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry<Integer,String> entry = it.next();
+                Map.Entry<Integer, String> entry = it.next();
                 if (userUID.equals(entry.getValue())) {
                     GateWindows.btnseat[entry.getKey()].setIcon(new ImageIcon("./src/gobang/img/none.gif"));
                     it.remove();
@@ -179,16 +189,31 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
                 gobang.setVar(1);
             }
             gobang.repaint();
-        }else if(e.getSource()== admit){//认输
-            Object[] options = {"确认","取消"};
-            String str=(gobang.getVar()==1)?"白棋":"黑棋";
-            int n = JOptionPane.showOptionDialog(null,str+":确认申请认输吗?","申请认输",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE, null,options,options[1]);
-            if(n==0) {
+        } else if (e.getSource() == admit) {//认输
+            Object[] options = {"确认", "取消"};
+            String str = (gobang.getVar() == 1) ? "白棋" : "黑棋";
+            int n = JOptionPane.showOptionDialog(null, str + ":确认申请认输吗?", "申请认输", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+            if (n == 0) {
                 core.Restart();
                 gobang.repaint();
                 options = new Object[]{"确认"};
-                JOptionPane.showOptionDialog(null,str+"已经认输,开始新对局!","确认认输",JOptionPane.YES_NO_OPTION,JOptionPane.CLOSED_OPTION, null,options,options[0]);
+                JOptionPane.showOptionDialog(null, str + "已经认输,开始新对局!", "确认认输", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
             }
+        } else if (e.getSource() == send) {
+            switch (myBang) {
+                case 0:
+                    gui.getClient().sendMessage(jtf.getText(), "Server");
+                    break;
+                case 1://白棋
+                    gui.getClient().sendMessage(jtf.getText(), gameRoom.getUser_black().getUID());
+                    break;
+                case 2://黑棋
+                    gui.getClient().sendMessage(jtf.getText(), gameRoom.getUser_write().getUID());
+                    break;
+            }
+            jta.append(gui.getClient().getUser().getUID() + ":" + jtf.getText() + "\n");
         }
+
+
     }
 }

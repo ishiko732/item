@@ -3,6 +3,7 @@ package Server;
 import Client.User;
 import Game.Core;
 import Game.GameRoomUser;
+import jdk.swing.interop.SwingInterOpUtils;
 
 import java.io.*;
 import java.net.Socket;
@@ -61,40 +62,38 @@ public class ServerUserThread extends Thread {
                         arrayList.add(matcher.group().replaceAll("\\(|\\)|\\[|\\]", ""));
                     }
                     Map<String, List<Object>> userMap = Server.getUserMap();
-                    Object o_write = userMap.get(arrayList.get(1)).get(0);//黑棋是自己
-                    Object o_black = userMap.get(arrayList.get(0)).get(0);
+                    Object o_write = userMap.get(arrayList.get(0)).get(0);
+                    Object o_black = userMap.get(arrayList.get(1)).get(0);//黑棋是自己
                     GameRoomUser gameRoomUser = new GameRoomUser((User)o_write, (User)o_black, new Core(19, 19), room.size()+1);
                     synchronized (user) {
-                        ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
-                        oos.writeObject(gameRoomUser);
-                        room.add(gameRoomUser);
+                        dos.writeUTF("gameRoom:"+gameRoomUser.toString());//给被邀请人发消息
                         //给发起者消息
-                        oos = new ObjectOutputStream((OutputStream)userMap.get(arrayList.get(1)).get(2));
-                        oos.writeObject(gameRoomUser);
+//                        System.out.println(arrayList.get(0));//申请人
+//                        System.out.println(arrayList.get(1));//被邀请人
+                        DataOutputStream dataOutputStream = new DataOutputStream((OutputStream) userMap.get(arrayList.get(0)).get(2));//黑棋是申请人
+                        dataOutputStream.writeUTF("gameRoom:"+gameRoomUser.toString());
                         room.add(gameRoomUser);
                     }
                     System.out.println("Server:开启对局:房间号(" + room.size() + ")write:" +((User) o_write).getUID()+ " black:" + ((User) o_black).getUID());
-                    //创建房间操作,将user 1,2放入房间里面去
-                    //未写
-
-
-                } else if (info.indexOf("command-game:errorGame={user=[") == 0) {
-                    Matcher matcher = compile.matcher(info);// errorGame={user=[(userUID1)],send=[(userUID2)拒绝了对战]}
+                } else if (info.indexOf("command-game:errorGame={write=[") == 0) {
+                    Matcher matcher = compile.matcher(info);// errorGame={write=[(userUID2)],black=[(userUID1)]}
                     ArrayList<String> arrayList = new ArrayList<>();
                     while (matcher.find()) {
                         arrayList.add(matcher.group().replaceAll("\\(|\\)|\\[|\\]", ""));
                     }
-
-                    User user1 = (User)Server.getUserMap().get(arrayList.get(0)).get(0);
-                    //Chat-[(Server/UID)]:send=[(value)],obj=[(UID/Server)];
-
-                    GameRoomUser gameRoomUser = new GameRoomUser(null, null, new Core(19, 19), -1);
+                    Map<String, List<Object>> userMap = Server.getUserMap();
+                    Object o_write = userMap.get(arrayList.get(0)).get(0);
+                    Object o_black = userMap.get(arrayList.get(1)).get(0);//黑棋是自己
+                    GameRoomUser gameRoomUser = new GameRoomUser((User)o_write, (User)o_black, new Core(19, 19), -1);
                     synchronized (user) {
-                        ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
-                        oos.writeObject(gameRoomUser);
-                        room.add(gameRoomUser);
+                        dos.writeUTF("gameRoom:"+gameRoomUser.toString());//给被邀请人发消息
+                        //给发起者消息
+//                        System.out.println(arrayList.get(0));//申请人
+//                        System.out.println(arrayList.get(1));//被邀请人
+                        DataOutputStream dataOutputStream = new DataOutputStream((OutputStream) userMap.get(arrayList.get(0)).get(2));//黑棋是申请人
+                        dataOutputStream.writeUTF("gameRoom:"+gameRoomUser.toString());
                     }
-//                    Server.sendMessage(user1,"Chat-[Server]:send=["+arrayList.get(1)+"],obj=["+user1.getUID()+"]");
+                    System.out.println("Server:无法开启对局:对方拒绝了游戏!");
                 }
             } catch (SocketException e) {
                 System.err.println("Client-" + uid + ":" + "移除用户信息。原因：与服务器断开了连接");

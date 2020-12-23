@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -18,7 +19,7 @@ public class Client {
     private DataInputStream dis;
     private final User user;
     private boolean push;
-    private Map<String, String> userListMap;
+    private RoomUser roomUser;
 
     public Client(User user) {
         this.user = user;
@@ -63,62 +64,72 @@ public class Client {
         clientThread();
     }
 
-    public Map<String, String> getUserList() {
-        HashMap<String, String> stringStringHashMap=null;
-        try {
-            sendCommand("getUserList");
-            while (userMap == null) {
-                Thread.sleep(1000);
-            }
-            stringStringHashMap = new HashMap<>(userMap);
-            userMap=null;
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return stringStringHashMap;
-    }
-
     public void sendCommand(String command) throws IOException {//写入命令--命令:客户端! (命令指令)
         dos.writeUTF("command:Client!" + command + ";");//写入命令--命令:客户端!
         // 获取用户列表 getUserList
         // 请求对战 attackUser:[(UID),(attackUserUID)]
     }
 
+    public Map<String, String> getUserList() {
+        HashMap<String, String> stringStringHashMap = null;
+        try {
+            sendCommand("getUserList");
+            while (userMap == null) {
+                Thread.sleep(1000);
+            }
+            stringStringHashMap = new HashMap<>(userMap);
+            userMap = null;
+        } catch (IOException | InterruptedException ioException) {
+            ioException.printStackTrace();
+        }
+        return stringStringHashMap;
+    }
+
     public void applyAttack(String attackUserUID) {
-//        try {
-//            sendCommand("attackUser:[" + user.getUID() + "," + attackUserUID + "]");//command:Client!attackUser:[(UID),(attackUserUID)];
-//            if (ois == null) {
-//                ois = new ObjectInputStream(client.getInputStream());
-//            }
-//            System.out.println("读取");
-//            Object o = ois.readObject();
-//            if (o instanceof GameRoomUser) {
-//                System.out.println(o);
-//            }
-//        } catch (IOException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
+//        RoomUser roomUser_auto=null;
+        try {
+            if (roomUser == null) {
+                sendCommand("attackUser:[" + user.getUID() + "," + attackUserUID + "]");//command:Client!attackUser:[(UID),(attackUserUID)];
+                while (roomUser == null) {
+                    Thread.sleep(1000);
+                }
+//            roomUser_auto=roomUser;
+//            roomUser=null;
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public User getUser() {
         return user;
     }
 
-    public GameRoomUser getGameRoom(String my, String your) {
-        GameRoomUser gameRoomUser = null;
+    public RoomUser getGameRoom(String my, String your) {
+        System.out.println(my);
+        System.out.println(your);
         try {
-            sendCommand("attackUser:[" + my + "," + your + "]");//写入命令--命令:客户端!请求对战
-            while (gameRoomUser == null) {
-                Thread.sleep(1000);
+            if (roomUser == null) {
+                sendCommand("attackUser:[" + my + "," + your + "]");//command:Client!attackUser:[(UID),(attackUserUID)];
+                while (roomUser == null) {
+                    Thread.sleep(1000);
+                }
+                System.out.println(roomUser);
+                if (roomUser.getRoomID() == -1) {
+                    roomUser = null;
+                    if (jTXT != null) {
+                        jTXT.append("Server:您拒绝了对战!" + "\n");
+                    } else {
+                        System.out.println("拒绝对战!");
+                    }
+                }
             }
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-        return gameRoomUser;
+        return roomUser;
+
     }
 
     private String message;
@@ -136,7 +147,7 @@ public class Client {
                     try {
                         Thread.sleep(100);
                         message = dis.readUTF();
-//                System.out.println("(get)Client: "+message);
+                        System.out.println("(get)Client-" + user.getUID() + ": " + message);
                         if (!"".equals(message)) {
                             if (message.indexOf("get-chat[") == 0) {//接受到信息
                                 // "get-chat["+chatMessage[0]+"],send=["+chatMessage[1]+"];"
@@ -174,32 +185,21 @@ public class Client {
                                         if (jTXT != null) {
                                             jTXT.append("Server:您已经接受对战,稍等一会,开始游戏!" + "\n");
                                         } else {
-                                            System.out.println("同意对战!" + user.getUID());
+                                            System.out.println("CLient(" + user.getUID() + ")您已经同意对战!");
                                         }
                                         sendGameCommand("newGame={write=[" + arrayList.get(0) + "],black=[" + user.getUID() + "]}");
-                                        ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
-                                        Object obj = null;
-                                        try {
-                                            obj = ois.readObject();
-                                        } catch (ClassNotFoundException e) {
-                                            e.printStackTrace();
-                                        }
-                                        if (obj instanceof GameRoomUser) {
-                                            gameRoomUser = (GameRoomUser) obj;
-                                            System.out.println(gameRoomUser);
-                                        }
                                     } else {
                                         if (jTXT != null) {
                                             jTXT.append("Server:您拒绝了对战!" + "\n");
                                         } else {
                                             System.out.println("拒绝对战!");
                                         }
-                                        sendGameCommand("errorGame={user=[" + arrayList.get(0) + "],send=[" + user.getUID() + "拒绝了对战]}");
+                                        sendGameCommand("errorGame={write=[" + arrayList.get(0) + "],black=[" + user.getUID() + "]}");
                                     }
                                 }
                             } else if (message.indexOf("get-userList:") == 0) {
                                 if (userMap == null) {
-                                    userMap=new HashMap<>();
+                                    userMap = new HashMap<>();
                                     synchronized (userMap) {
                                         String regex_list = "\\{[^\\]]*\\}";//匹配中括号
                                         Pattern compile_list = Pattern.compile(regex_list);
@@ -211,6 +211,18 @@ public class Client {
                                             userMap.put(user_split[0], user_split[1]);
                                         }
                                     }
+                                }
+                            } else if (message.indexOf("gameRoom:") == 0) {
+                                if (roomUser == null) {
+                                    roomUser = transferRoomUser(message);
+//                                    if(roomUser.getRoomID()==-1){
+//                                        roomUser=null;
+//                                        if (jTXT != null) {
+//                                            jTXT.append("Server:您拒绝了对战!" + "\n");
+//                                        } else {
+//                                            System.out.println("拒绝对战!");
+//                                        }
+//                                    }
                                 }
                             }
                         }
@@ -231,8 +243,9 @@ public class Client {
     public void sendGameCommand(String command) throws IOException {//写入命令--命令:客户端! (命令指令)
         dos.writeUTF("command-game:" + command + ";");//写入命令--命令:客户端!
         // 开启游戏对局 newGame={write=[(userUID2)],black=[(userUID1)]}
-        // 拒绝对战 errorGame={user=[(userUID1)],send=[(userUID2)拒绝了对战]}
+        // 拒绝对战 errorGame=={write=[(userUID2)],black=[(userUID1)]}
         // 请求对战 attackUser:[(UID),(attackUserUID)]
+        // 棋子信息 game={write=[(x,y)],roomID=[(id)]}
     }
 
     public JTextArea getjTXT() {
@@ -241,5 +254,38 @@ public class Client {
 
     public void setjTXT(JTextArea jTXT) {
         this.jTXT = jTXT;
+    }
+
+    public static RoomUser transferRoomUser(String users) {
+        RoomUser roomUser = new RoomUser();
+        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        Pattern compile = Pattern.compile(regex);
+        Matcher matcher = compile.matcher(users);
+        matcher.find();
+        String group = matcher.group();
+        String[] split = group.substring(1, group.length() - 1).split("},");
+        for (int i = 0; i < split.length - 1; i++) {
+            split[i] += "}";
+            matcher = compile.matcher(split[i]);
+            matcher.find();
+            String[] user = matcher.group().replaceAll("\\{|\\}| ", "").split(",");
+            User userMessage = new User();
+            Map<String, String> userMap = new HashMap<>();
+            for (String s : user) {
+                String[] user_split = s.split("=");
+                userMap.put(user_split[0], user_split[1].replace("\'",""));
+            }
+            userMessage.setUID(userMap.get("UID"));
+            userMessage.setPassword(userMap.get("password"));
+            userMessage.setServerIP(userMap.get("serverIP"));
+            userMessage.setServerPort(Integer.parseInt(userMap.get("serverPort")));
+            if (i == 0) {
+                roomUser.setUser_black(userMessage);
+            } else {
+                roomUser.setUser_write(userMessage);
+            }
+        }
+        roomUser.setRoomID(Integer.parseInt(split[2].replace(" roomID=", "")));
+        return roomUser;
     }
 }
