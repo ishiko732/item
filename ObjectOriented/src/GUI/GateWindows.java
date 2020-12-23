@@ -182,10 +182,10 @@ public class GateWindows extends JFrame {
         rightBorder.add(rightCenter, "Center");
         game_gate_jsp.setRightComponent(rightBorder);
         //监听
-        button_flush.addActionListener((ActionEvent) -> {
-            System.out.println("new");
-            flushList();
-            System.out.println("new");
+        button_flush.addActionListener((ActionEvent e) -> {
+            if(e.getSource()==button_flush){
+                flushList();
+            }
         });
         button_exit.addActionListener((ActionEvent) -> {//退出按钮
             System.exit(0);
@@ -216,11 +216,11 @@ public class GateWindows extends JFrame {
     }
 
     private void flushList() {
-        System.out.println("flush");
         uid.clear();
         int t = 0;
         String str;
         Map<String, String> seat = gui.getClient().getUserList();
+        System.out.println(seat);
         for (String s : seat.keySet()) {
             str = s;
             btnseat[t].setIcon(new ImageIcon(seat.get(str)));
@@ -240,16 +240,16 @@ public class GateWindows extends JFrame {
     }
 
     Map<Integer, String> uid = new HashMap<>();
-//    public void newListener(){
-//        new Thread(() -> {
-//            flushList();
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
-//    }
+    public void newListener(){
+        new Thread(() -> {
+            flushList();
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
 
     public GateWindows(ClientGUI gui) {
         this.gui = gui;

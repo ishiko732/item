@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,9 +18,7 @@ public class Client {
     private DataInputStream dis;
     private final User user;
     private boolean push;
-    private PrintStream ps;
-    private ObjectInputStream ois;
-//    private ClientUserMessage userMessage=null;
+    private Map<String, String> userListMap;
 
     public Client(User user) {
         this.user = user;
@@ -65,18 +64,20 @@ public class Client {
     }
 
     public Map<String, String> getUserList() {
-        Map<String, String> userMap = null;
+        HashMap<String, String> stringStringHashMap=null;
         try {
-            sendCommand("getUserList");//dos.writeUTF("command:Client!getUserList");写入命令--命令:客户端!获取用户列表
-            if(ois==null){
-                ois = new ObjectInputStream(client.getInputStream());
+            sendCommand("getUserList");
+            while (userMap == null) {
+                Thread.sleep(1000);
             }
-            userMap = (Map<String, String>) ois.readObject();
-            System.out.println(userMap);
-        } catch (IOException | ClassNotFoundException ioException) {
+            stringStringHashMap = new HashMap<>(userMap);
+            userMap=null;
+        } catch (IOException ioException) {
             ioException.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        return userMap;
+        return stringStringHashMap;
     }
 
     public void sendCommand(String command) throws IOException {//写入命令--命令:客户端! (命令指令)
@@ -86,19 +87,19 @@ public class Client {
     }
 
     public void applyAttack(String attackUserUID) {
-        try {
-            sendCommand("attackUser:[" + user.getUID() + "," + attackUserUID + "]");//command:Client!attackUser:[(UID),(attackUserUID)];
-            if(ois==null){
-                ois = new ObjectInputStream(client.getInputStream());
-            }
-            System.out.println("读取");
-            Object o = ois.readObject();
-            if(o instanceof  GameRoomUser){
-                System.out.println(o);
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            sendCommand("attackUser:[" + user.getUID() + "," + attackUserUID + "]");//command:Client!attackUser:[(UID),(attackUserUID)];
+//            if (ois == null) {
+//                ois = new ObjectInputStream(client.getInputStream());
+//            }
+//            System.out.println("读取");
+//            Object o = ois.readObject();
+//            if (o instanceof GameRoomUser) {
+//                System.out.println(o);
+//            }
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public User getUser() {
@@ -110,7 +111,6 @@ public class Client {
         try {
             sendCommand("attackUser:[" + my + "," + your + "]");//写入命令--命令:客户端!请求对战
             while (gameRoomUser == null) {
-//                gameRoomUser =userMessage.getGameRoomUser();
                 Thread.sleep(1000);
             }
         } catch (IOException ioException) {
@@ -124,6 +124,7 @@ public class Client {
     private String message;
     private JTextArea jTXT;
     private GameRoomUser gameRoomUser;
+    private Map<String, String> userMap = null;
 
     private void clientThread() {
         Runnable run = new Runnable() {
@@ -134,9 +135,7 @@ public class Client {
                 while (true) {
                     try {
                         Thread.sleep(100);
-                        synchronized (user) {
-                            message = dis.readUTF();
-                        }
+                        message = dis.readUTF();
 //                System.out.println("(get)Client: "+message);
                         if (!"".equals(message)) {
                             if (message.indexOf("get-chat[") == 0) {//接受到信息
@@ -152,7 +151,7 @@ public class Client {
                                     System.out.println("Client-" + user.getUID() + ":来自" + arrayList.get(0) + "客户端的消息:" + arrayList.get(1));
                                 }
                             } else if ("sendMessage:(Yes)".equals(message)) {
-                                    System.out.println("Client-" + user.getUID() + ":sendMessage=" + message);
+                                System.out.println("Client-" + user.getUID() + ":sendMessage=" + message);
                             } else if (message.indexOf("get-wait[") == 0) {//等待命令
                                 Matcher matcher = compile.matcher(message);//"get-wait[" + userUID[0] + "],command=[wait],send=[" + userUID[1] + "];";
                                 StringBuilder merge = new StringBuilder();
@@ -175,7 +174,7 @@ public class Client {
                                         if (jTXT != null) {
                                             jTXT.append("Server:您已经接受对战,稍等一会,开始游戏!" + "\n");
                                         } else {
-                                            System.out.println("同意对战!"+user.getUID());
+                                            System.out.println("同意对战!" + user.getUID());
                                         }
                                         sendGameCommand("newGame={write=[" + arrayList.get(0) + "],black=[" + user.getUID() + "]}");
                                         ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
@@ -198,7 +197,21 @@ public class Client {
                                         sendGameCommand("errorGame={user=[" + arrayList.get(0) + "],send=[" + user.getUID() + "拒绝了对战]}");
                                     }
                                 }
-
+                            } else if (message.indexOf("get-userList:") == 0) {
+                                if (userMap == null) {
+                                    userMap=new HashMap<>();
+                                    synchronized (userMap) {
+                                        String regex_list = "\\{[^\\]]*\\}";//匹配中括号
+                                        Pattern compile_list = Pattern.compile(regex_list);
+                                        Matcher matcher = compile_list.matcher(message);
+                                        matcher.find();
+                                        String[] userList = matcher.group().replaceAll("\\{|\\}", "").split(",");
+                                        for (String s : userList) {
+                                            String[] user_split = s.split("=");
+                                            userMap.put(user_split[0], user_split[1]);
+                                        }
+                                    }
+                                }
                             }
                         }
                     } catch (SocketException e) {

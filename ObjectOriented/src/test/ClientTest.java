@@ -92,15 +92,39 @@ public class ClientTest {
             User user = new User("UID-" + i, "./res/face/" + (i + 1) + "-1.gif", "127.0.0.1", 8089);
             clients.add(new Client(user));
             assertTrue(clients.get(i).islogin());
+            clients.get(i).messageListener();
 //            clients.get(i).messageListener();
         }
-        Map<String, String> userMap = clients.get(0).getUserList();
-        System.out.println("UserList=" + userMap);
+        for (int i = 0; i < 5; i++) {
+            Map<String, String> userMap = clients.get(0).getUserList();
+            System.out.println((i+1)+"UserList=" + userMap);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Test
+    void testTransferUserMap() {
+        String userStr = "get-userList:{UID-0=./res/face/1-1.gif, UID-1=./res/face/2-1.gif, UID-2=./res/face/3-1.gif, UID-3=./res/face/4-1.gif, UID-4=./res/face/5-1.gif}";
+        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        Pattern compile = Pattern.compile(regex);
+        Matcher matcher = compile.matcher(userStr);
+        matcher.find();
+        String[] userList=matcher.group().replaceAll("\\{|\\}", "").split(",");
+        Map<String,String> userMap=new HashMap<>();
+        for (String s : userList) {
+            String[] user_split = s.split("=");
+            userMap.put(user_split[0],user_split[1]);
+        }
+        System.out.println(userMap);
     }
 
     @Test
     void testUserOnline() {
-        ArrayList<Client> clients = new ArrayList<Client>();//获取客户端在线列表
+        ArrayList<Client> clients = new ArrayList<Client>();//模拟客户端在线列表
         for (int i = 0; i < 5; i++) {
             User user = new User("UID-" + i, "./res/face/" + (i + 1) + "-1.gif", "127.0.0.1", 8089);
             clients.add(new Client(user));

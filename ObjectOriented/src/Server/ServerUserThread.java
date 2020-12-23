@@ -32,6 +32,7 @@ public class ServerUserThread extends Thread {
         String regex = "\\[[^\\]]*\\]";//匹配中括号
         Pattern compile = Pattern.compile(regex);
         DataInputStream dis = new DataInputStream(is);
+        DataOutputStream dos=new DataOutputStream(out);
         while (!client.isClosed()) {
             try {
                 info = dis.readUTF();
@@ -48,11 +49,9 @@ public class ServerUserThread extends Thread {
                         User user = (User) serverMap.get(str).get(0);
                         userMap.put(str, user.getPassword());
                     }
-                    synchronized (user) {
-                        ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
-                        oos.writeObject(userMap);
-                        System.out.println("Server:sendMessage=" + userMap);
-                    }
+                    // userMap -> String
+//                    System.out.println("get-list:"+userMap);
+                    dos.writeUTF("get-userList:"+userMap.toString());
                 } else if (info.indexOf("command:Client!attackUser:[") == 0) {//读取命令--命令:客户端!申请对战(申请人,邀请人)
                     Server.sendAttack(user, info);
                 } else if (info.indexOf("command-game:newGame={write=[") == 0) {//开启游戏对局
