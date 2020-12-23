@@ -17,7 +17,7 @@ public class ServerUserThread extends Thread {
     private final InputStream is;
     private final OutputStream out;
     private final Socket client;
-    private final ArrayList<GameRoomUser> room = new ArrayList<>();
+    private final Map<Integer,GameRoomUser> room = new HashMap<>();
     public ServerUserThread(List<Object> list,  Socket client) {
         this.user =(User)list.get(0);
         this.is =(InputStream)list.get(1);
@@ -64,7 +64,8 @@ public class ServerUserThread extends Thread {
                     Map<String, List<Object>> userMap = Server.getUserMap();
                     Object o_write = userMap.get(arrayList.get(0)).get(0);
                     Object o_black = userMap.get(arrayList.get(1)).get(0);//黑棋是自己
-                    GameRoomUser gameRoomUser = new GameRoomUser((User)o_write, (User)o_black, new Core(19, 19), room.size()+1);
+                    int id=room.size()+1;
+                    GameRoomUser gameRoomUser = new GameRoomUser((User)o_write, (User)o_black, new Core(19, 19), id);
                     synchronized (user) {
                         dos.writeUTF("gameRoom:"+gameRoomUser.toString());//给被邀请人发消息
                         //给发起者消息
@@ -72,7 +73,7 @@ public class ServerUserThread extends Thread {
 //                        System.out.println(arrayList.get(1));//被邀请人
                         DataOutputStream dataOutputStream = new DataOutputStream((OutputStream) userMap.get(arrayList.get(0)).get(2));//黑棋是申请人
                         dataOutputStream.writeUTF("gameRoom:"+gameRoomUser.toString());
-                        room.add(gameRoomUser);
+                        room.put(id,gameRoomUser);
                     }
                     System.out.println("Server:开启对局:房间号(" + room.size() + ")write:" +((User) o_write).getUID()+ " black:" + ((User) o_black).getUID());
                 } else if (info.indexOf("command-game:errorGame={write=[") == 0) {

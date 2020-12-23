@@ -45,8 +45,8 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     JPanel Three = new JPanel();
     JPanel Four = new JPanel();
 
-    JTextArea jta = null;
-    JTextField jtf = null;
+    JTextArea chatMessage = null;
+    JTextField sendText_JFeild = null;
 
     private Core core;
     private GameGUI gobang;
@@ -121,12 +121,12 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         //第三个界面
         Three.setLayout(new BorderLayout());
         JPanel South3 = new JPanel(new BorderLayout()); //Three界面南部
-        jta = new JTextArea();
-        jtf = new JTextField();
-        South3.add(jtf, "Center");
+        chatMessage = new JTextArea();
+        sendText_JFeild = new JTextField();
+        South3.add(sendText_JFeild, "Center");
         South3.add(send, "East");
         send.addActionListener(this);
-        Three.add(jta, "Center");
+        Three.add(chatMessage, "Center");
         Three.add(South3, "South");
         jsp3.setRightComponent(jtp3);
 
@@ -202,16 +202,19 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         } else if (e.getSource() == send) {
             switch (myBang) {
                 case 0:
-                    gui.getClient().sendMessage(jtf.getText(), "Server");
+                    gui.getClient().sendMessage(sendText_JFeild.getText(), "Server");
+                    chatMessage.append(gui.getClient().getUser().getUID() + ":" + sendText_JFeild.getText() + "\n");
                     break;
                 case 1://白棋
-                    gui.getClient().sendMessage(jtf.getText(), gameRoom.getUser_black().getUID());
+                    gui.getClient().sendMessage(sendText_JFeild.getText(), gameRoom.getUser_black().getUID());
+                    chatMessage.append(gui.getClient().getUser().getUID() + "(白):" + sendText_JFeild.getText() + "\n");
                     break;
                 case 2://黑棋
-                    gui.getClient().sendMessage(jtf.getText(), gameRoom.getUser_write().getUID());
+                    gui.getClient().sendMessage(sendText_JFeild.getText(), gameRoom.getUser_write().getUID());
+                    chatMessage.append(gui.getClient().getUser().getUID() + "(黑):" + sendText_JFeild.getText() + "\n");
                     break;
             }
-            jta.append(gui.getClient().getUser().getUID() + ":" + jtf.getText() + "\n");
+
         }
 
 
