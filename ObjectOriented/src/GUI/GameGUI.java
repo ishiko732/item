@@ -15,20 +15,21 @@ import javax.swing.*;
 public class GameGUI extends JPanel implements MouseListener {
     public Core core;
     private static final long serialVersionUID = 1L;
-    private int var = 1;
-    private PlayerTime playerTime1, playerTime2;
+    private int var = 2;
+    private PlayerTime playerTime_your, playerTime_my;
 
-    public GameGUI(Core core, PlayerTime playerTime1, PlayerTime playerTime2) {
+    public GameGUI(Core core, PlayerTime playerTime_your, PlayerTime playerTime_my) {
         this.core = core;
         ClientGUI.setGameGui(this);
         this.addMouseListener(this);
-        this.playerTime1 = playerTime1;
-        this.playerTime2 = playerTime2;
-        if(Client.isAttackUser()){
-            playerTime1.start_time();
-        }else{
-            playerTime2.start_time();
+        this.playerTime_your = playerTime_your;
+        this.playerTime_my = playerTime_my;
+        if (Client.isAttackUser()) {
+            playerTime_my.start_time();
+        } else {
+            playerTime_your.start_time();
         }
+        repaint();
     }
 
 
@@ -73,9 +74,20 @@ public class GameGUI extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        // TODO Auto-generated method stub
         if (e.getX() < 570 && e.getY() < 600) {
-            core.ChessIt_newWork(_CgetX(e.getX()), (_CgetY(e.getY())));
+            //下棋方
+            int flag = ClientGUI.getGameGui().getPlayerTime_my().getFlag();
+            boolean jg1=Client.isAttackUser()&&(flag==1||flag==-1);//是攻击方同时又是下方计时器==这肯定是黑棋
+            boolean jg2=!Client.isAttackUser()&&(flag==1||flag==-1);//非攻击方 同时又是下方计时器==这是白棋
+            var=Client.isAttackUser()?1:2;
+            System.out.println(var==1&&jg1||var==2&&jg2);
+            if(var==1&&jg1||var==2&&jg2){
+                core.ChessIt_newWork(_CgetX(e.getX()), (_CgetY(e.getY())));
+            }else{
+                JOptionPane.showMessageDialog(null,  "非你回合,非法下棋!!");
+            }
+//            System.out.println(var==1&&jg1);//是黑棋同时也是攻击方
+//            System.out.println(var==2&&jg2);//是白棋同时也是被..
         } else if (e.getX() > 590 && e.getX() < 660 && e.getY() > 300 && e.getY() < 330) {//游戏状态
             Object[] options = {"白先", "黑先"};
             int n = JOptionPane.showOptionDialog(null, "白先还是黑先？", "游戏设置", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -116,19 +128,19 @@ public class GameGUI extends JPanel implements MouseListener {
         this.var = var;
     }
 
-    public PlayerTime getPlayerTime1() {
-        return playerTime1;
+    public PlayerTime getPlayerTime_your() {
+        return playerTime_your;
     }
 
-    public void setPlayerTime1(PlayerTime playerTime1) {
-        this.playerTime1 = playerTime1;
+    public void setPlayerTime_your(PlayerTime playerTime_your) {
+        this.playerTime_your = playerTime_your;
     }
 
-    public PlayerTime getPlayerTime2() {
-        return playerTime2;
+    public PlayerTime getPlayerTime_my() {
+        return playerTime_my;
     }
 
-    public void setPlayerTime2(PlayerTime playerTime2) {
-        this.playerTime2 = playerTime2;
+    public void setPlayerTime_my(PlayerTime playerTime_my) {
+        this.playerTime_my = playerTime_my;
     }
 }

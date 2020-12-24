@@ -1,12 +1,7 @@
 package Client;
 
 import GUI.ClientGUI;
-import GUI.GameGUI;
-import GUI.GateWindows;
-import GUI.RoomWindows;
 import Game.Core;
-import Game.GameRoomUser;
-import Server.Server;
 
 import javax.swing.*;
 import java.io.*;
@@ -233,22 +228,13 @@ public class Client {
                             } else if (message.indexOf("gameRoom:") == 0) {
                                 if (roomUser == null) {
                                     roomUser = transferRoomUser(message);
-//                                    if(roomUser.getRoomID()==-1){
-//                                        roomUser=null;
-//                                        if (jTXT != null) {
-//                                            jTXT.append("Server:您拒绝了对战!" + "\n");
-//                                        } else {
-//                                            System.out.println("拒绝对战!");
-//                                        }
-//                                    }
                                 }
                             } else if (message.indexOf("command-game:game={var=") == 0) {
                                 //game={var=[(while)],xy=[(x|y)],roomID=[(id)]}
                                 Map<String, String> gameMap = transferGameMap(message);//{xy=(2,2), var=write, roomID=1}
-                                int var = "white".equals(gameMap.get("var")) ? 1 : 2;
+                                int var = "white".equals(gameMap.get("var")) ? 1 :2;
                                 String[] xy = gameMap.get("xy").replaceAll("\\(|\\)", "").split(",");
                                 int a = core.ChessIt(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]), var);
-//                                System.out.println(Arrays.toString(core.getCore()));
                                 System.out.println("接收" + gameMap.get("var") + ":" + gameMap.get("xy") + "执行状态:" + a);
                                 if (a == 1) {
                                     JOptionPane.showMessageDialog(null, "白棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
@@ -258,28 +244,29 @@ public class Client {
                                 }
                                 if (a != -1) {
                                     try {
-                                            if ((var == 1 &&attackUser)||(var == 2&& !attackUser)) {
-                                                if (ClientGUI.getGameGui().getPlayerTime2() != null) {
-                                                    ClientGUI.getGameGui().getPlayerTime1().stop_time();
-                                                    ClientGUI.getGameGui().getPlayerTime2().reset_time();
-                                                    ClientGUI.getGameGui().getPlayerTime2().start_time();
-                                                }
-                                            } else if ((var == 2 &&attackUser)||(var == 1&& !attackUser)) {
-                                                if (ClientGUI.getGameGui().getPlayerTime1() != null) {
-                                                    ClientGUI.getGameGui().getPlayerTime2().stop_time();
-                                                    ClientGUI.getGameGui().getPlayerTime1().reset_time();
-                                                    ClientGUI.getGameGui().getPlayerTime1().start_time();
-                                                }
+//                                        System.out.println("是否是攻击方:" + attackUser + "下方的计时器:" + ClientGUI.getGameGui().getPlayerTime_my().getFlag() + "上方的计时器:" + ClientGUI.getGameGui().getPlayerTime_your().getFlag());
+                                        if ((var == 1 && attackUser) || (var == 2 && !attackUser)) {//如果是黑棋,同时是发起方  --下边是发起方
+                                            if (ClientGUI.getGameGui().getPlayerTime_my() != null) {
+                                                ClientGUI.getGameGui().getPlayerTime_your().stop_time();
+                                                ClientGUI.getGameGui().getPlayerTime_my().reset_time();
+                                                ClientGUI.getGameGui().getPlayerTime_my().start_time();
                                             }
+                                        } else if ((var == 2 && attackUser) || (var == 1 && !attackUser)) {
+                                            if (ClientGUI.getGameGui().getPlayerTime_your() != null) {
+                                                ClientGUI.getGameGui().getPlayerTime_my().stop_time();
+                                                ClientGUI.getGameGui().getPlayerTime_your().reset_time();
+                                                ClientGUI.getGameGui().getPlayerTime_your().start_time();
+                                            }
+                                        }
                                     } catch (NullPointerException e) {
                                         e.printStackTrace();
                                     }
-                                    ClientGUI.getGameGui().repaint();
                                 }
                                 if (core.checkSum()) {
                                     Object[] options = new Object[]{"确认"};
                                     JOptionPane.showOptionDialog(null, "平局,可以开始新对局!", "平局", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
                                 }
+                                ClientGUI.getGameGui().repaint();
                             }
                         }
                     } catch (SocketException e) {
@@ -288,7 +275,6 @@ public class Client {
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         };
@@ -379,6 +365,7 @@ public class Client {
     public static boolean isAttackUser() {
         return attackUser;
     }
+
     public static void setAttackUser(boolean attackUser) {
         Client.attackUser = attackUser;
     }

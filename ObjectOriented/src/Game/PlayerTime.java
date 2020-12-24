@@ -93,7 +93,7 @@ public class PlayerTime extends JPanel  implements ActionListener{
         if(minute==60){
             str ="时间到了";
             timer.stop();
-            flag = 0;
+            flag = -1;
         }else{
             str = this.toString(this.minute, this.second);
         }
@@ -152,10 +152,14 @@ public class PlayerTime extends JPanel  implements ActionListener{
             label.setText(countTime());
 //            System.out.println( minute + ":" + second);
         }
-        else if(flag==0 && !timer.isRunning()){
+        else if((flag==0 ||flag==-1 )&& !timer.isRunning()){
             label.setText(stopTime());
 //            System.out.println( minute + ":" + second);
         }
+    }
+
+    public int getFlag() {//0表示为启动 1表示启动
+        return flag;
     }
 }
 

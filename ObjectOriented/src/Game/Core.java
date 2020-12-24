@@ -110,7 +110,7 @@ public class Core {
     public void ChessIt_newWork(int x, int y) {
         if (client != null) {
             try {
-                String v =Client.isAttackUser()?"black" : "white";
+                String v =Client.isAttackUser()?"black" : "white";//攻击方为黑棋
                 client.sendGameCommand("game={var=" + v + ",xy=(" + x + "|" + y + "),roomID=" + room + "}");
             } catch (IOException ioException) {
                 ioException.printStackTrace();

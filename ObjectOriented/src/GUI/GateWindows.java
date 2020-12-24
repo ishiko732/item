@@ -1,5 +1,6 @@
 package GUI;
 
+import Client.Client;
 import Game.Core;
 import Client.RoomUser;
 import Game.GameRoomUser;
@@ -211,7 +212,15 @@ public class GateWindows extends JFrame {
                     String user2 = finalI != 0 && finalI % 2 == 0 ? uid.get(finalI + 1) : uid.get(finalI - 1);
                     RoomUser gameUser = gui.getClient().getGameRoom(user1, user2);
                     serverTextArea.append("Server:" + gui.getClient().getUser().getUID() + "请等待信息\n");
-                    gui.getClient().setAttackUser(true);
+                    synchronized (this){
+                        Client.setAttackUser(true);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException interruptedException) {
+                            interruptedException.printStackTrace();
+                        }
+                    }
+//                    gui.getClient().setAttackUser(true);
 //                    gui.getClient().setCore(new Core(19, 19,gui.getClient(),gameUser.getRoomID()));
 //                    GameRoomUser gameRoomUser = new GameRoomUser(gameUser.getUser_write(), gameUser.getUser_black(), gui.getClient().getCore(), gameUser.getRoomID());//将棋盘连起来
 //                    new RoomWindows(jtp, gui.getClient(), uid, gameRoomUser);
@@ -267,14 +276,22 @@ public class GateWindows extends JFrame {
             } else {
                 gui.getClient().setCore(new Core(19, 19, gui.getClient(), gui.getClient().getRoomUser().getRoomID()));
                 GameRoomUser gameRoomUser = null;
-                if (gui.getClient().isAttackUser()) {
-                    gameRoomUser = new GameRoomUser(gui.getClient().getRoomUser().getUser_write(), gui.getClient().getRoomUser().getUser_black(), gui.getClient().getCore(), gui.getClient().getRoomUser().getRoomID());//将棋盘连起来
-                } else {
-                    gameRoomUser = new GameRoomUser(gui.getClient().getRoomUser().getUser_black(), gui.getClient().getRoomUser().getUser_write(), gui.getClient().getCore(), gui.getClient().getRoomUser().getRoomID());//将棋盘连起来
+                synchronized (this){
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (Client.isAttackUser()) {
+                        gameRoomUser = new GameRoomUser(gui.getClient().getRoomUser().getUser_write(), gui.getClient().getRoomUser().getUser_black(), gui.getClient().getCore(), gui.getClient().getRoomUser().getRoomID());//将棋盘连起来
+                    } else {
+                        gameRoomUser = new GameRoomUser(gui.getClient().getRoomUser().getUser_black(), gui.getClient().getRoomUser().getUser_write(), gui.getClient().getCore(), gui.getClient().getRoomUser().getRoomID());//将棋盘连起来
+                    }
                 }
                 jtp.addTab("五子棋游戏房间 " + gui.getClient().getRoomUser().getRoomID(), new ImageIcon(gui.getClient().getUser().getPassword()), RoomWindows.jsp1);
                 jtp.setSelectedIndex(1);
-                new RoomWindows(jtp, gui.getClient(), uid, gameRoomUser);
+                RoomWindows roomWindows = new RoomWindows(jtp, gui.getClient(), uid, gameRoomUser);
+                gui.getClient().setjTXT(roomWindows.getChatMessage());//将聊天转移到游戏窗口
             }
         }).start();
     }

@@ -26,10 +26,10 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     JTabbedPane myself = new JTabbedPane();
     JTabbedPane jtp3 = new JTabbedPane();
 
-    JLabel blackUserName = new JLabel();
-    JLabel writeUserName = new JLabel();
-    JLabel blackUserImg = new JLabel();
-    JLabel writeUserImg = new JLabel();
+    JLabel UserName_your = new JLabel();
+    JLabel UserName_my = new JLabel();
+    JLabel UserImg_your = new JLabel();
+    JLabel UserImg_my = new JLabel();
     JLabel time1 = new JLabel("本步剩余时间：");
     JLabel time2 = new JLabel("本步剩余时间：");
     JLabel title = new JLabel("<<<< 五子棋游戏 房间 >>>>");
@@ -54,22 +54,13 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     private Map<Integer, String> roomMessage;
     private Client client;
     private GameRoomUser gameRoom;
-    private int myBang;//0 黑白都是自己 1是白棋 2是黑棋
 
     public RoomWindows(JTabbedPane jtp, Client client, Map<Integer, String> roomMessage, GameRoomUser gameRoom) {
         this.gameRoom = gameRoom;
         this.core = gameRoom.getCore();
         this.jtp = jtp;
         this.roomMessage = roomMessage;
-        this.client= client;
-
-        if(client.getUser().getUID().equals(gameRoom.getUser_write().getUID())){//白棋
-            myBang=1;
-        }else if(client.getUser().getUID().equals(gameRoom.getUser_black().getUID())){//黑棋
-            myBang=2;
-        }else{
-            myBang=0;
-        }
+        this.client = client;
         jsp1.setLeftComponent(jsp2);
         jsp2.setRightComponent(jsp3);
         //设置分隔条大小
@@ -87,34 +78,51 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         //第一个界面
         One.setLayout(new BorderLayout());//设置边框式布局
         JPanel North1 = new JPanel(); //One界面的北部
-        blackUserImg = new JLabel(new ImageIcon(gameRoom.getUser_write().getPassword()));
-        blackUserName = new JLabel(gameRoom.getUser_write().getUID());
-        North1.add(blackUserImg);
-        North1.add(blackUserName);
+        PlayerTime playerTime_your = null;
+        PlayerTime playerTime_my = null;
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(Client.isAttackUser());
+//        if(Client.isAttackUser()){//攻击方是自己
+            UserImg_my = new JLabel(new ImageIcon(gameRoom.getUser_black().getPassword()));
+            UserName_my = new JLabel(gameRoom.getUser_black().getUID());
+            UserImg_your = new JLabel(new ImageIcon(gameRoom.getUser_write().getPassword()));
+            UserName_your = new JLabel(gameRoom.getUser_write().getUID());
+//        }else{
+//            UserImg_my = new JLabel(new ImageIcon(gameRoom.getUser_write().getPassword()));
+//            UserName_my = new JLabel(gameRoom.getUser_write().getUID());
+//
+//            UserImg_your = new JLabel(new ImageIcon(gameRoom.getUser_black().getPassword()));
+//            UserName_your = new JLabel(gameRoom.getUser_black().getUID());
+//        }
+        playerTime_my = new PlayerTime(true);
+        playerTime_your = new PlayerTime(true);
+
+        North1.add(UserImg_your);
+        North1.add(UserName_your);
         One.add(North1, "North");
         One.add(time1, "West");
         //玩家1时间--他人
-        PlayerTime playerTime1 = new PlayerTime(true);
-        playerTime1.setBounds(100, 500, 200, 100);
-        playerTime1.setOpaque(false);
-        One.add(playerTime1, "East");
+        playerTime_your.setBounds(100, 500, 200, 100);
+        playerTime_your.setOpaque(false);
+        One.add(playerTime_your, "East");
         jsp2.setLeftComponent(yourself);
 
         //第二个界面
         Two.setLayout(new BorderLayout());//设置边框式布局
         JPanel North2 = new JPanel(); //One界面的北部
-        System.out.println(gameRoom);
-        writeUserImg = new JLabel(new ImageIcon(gameRoom.getUser_black().getPassword()));
-        writeUserName = new JLabel(gameRoom.getUser_black().getUID());
-        North2.add(writeUserImg);
-        North2.add(writeUserName);
+//        System.out.println(gameRoom);
+        North2.add(UserImg_my);
+        North2.add(UserName_my);
         Two.add(North2, "North");
         //玩家2时间--自己
-        PlayerTime playerTime2 = new PlayerTime(true);
-        playerTime2.setBounds(100, 500, 200, 100);
-        playerTime2.setOpaque(false);
+        playerTime_my.setBounds(100, 500, 200, 100);
+        playerTime_my.setOpaque(false);
         Two.add(time2, "West");
-        Two.add(playerTime2, "East");
+        Two.add(playerTime_my, "East");
         //玩家2时间
 
         jsp3.setLeftComponent(myself);
@@ -140,7 +148,7 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         Four.add(title, "North");
         jsp1.setRightComponent(Four);
         //棋盘
-        gobang = new GameGUI(core, playerTime1, playerTime2);
+        gobang = new GameGUI(core, playerTime_your, playerTime_my);
         Four.add(gobang, "Center");
         South4.add(exit);
         South4.add(restart);
@@ -201,23 +209,22 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
                 JOptionPane.showOptionDialog(null, str + "已经认输,开始新对局!", "确认认输", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
             }
         } else if (e.getSource() == send) {
-            switch (myBang) {
-                case 0:
-                    client.sendMessage(sendText_JFeild.getText(), "Server");
-                    chatMessage.append(client.getUser().getUID() + ":" + sendText_JFeild.getText() + "\n");
-                    break;
-                case 1://白棋
-                    client.sendMessage(sendText_JFeild.getText(), gameRoom.getUser_black().getUID());
-                    chatMessage.append(client.getUser().getUID() + "(白):" + sendText_JFeild.getText() + "\n");
-                    break;
-                case 2://黑棋
-                    client.sendMessage(sendText_JFeild.getText(), gameRoom.getUser_write().getUID());
-                    chatMessage.append(client.getUser().getUID() + "(黑):" + sendText_JFeild.getText() + "\n");
-                    break;
+            if(UserName_my.getText().equals(UserName_your.getText())){//黑白方都是自己
+                client.sendMessage(sendText_JFeild.getText(), "Server");
+                chatMessage.append(client.getUser().getUID() + ":" + sendText_JFeild.getText() + "\n");
+            }else{
+                String color= Client.isAttackUser()?"(黑):":"(白):";
+                client.sendMessage(sendText_JFeild.getText(), gameRoom.getUser_write().getUID());
+                chatMessage.append(client.getUser().getUID() + color + sendText_JFeild.getText() + "\n");
             }
-
         }
+    }
 
+    public void setChatMessage(JTextArea chatMessage) {
+        this.chatMessage = chatMessage;
+    }
 
+    public JTextArea getChatMessage() {
+        return chatMessage;
     }
 }
