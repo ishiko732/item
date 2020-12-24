@@ -26,6 +26,7 @@ public class GateWindows extends JFrame {
     JTextArea serverTextArea;
 
     public static JButton[] btnseat = new JButton[30];
+//    public static JLabel[] btnLabel=new JLabel[30];
 
     //    private ArrayList<Integer> finalI_arrayList=new ArrayList<>();
     //END GUI
@@ -145,7 +146,9 @@ public class GateWindows extends JFrame {
         for (int i = 0; i < btnseat.length; i += 2) {
             btnseat[i] = new JButton(new ImageIcon("./res/img/none.gif"));
             btnseat[i].setBounds(35 + a * 193, 35 + b * 150, 40, 45);
+//            btnLabel[i]=new JLabel();
             rightCenter.add(btnseat[i]);
+//            rightCenter.add(btnLabel[i]);
             a++;
             if ((i + 2) % 6 == 0) {
                 a = 0;
@@ -157,7 +160,9 @@ public class GateWindows extends JFrame {
         for (int i = 1; i < btnseat.length; i += 2) {
             btnseat[i] = new JButton(new ImageIcon("./res/img/none.gif"));
             btnseat[i].setBounds(128 + a * 193, 35 + b * 150, 40, 45);
+//            btnLabel[i]=new JLabel();
             rightCenter.add(btnseat[i]);
+//            rightCenter.add(btnLabel[i]);
             a++;
             if ((i + 1) % 6 == 0) {
                 a = 0;
@@ -219,13 +224,15 @@ public class GateWindows extends JFrame {
     private void flushList() {
         uid.clear();
         int t = 0;
-        String str;
         Map<String, String> seat = gui.getClient().getUserList();
-        System.out.println(seat);
-        for (String s : seat.keySet()) {
-            str = s;
-            btnseat[t].setIcon(new ImageIcon(seat.get(str)));
-            uid.put(t, str);
+//        System.out.println(seat);
+//        for (int i = 0; i < btnLabel.length; i++) {
+//            btnLabel[i].setText("");
+//        }
+        for (String name : seat.keySet()) {
+            btnseat[t].setIcon(new ImageIcon(seat.get(name)));
+//            btnLabel[t].setText(name);
+            uid.put(t, name);
             t += 2;
         }
 
@@ -257,6 +264,7 @@ public class GateWindows extends JFrame {
         init();
         gui.getClient().messageListener();
         gui.getClient().setjTXT(serverTextArea);
+        flushList();
         //system.out -> Text
 //        PrintStream ps = new PrintStream(System.out) {
 //            @Override
@@ -265,15 +273,6 @@ public class GateWindows extends JFrame {
 //            }
 //        };
 //        System.setOut(ps);
-        int t = 0;
-        String str;
-        Map<String, String> seat = gui.getClient().getUserList();
-        for (String s : seat.keySet()) {
-            str = s;
-            btnseat[t].setIcon(new ImageIcon(seat.get(str)));
-            uid.put(t, str);
-            t += 2;
-        }
     }
 
 

@@ -180,21 +180,30 @@ public class Client {
                                     arrayList.add(matcher.group().replaceAll("\\(|\\)|\\[|\\]", ""));
                                 }
                                 if ("请求对战".equals(arrayList.get(2)) && "game".equals(arrayList.get(1))) {
-                                    String str = JOptionPane.showInputDialog(null, "是否同意与" + arrayList.get(0) + "对战?(Y/N)", "申请对战", JOptionPane.PLAIN_MESSAGE);
-                                    if ("Y".equalsIgnoreCase(str)) {
-                                        if (jTXT != null) {
-                                            jTXT.append("Server:您已经接受对战,稍等一会,开始游戏!" + "\n");
-                                        } else {
-                                            System.out.println("CLient(" + user.getUID() + ")您已经同意对战!");
-                                        }
+                                    if(arrayList.get(0).equals(user.getUID())){
                                         sendGameCommand("newGame={write=[" + arrayList.get(0) + "],black=[" + user.getUID() + "]}");
-                                    } else {
                                         if (jTXT != null) {
-                                            jTXT.append("Server:您拒绝了对战!" + "\n");
+                                            jTXT.append("Server:你选择了自己,将进入单机模式!" + "\n");
                                         } else {
-                                            System.out.println("拒绝对战!");
+                                            System.out.println("CLient(" + user.getUID() + ")您进入单机对战!");
                                         }
-                                        sendGameCommand("errorGame={write=[" + arrayList.get(0) + "],black=[" + user.getUID() + "]}");
+                                    }else{
+                                        String str = JOptionPane.showInputDialog(null, "是否同意与" + arrayList.get(0) + "对战?(Y/N)", "申请对战", JOptionPane.PLAIN_MESSAGE);
+                                        if ("Y".equalsIgnoreCase(str)) {
+                                            if (jTXT != null) {
+                                                jTXT.append("Server:您已经接受对战,稍等一会,开始游戏!" + "\n");
+                                            } else {
+                                                System.out.println("CLient(" + user.getUID() + ")您已经同意对战!");
+                                            }
+                                            sendGameCommand("newGame={write=[" + arrayList.get(0) + "],black=[" + user.getUID() + "]}");
+                                        } else {
+                                            if (jTXT != null) {
+                                                jTXT.append("Server:您拒绝了对战!" + "\n");
+                                            } else {
+                                                System.out.println("拒绝对战!");
+                                            }
+                                            sendGameCommand("errorGame={write=[" + arrayList.get(0) + "],black=[" + user.getUID() + "]}");
+                                        }
                                     }
                                 }
                             } else if (message.indexOf("get-userList:") == 0) {
