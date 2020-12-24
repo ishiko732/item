@@ -98,7 +98,7 @@ public class ServerUserThread extends Thread {
                     //game={var=[(while)],xy=[(x|y)],roomID=[(id)]}
                     Map<String, String> gameMap = transferGameMap(info);//{xy=(2,2), var=write, roomID=1}
                     GameRoomUser gameRoom = Server.getRoom().get(Integer.parseInt(gameMap.get("roomID")));
-                    System.out.println(gameRoom);
+//                    System.out.println(gameRoom);
                     User user="white".equals(gameMap.get("var"))?gameRoom.getUser_black():gameRoom.getUser_write();//收到是白棋 发送给黑棋方
 
                     Map<String, List<Object>> userMap = Server.getUserMap();

@@ -1,5 +1,9 @@
 package Client;
 
+import GUI.ClientGUI;
+import GUI.GameGUI;
+import GUI.GateWindows;
+import GUI.RoomWindows;
 import Game.Core;
 import Game.GameRoomUser;
 import Server.Server;
@@ -107,11 +111,9 @@ public class Client {
     }
 
     public RoomUser getGameRoom(String my, String your) {
-        System.out.println(my);
-        System.out.println(your);
         try {
             if (roomUser == null) {
-                sendCommand("attackUser:[" + my.replace(" ","") + "," + your.replace(" ","") + "]");//command:Client!attackUser:[(UID),(attackUserUID)];
+                sendCommand("attackUser:[" + my.replace(" ", "") + "," + your.replace(" ", "") + "]");//command:Client!attackUser:[(UID),(attackUserUID)];
                 while (roomUser == null) {
                     Thread.sleep(1000);
                 }
@@ -119,7 +121,7 @@ public class Client {
                 if (roomUser.getRoomID() == -1) {
                     roomUser = null;
                     if (jTXT != null) {
-                        jTXT.append("Server:您拒绝了对战!" + "\n");
+                        jTXT.append("Server:对方拒绝了对战!" + "\n");
                     } else {
                         System.out.println("拒绝对战!");
                     }
@@ -179,20 +181,26 @@ public class Client {
                                     arrayList.add(matcher.group().replaceAll("\\(|\\)|\\[|\\]", ""));
                                 }
                                 if ("请求对战".equals(arrayList.get(2)) && "game".equals(arrayList.get(1))) {
-                                    if(arrayList.get(0).equals(user.getUID())){
+                                    if (arrayList.get(0).equals(user.getUID())) {
                                         sendGameCommand("newGame={write=[" + arrayList.get(0) + "],black=[" + user.getUID() + "]}");
                                         if (jTXT != null) {
                                             jTXT.append("Server:你选择了自己,将进入单机模式!" + "\n");
                                         } else {
-                                            System.out.println("CLient(" + user.getUID() + ")您进入单机对战!");
+                                            System.out.println("Client(" + user.getUID() + ")您进入单机对战!");
                                         }
-                                    }else{
+                                    } else {
                                         String str = JOptionPane.showInputDialog(null, "是否同意与" + arrayList.get(0) + "对战?(Y/N)", "申请对战", JOptionPane.PLAIN_MESSAGE);
                                         if ("Y".equalsIgnoreCase(str)) {
                                             if (jTXT != null) {
                                                 jTXT.append("Server:您已经接受对战,稍等一会,开始游戏!" + "\n");
+//                                                while(roomUser==null){
+//                                                    Thread.sleep(1000);
+//                                                }
+//                                                setCore(new Core(19, 19,Client.this, roomUser.getRoomID()));
+//                                                GameRoomUser gameRoomUser = new GameRoomUser(roomUser.getUser_write(), roomUser.getUser_black(), getCore(), roomUser.getRoomID());//将棋盘连起来
+////                                                new RoomWindows(GateWindows.jtp, Client.this, uid, gameRoomUser);
                                             } else {
-                                                System.out.println("CLient(" + user.getUID() + ")您已经同意对战!");
+                                                System.out.println("Client(" + user.getUID() + ")您已经同意对战!");
                                             }
                                             sendGameCommand("newGame={write=[" + arrayList.get(0) + "],black=[" + user.getUID() + "]}");
                                         } else {
@@ -232,12 +240,41 @@ public class Client {
 //                                        }
 //                                    }
                                 }
-                            }else if(message.indexOf("command-game:game={var=")==0){
+                            } else if (message.indexOf("command-game:game={var=") == 0) {
                                 //game={var=[(while)],xy=[(x|y)],roomID=[(id)]}
                                 Map<String, String> gameMap = transferGameMap(message);//{xy=(2,2), var=write, roomID=1}
-                                System.out.println("接受"+gameMap.get("var")+":"+gameMap.get("xy"));
-//                                gameMap.get("xy").replaceAll("\\(|\\)","").split(",");
+                                int var = "white".equals(gameMap.get("var")) ? 1 : 2;
+                                String[] xy = gameMap.get("xy").replaceAll("\\(|\\)", "").split(",");
+                                int a = core.ChessIt_newWork(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]), var);
+                                System.out.println("接受" + gameMap.get("var") + ":" + gameMap.get("xy")+"执行状态:"+a);
+                                if (a == 1) {
+                                    JOptionPane.showMessageDialog(null, "白棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
+                                }
+                                if (a == 2) {
+                                    JOptionPane.showMessageDialog(null, "黑棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
+                                }
+                                if (a != -1) {
+                                    if (var == 1) {
+                                        if (ClientGUI.getGameGui().getPlayerTime2() != null) {
+                                            ClientGUI.getGameGui().getPlayerTime1().stop_time();
+                                            ClientGUI.getGameGui().getPlayerTime2().reset_time();
+                                            ClientGUI.getGameGui().getPlayerTime2().start_time();
+                                        }
+                                    } else if (var == 2) {
+                                        if (ClientGUI.getGameGui().getPlayerTime1() != null) {
+                                            ClientGUI.getGameGui().getPlayerTime2().stop_time();
+                                            ClientGUI.getGameGui().getPlayerTime1().reset_time();
+                                            ClientGUI.getGameGui().getPlayerTime1().start_time();
+                                        }
+                                    }
+                                    ClientGUI.getGameGui().repaint();
+                                }
+                                if (core.checkSum()) {
+                                    Object[] options = new Object[]{"确认"};
+                                    JOptionPane.showOptionDialog(null, "平局,可以开始新对局!", "平局", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
+                                }
                             }
+//                                gameMap.get("xy").replaceAll("\\(|\\)","").split(",");
                         }
                     } catch (SocketException e) {
                         System.err.println("Client-" + user.getUID() + ":" + "与服务器断开了连接");
@@ -287,7 +324,7 @@ public class Client {
             Map<String, String> userMap = new HashMap<>();
             for (String s : user) {
                 String[] user_split = s.split("=");
-                userMap.put(user_split[0], user_split[1].replace("\'",""));
+                userMap.put(user_split[0], user_split[1].replace("\'", ""));
             }
             userMessage.setUID(userMap.get("UID"));
             userMessage.setPassword(userMap.get("password"));
@@ -302,16 +339,17 @@ public class Client {
         roomUser.setRoomID(Integer.parseInt(split[2].replace(" roomID=", "")));
         return roomUser;
     }
-    public Map<String,String> transferGameMap(String str){
+
+    public Map<String, String> transferGameMap(String str) {
         String regex = "\\{[^\\]]*\\}";//匹配中括号
         Pattern compile = Pattern.compile(regex);
         Matcher matcher = compile.matcher(str);
         matcher.find();
-        String[] messageGame = matcher.group().replaceAll("\\{|\\}","").split(",");
-        Map<String,String>gameMap=new HashMap<>();
+        String[] messageGame = matcher.group().replaceAll("\\{|\\}", "").split(",");
+        Map<String, String> gameMap = new HashMap<>();
         for (String s : messageGame) {
             String[] game_split = s.split("=");
-            gameMap.put(game_split[0], game_split[1].replace("|",","));
+            gameMap.put(game_split[0], game_split[1].replace("|", ","));
         }
         return gameMap;
     }
@@ -322,5 +360,13 @@ public class Client {
 
     public void setCore(Core core) {
         this.core = core;
+    }
+
+    public RoomUser getRoomUser() {
+        return roomUser;
+    }
+
+    public void setRoomUser(RoomUser roomUser) {
+        this.roomUser = roomUser;
     }
 }

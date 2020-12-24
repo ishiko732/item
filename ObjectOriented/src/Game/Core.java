@@ -112,6 +112,14 @@ public class Core {
             return checkVictory(x, y, var);//0 没出结果 1 白 2 黑
         } else return -1;
     }
+    public int ChessIt_newWork(int x, int y, int jgVar){
+        if (__CanInput(x, y)) {
+            core[x][y] = jgVar;
+            Chess chess = new Chess(x, y);
+            stack.push(chess);
+            return checkVictory(x, y, jgVar);//0 没出结果 1 白 2 黑
+        } else return -1;
+    }
 
     //悔棋
     public boolean RetChess() {

@@ -4,6 +4,7 @@ import Client.Client;
 
 public class ClientGUI {
     private Client client;
+    private static GameGUI gamegui;
     public static void main(String[] args) {
         new LoginWindows(new ClientGUI());
 //        new LoginWindows(new ClientGUI());
@@ -15,5 +16,14 @@ public class ClientGUI {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+
+    public static GameGUI getGameGui() {
+        return gamegui;
+    }
+
+    public void setGameGui(GameGUI gamegui) {
+        this.gamegui = gamegui;
     }
 }

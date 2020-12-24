@@ -4,6 +4,7 @@ package GUI;
 import Game.Core;
 import Game.GameRoomUser;
 import Game.PlayerTime;
+import Client.Client;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,20 +52,20 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     private Core core;
     private GameGUI gobang;
     private Map<Integer, String> roomMessage;
-    private ClientGUI gui;
+    private Client client;
     private GameRoomUser gameRoom;
     private int myBang;//0 黑白都是自己 1是白棋 2是黑棋
 
-    public RoomWindows(JTabbedPane jtp, ClientGUI gui, Map<Integer, String> roomMessage, GameRoomUser gameRoom) {
+    public RoomWindows(JTabbedPane jtp, Client client, Map<Integer, String> roomMessage, GameRoomUser gameRoom) {
         this.gameRoom = gameRoom;
         this.core = gameRoom.getCore();
         this.jtp = jtp;
         this.roomMessage = roomMessage;
-        this.gui = gui;
+        this.client= client;
 
-        if(gui.getClient().getUser().getUID().equals(gameRoom.getUser_write().getUID())){//白棋
+        if(client.getUser().getUID().equals(gameRoom.getUser_write().getUID())){//白棋
             myBang=1;
-        }else if(gui.getClient().getUser().getUID().equals(gameRoom.getUser_black().getUID())){//黑棋
+        }else if(client.getUser().getUID().equals(gameRoom.getUser_black().getUID())){//黑棋
             myBang=2;
         }else{
             myBang=0;
@@ -158,7 +159,7 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == exit) {
             jtp.remove(jsp1);
-            String userUID = gui.getClient().getUser().getUID();
+            String userUID = client.getUser().getUID();
             Iterator<Map.Entry<Integer, String>> it = roomMessage.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<Integer, String> entry = it.next();
@@ -202,16 +203,16 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         } else if (e.getSource() == send) {
             switch (myBang) {
                 case 0:
-                    gui.getClient().sendMessage(sendText_JFeild.getText(), "Server");
-                    chatMessage.append(gui.getClient().getUser().getUID() + ":" + sendText_JFeild.getText() + "\n");
+                    client.sendMessage(sendText_JFeild.getText(), "Server");
+                    chatMessage.append(client.getUser().getUID() + ":" + sendText_JFeild.getText() + "\n");
                     break;
                 case 1://白棋
-                    gui.getClient().sendMessage(sendText_JFeild.getText(), gameRoom.getUser_black().getUID());
-                    chatMessage.append(gui.getClient().getUser().getUID() + "(白):" + sendText_JFeild.getText() + "\n");
+                    client.sendMessage(sendText_JFeild.getText(), gameRoom.getUser_black().getUID());
+                    chatMessage.append(client.getUser().getUID() + "(白):" + sendText_JFeild.getText() + "\n");
                     break;
                 case 2://黑棋
-                    gui.getClient().sendMessage(sendText_JFeild.getText(), gameRoom.getUser_write().getUID());
-                    chatMessage.append(gui.getClient().getUser().getUID() + "(黑):" + sendText_JFeild.getText() + "\n");
+                    client.sendMessage(sendText_JFeild.getText(), gameRoom.getUser_write().getUID());
+                    chatMessage.append(client.getUser().getUID() + "(黑):" + sendText_JFeild.getText() + "\n");
                     break;
             }
 
