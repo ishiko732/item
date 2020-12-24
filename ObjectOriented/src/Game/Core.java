@@ -15,23 +15,25 @@ public class Core {
     private int[][] core;
     private int x;
     private int y;
-    private Client client=null;//不是null 将具备发送棋子功能
+    private Client client = null;//不是null 将具备发送棋子功能
     private int room;
     //栈
     Stack<Chess> stack;
+
     public Core(int x, int y) {
         stack = new Stack<>();
         core = new int[x][y];
         this.x = x;
         this.y = y;
     }
-    public Core(int x, int y,Client client,int roomID) {
+
+    public Core(int x, int y, Client client, int roomID) {
         stack = new Stack<>();
         core = new int[x][y];
         this.x = x;
         this.y = y;
-        this.client=client;
-        this.room =roomID;
+        this.client = client;
+        this.room = roomID;
     }
 
     //检查该地是否有空位置
@@ -97,14 +99,6 @@ public class Core {
      * @return 1:white 赢   2:black赢
      */
     public int ChessIt(int x, int y, int var) {
-        String v=var==1?"white":"black";
-        if(client!=null){
-            try {
-                client.sendGameCommand("game={var="+v+",xy=("+x+"|"+y+"),roomID="+room+"}");
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        }
         if (__CanInput(x, y)) {
             core[x][y] = var;
             Chess chess = new Chess(x, y);
@@ -112,13 +106,16 @@ public class Core {
             return checkVictory(x, y, var);//0 没出结果 1 白 2 黑
         } else return -1;
     }
-    public int ChessIt_newWork(int x, int y, int jgVar){
-        if (__CanInput(x, y)) {
-            core[x][y] = jgVar;
-            Chess chess = new Chess(x, y);
-            stack.push(chess);
-            return checkVictory(x, y, jgVar);//0 没出结果 1 白 2 黑
-        } else return -1;
+
+    public void ChessIt_newWork(int x, int y) {
+        if (client != null) {
+            try {
+                String v =Client.isAttackUser()?"black" : "white";
+                client.sendGameCommand("game={var=" + v + ",xy=(" + x + "|" + y + "),roomID=" + room + "}");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
     }
 
     //悔棋

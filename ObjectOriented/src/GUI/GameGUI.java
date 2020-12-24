@@ -3,6 +3,7 @@ package GUI;
 
 import Game.Core;
 import Game.PlayerTime;
+import Client.Client;
 
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -15,16 +16,19 @@ public class GameGUI extends JPanel implements MouseListener {
     public Core core;
     private static final long serialVersionUID = 1L;
     private int var = 1;
-    private PlayerTime playerTime1,playerTime2;
-//    private ClientGUI gui;
+    private PlayerTime playerTime1, playerTime2;
 
-    public GameGUI(Core core,PlayerTime playerTime1,PlayerTime playerTime2) {
+    public GameGUI(Core core, PlayerTime playerTime1, PlayerTime playerTime2) {
         this.core = core;
+        ClientGUI.setGameGui(this);
         this.addMouseListener(this);
-        this.playerTime1=playerTime1;
-        this.playerTime2=playerTime2;
-//        gui.getClient().sendCommand();
-        playerTime1.start_time();
+        this.playerTime1 = playerTime1;
+        this.playerTime2 = playerTime2;
+        if(Client.isAttackUser()){
+            playerTime1.start_time();
+        }else{
+            playerTime2.start_time();
+        }
     }
 
 
@@ -71,37 +75,7 @@ public class GameGUI extends JPanel implements MouseListener {
     public void mousePressed(MouseEvent e) {
         // TODO Auto-generated method stub
         if (e.getX() < 570 && e.getY() < 600) {
-            int a = core.ChessIt(_CgetX(e.getX()), (_CgetY(e.getY())), var);
-            this.repaint();
-            if (a == 1) {
-                JOptionPane.showMessageDialog(null, "白棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
-            }
-            if (a == 2) {
-                JOptionPane.showMessageDialog(null, "黑棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
-            }
-            if (a != -1) {
-                if (var == 1) {
-                    var = 2;
-                    if(playerTime2!=null){
-                        playerTime1.stop_time();
-                        playerTime2.reset_time();
-                        playerTime2.start_time();
-                    }
-                }
-                else if (var == 2) {
-                    var = 1;
-                    if(playerTime1!=null){
-                        playerTime2.stop_time();
-                        playerTime1.reset_time();
-                        playerTime1.start_time();
-                    }
-                }
-                this.repaint();
-            }
-            if (core.checkSum()) {
-                Object[] options = new Object[]{"确认"};
-                JOptionPane.showOptionDialog(null, "平局,可以开始新对局!", "平局", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
-            }
+            core.ChessIt_newWork(_CgetX(e.getX()), (_CgetY(e.getY())));
         } else if (e.getX() > 590 && e.getX() < 660 && e.getY() > 300 && e.getY() < 330) {//游戏状态
             Object[] options = {"白先", "黑先"};
             int n = JOptionPane.showOptionDialog(null, "白先还是黑先？", "游戏设置", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);

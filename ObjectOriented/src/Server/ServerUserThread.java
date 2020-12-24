@@ -98,12 +98,14 @@ public class ServerUserThread extends Thread {
                     //game={var=[(while)],xy=[(x|y)],roomID=[(id)]}
                     Map<String, String> gameMap = transferGameMap(info);//{xy=(2,2), var=write, roomID=1}
                     GameRoomUser gameRoom = Server.getRoom().get(Integer.parseInt(gameMap.get("roomID")));
-//                    System.out.println(gameRoom);
-                    User user="white".equals(gameMap.get("var"))?gameRoom.getUser_black():gameRoom.getUser_write();//收到是白棋 发送给黑棋方
-
+                    User user1= gameRoom.getUser_black();
+                    User user2=gameRoom.getUser_write();
                     Map<String, List<Object>> userMap = Server.getUserMap();
-                    DataOutputStream dataOutputStream = new DataOutputStream((OutputStream)userMap.get(user.getUID()).get(2));
-                    dataOutputStream.writeUTF(info);
+                    DataOutputStream user1_out = new DataOutputStream((OutputStream)userMap.get(user1.getUID()).get(2));
+                    user1_out.writeUTF(info);
+                    DataOutputStream user2_out = new DataOutputStream((OutputStream)userMap.get(user2.getUID()).get(2));
+                    user2_out.writeUTF(info);
+
                 }
             } catch (SocketException e) {
                 System.err.println("Client-" + uid + ":" + "移除用户信息。原因：与服务器断开了连接");

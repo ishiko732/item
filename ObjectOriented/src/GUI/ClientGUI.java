@@ -23,7 +23,7 @@ public class ClientGUI {
         return gamegui;
     }
 
-    public void setGameGui(GameGUI gamegui) {
-        this.gamegui = gamegui;
+    public static void setGameGui(GameGUI gamegui) {
+        ClientGUI.gamegui= gamegui;
     }
 }

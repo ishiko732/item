@@ -24,6 +24,8 @@ public class Client {
     private boolean push;
     private RoomUser roomUser;
     private Core core;
+    private static boolean attackUser;
+
 
     public Client(User user) {
         this.user = user;
@@ -245,8 +247,9 @@ public class Client {
                                 Map<String, String> gameMap = transferGameMap(message);//{xy=(2,2), var=write, roomID=1}
                                 int var = "white".equals(gameMap.get("var")) ? 1 : 2;
                                 String[] xy = gameMap.get("xy").replaceAll("\\(|\\)", "").split(",");
-                                int a = core.ChessIt_newWork(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]), var);
-                                System.out.println("接受" + gameMap.get("var") + ":" + gameMap.get("xy")+"执行状态:"+a);
+                                int a = core.ChessIt(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]), var);
+//                                System.out.println(Arrays.toString(core.getCore()));
+                                System.out.println("接收" + gameMap.get("var") + ":" + gameMap.get("xy") + "执行状态:" + a);
                                 if (a == 1) {
                                     JOptionPane.showMessageDialog(null, "白棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
                                 }
@@ -254,18 +257,22 @@ public class Client {
                                     JOptionPane.showMessageDialog(null, "黑棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
                                 }
                                 if (a != -1) {
-                                    if (var == 1) {
-                                        if (ClientGUI.getGameGui().getPlayerTime2() != null) {
-                                            ClientGUI.getGameGui().getPlayerTime1().stop_time();
-                                            ClientGUI.getGameGui().getPlayerTime2().reset_time();
-                                            ClientGUI.getGameGui().getPlayerTime2().start_time();
-                                        }
-                                    } else if (var == 2) {
-                                        if (ClientGUI.getGameGui().getPlayerTime1() != null) {
-                                            ClientGUI.getGameGui().getPlayerTime2().stop_time();
-                                            ClientGUI.getGameGui().getPlayerTime1().reset_time();
-                                            ClientGUI.getGameGui().getPlayerTime1().start_time();
-                                        }
+                                    try {
+                                            if ((var == 1 &&attackUser)||(var == 2&& !attackUser)) {
+                                                if (ClientGUI.getGameGui().getPlayerTime2() != null) {
+                                                    ClientGUI.getGameGui().getPlayerTime1().stop_time();
+                                                    ClientGUI.getGameGui().getPlayerTime2().reset_time();
+                                                    ClientGUI.getGameGui().getPlayerTime2().start_time();
+                                                }
+                                            } else if ((var == 2 &&attackUser)||(var == 1&& !attackUser)) {
+                                                if (ClientGUI.getGameGui().getPlayerTime1() != null) {
+                                                    ClientGUI.getGameGui().getPlayerTime2().stop_time();
+                                                    ClientGUI.getGameGui().getPlayerTime1().reset_time();
+                                                    ClientGUI.getGameGui().getPlayerTime1().start_time();
+                                                }
+                                            }
+                                    } catch (NullPointerException e) {
+                                        e.printStackTrace();
                                     }
                                     ClientGUI.getGameGui().repaint();
                                 }
@@ -274,7 +281,6 @@ public class Client {
                                     JOptionPane.showOptionDialog(null, "平局,可以开始新对局!", "平局", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
                                 }
                             }
-//                                gameMap.get("xy").replaceAll("\\(|\\)","").split(",");
                         }
                     } catch (SocketException e) {
                         System.err.println("Client-" + user.getUID() + ":" + "与服务器断开了连接");
@@ -369,4 +375,12 @@ public class Client {
     public void setRoomUser(RoomUser roomUser) {
         this.roomUser = roomUser;
     }
+
+    public static boolean isAttackUser() {
+        return attackUser;
+    }
+    public static void setAttackUser(boolean attackUser) {
+        Client.attackUser = attackUser;
+    }
+
 }
