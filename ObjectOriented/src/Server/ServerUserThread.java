@@ -95,7 +95,7 @@ public class ServerUserThread extends Thread {
                     }
                     System.out.println("Server:无法开启对局:对方拒绝了游戏!");
                 }else if(info.indexOf("command-game:game={var=")==0){//仅仅做转发工作 ,服务器不处理太多细节
-                    //game={var=[(while)],xy=[(x|y)],roomID=[(id)]}
+                    //game={var=[(while)],xy=[(x|y)],roomID=[(id)]};
                     Map<String, String> gameMap = transferGameMap(info);//{xy=(2,2), var=write, roomID=1}
                     GameRoomUser gameRoom = Server.getRoom().get(Integer.parseInt(gameMap.get("roomID")));
                     User user1= gameRoom.getUser_black();
@@ -106,6 +106,28 @@ public class ServerUserThread extends Thread {
                     DataOutputStream user2_out = new DataOutputStream((OutputStream)userMap.get(user2.getUID()).get(2));
                     user2_out.writeUTF(info);
 
+                }else if(info.indexOf("command-game:game={command=")==0){//仅仅做转发工作 ,服务器不处理太多细节
+                    Map<String, String> map = transferGameCommand(info);
+//                    String command = map.get("command");
+                    GameRoomUser gameRoom = Server.getRoom().get(Integer.parseInt(map.get("roomID")));
+                    User user1= gameRoom.getUser_black();
+                    User user2=gameRoom.getUser_write();
+                    Map<String, List<Object>> userMap = Server.getUserMap();
+                    DataOutputStream user1_out = new DataOutputStream((OutputStream)userMap.get(user1.getUID()).get(2));
+                    user1_out.writeUTF(info);
+                    DataOutputStream user2_out = new DataOutputStream((OutputStream)userMap.get(user2.getUID()).get(2));
+                    user2_out.writeUTF(info);
+
+//                    System.out.println(command);
+//                    if("remake".equals(command)){//重新开始
+//
+//                    }else if("summation".equals(command)){//求和
+//
+//                    }else if("regret".equals(command)){//悔棋
+//
+//                    }else if("admit".equals(command)){//认输
+//
+//                    }
                 }
             } catch (SocketException e) {
                 System.err.println("Client-" + uid + ":" + "移除用户信息。原因：与服务器断开了连接");
@@ -125,6 +147,20 @@ public class ServerUserThread extends Thread {
         matcher.find();
         String[] messageGame = matcher.group().replaceAll("\\{|\\}","").split(",");
         Map<String,String>gameMap=new HashMap<>();
+        for (String s : messageGame) {
+            String[] game_split = s.split("=");
+            gameMap.put(game_split[0], game_split[1].replace("|",","));
+        }
+        return gameMap;
+    }
+    public Map<String,String> transferGameCommand(String str){
+        //"command-game:game={command=remake,roomID=id};"
+        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        Pattern compile = Pattern.compile(regex);
+        Matcher matcher = compile.matcher(str);
+        matcher.find();
+        String[] messageGame = matcher.group().replaceAll("\\{|\\}","").split(",");
+        Map<String,String> gameMap=new HashMap<>();
         for (String s : messageGame) {
             String[] game_split = s.split("=");
             gameMap.put(game_split[0], game_split[1].replace("|",","));

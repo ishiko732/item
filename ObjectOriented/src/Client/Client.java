@@ -232,14 +232,16 @@ public class Client {
                             } else if (message.indexOf("command-game:game={var=") == 0) {
                                 //game={var=[(while)],xy=[(x|y)],roomID=[(id)]}
                                 Map<String, String> gameMap = transferGameMap(message);//{xy=(2,2), var=write, roomID=1}
-                                int var = "white".equals(gameMap.get("var")) ? 1 :2;
+                                int var = "white".equals(gameMap.get("var")) ? 1 : 2;
                                 String[] xy = gameMap.get("xy").replaceAll("\\(|\\)", "").split(",");
                                 int a = core.ChessIt(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]), var);
                                 System.out.println("接收" + gameMap.get("var") + ":" + gameMap.get("xy") + "执行状态:" + a);
                                 if (a == 1) {
+                                    ClientGUI.getGameGui().repaint();
                                     JOptionPane.showMessageDialog(null, "白棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
                                 }
                                 if (a == 2) {
+                                    ClientGUI.getGameGui().repaint();
                                     JOptionPane.showMessageDialog(null, "黑棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
                                 }
                                 if (a != -1) {
@@ -261,12 +263,50 @@ public class Client {
                                     } catch (NullPointerException e) {
                                         e.printStackTrace();
                                     }
+                                    ClientGUI.getGameGui().repaint();
                                 }
                                 if (core.checkSum()) {
                                     Object[] options = new Object[]{"确认"};
                                     JOptionPane.showOptionDialog(null, "平局,可以开始新对局!", "平局", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
                                 }
-                                ClientGUI.getGameGui().repaint();
+                            } else if (message.indexOf("command-game:game={command=") == 0) {
+                                //game={command=remake,roomID=id}
+                                Map<String, String> map = transferGameCommand(message);
+                                String command = map.get("command");
+                                System.out.println(command);
+                                if ("remake".equals(command)) {//重新开始
+                                    core.Restart();
+                                    ClientGUI.getGameGui().repaint();
+                                } else if ("summation".equals(command)) {//求和
+                                    Object[] options = {"确认", "取消"};
+                                    int n = JOptionPane.showOptionDialog(null, "确认申请和棋?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                                    options = new Object[]{"确认"};
+                                    if (n == 0) {
+                                        core.Restart();
+                                        ClientGUI.getGameGui().repaint();
+                                        JOptionPane.showOptionDialog(null, "平局,开始新对局!", "和棋成功", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
+                                    } else if (n == 1) {
+                                        JOptionPane.showOptionDialog(null, "和棋失败,进行对局", "和棋失败", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+                                    }
+                                } else if ("regret".equals(command)) {//悔棋
+                                    core.RetChess();
+                                    if (ClientGUI.getGameGui().getVar() == 1) {
+                                        ClientGUI.getGameGui().setVar(2);
+                                    } else if (ClientGUI.getGameGui().getVar() == 2) {
+                                        ClientGUI.getGameGui().setVar(1);
+                                    }
+                                    ClientGUI.getGameGui().repaint();
+                                } else if ("admit".equals(command)) {//认输
+                                    Object[] options = {"确认", "取消"};
+                                    String str = (ClientGUI.getGameGui().getVar() == 1) ? "白棋" : "黑棋";
+                                    int n = JOptionPane.showOptionDialog(null, str + ":确认申请认输吗?", "申请认输", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+                                    if (n == 0) {
+                                        core.Restart();
+                                        ClientGUI.getGameGui().repaint();
+                                        options = new Object[]{"确认"};
+                                        JOptionPane.showOptionDialog(null, str + "已经认输,开始新对局!", "确认认输", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
+                                    }
+                                }
                             }
                         }
                     } catch (SocketException e) {
@@ -288,6 +328,10 @@ public class Client {
         // 拒绝对战 errorGame=={write=[(userUID2)],black=[(userUID1)]}
         // 请求对战 attackUser:[(UID),(attackUserUID)]
         // 棋子信息 game={var=[(while)],xy=[(x|y)],roomID=[(id)]}
+        // 重新开始 game={command=remake,roomID=id}
+        // 求和 game={command=summation,roomID=id}
+        // 悔棋 game={command=regret,roomID=id}
+        // 认输 game={command=admit,roomID=id}
 
     }
 
@@ -368,6 +412,21 @@ public class Client {
 
     public static void setAttackUser(boolean attackUser) {
         Client.attackUser = attackUser;
+    }
+
+    public Map<String, String> transferGameCommand(String str) {
+        //"command-game:game={command=remake,roomID=id};"
+        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        Pattern compile = Pattern.compile(regex);
+        Matcher matcher = compile.matcher(str);
+        matcher.find();
+        String[] messageGame = matcher.group().replaceAll("\\{|\\}", "").split(",");
+        Map<String, String> gameMap = new HashMap<>();
+        for (String s : messageGame) {
+            String[] game_split = s.split("=");
+            gameMap.put(game_split[0], game_split[1].replace("|", ","));
+        }
+        return gameMap;
     }
 
 }

@@ -222,6 +222,23 @@ public class ClientTest {
         System.out.println(Arrays.toString(gameMap.get("xy").replaceAll("\\(|\\)","").split(",")));
     }
     @Test
+    void testgameCommand(){
+        String str="command-game:game={command=remake,roomID=id};";//"command-game:game={var=(while),xy=(x|y),roomID=(id)};"
+        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        Pattern compile = Pattern.compile(regex);
+        Matcher matcher = compile.matcher(str);
+        matcher.find();
+        String[] messageGame = matcher.group().replaceAll("\\{|\\}","").split(",");
+        Map<String,String>gameMap=new HashMap<>();
+        for (String s : messageGame) {
+            String[] game_split = s.split("=");
+            gameMap.put(game_split[0], game_split[1].replace("|",","));
+        }
+        System.out.println(gameMap);
+        System.out.println(gameMap.get("command"));
+        System.out.println(gameMap.get("roomID"));
+    }
+    @Test
     void testSendMessage() {//
         //Chat-[(UID)]:send=\"[(value)]\",obj=[(UID/Server)];
         String regex = "\\[[^\\]]*\\]";//匹配中括号
