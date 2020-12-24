@@ -1,6 +1,7 @@
 package Server;
 
 import Client.User;
+import Game.GameRoomUser;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
 
 public class Server {
     private static final Map<String,List<Object>> userMap = new LinkedHashMap<>();
+    private static final Map<Integer, GameRoomUser> room = new HashMap<>();
     public static void main(String[] args) {
         new Server();
     }
@@ -161,5 +163,9 @@ public class Server {
 
     public static Map<String, List<Object>> getUserMap() {
         return userMap;
+    }
+
+    public static Map<Integer, GameRoomUser> getRoom() {
+        return room;
     }
 }

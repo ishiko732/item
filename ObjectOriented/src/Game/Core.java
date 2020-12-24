@@ -1,5 +1,8 @@
 package Game;
 
+import Client.Client;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Stack;
 
@@ -7,20 +10,28 @@ import java.util.Stack;
  * @author GodofOrange
  * 棋盘数据结构
  */
-public class Core implements Serializable {
+public class Core {
     //棋盘大小
     private int[][] core;
     private int x;
     private int y;
-
+    private Client client=null;//不是null 将具备发送棋子功能
+    private int room;
     //栈
     Stack<Chess> stack;
-
     public Core(int x, int y) {
         stack = new Stack<>();
         core = new int[x][y];
         this.x = x;
         this.y = y;
+    }
+    public Core(int x, int y,Client client,int roomID) {
+        stack = new Stack<>();
+        core = new int[x][y];
+        this.x = x;
+        this.y = y;
+        this.client=client;
+        this.room =roomID;
     }
 
     //检查该地是否有空位置
@@ -86,6 +97,14 @@ public class Core implements Serializable {
      * @return 1:white 赢   2:black赢
      */
     public int ChessIt(int x, int y, int var) {
+        String v=var==1?"white":"black";
+        if(client!=null){
+            try {
+                client.sendGameCommand("game={var="+v+",xy=("+x+"|"+y+"),roomID="+room+"}");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
         if (__CanInput(x, y)) {
             core[x][y] = var;
             Chess chess = new Chess(x, y);

@@ -142,7 +142,7 @@ public class ClientTest {
 
     @Test
     void testReceiveAttack() {//客户端1-接受方
-        User user = new User("UID0", "2019110B", "127.0.0.1", 8089);
+        User user = new User("UID0", "./res/face/1-1.gif", "127.0.0.1", 8089);
         Client client = new Client(user);
         assertTrue(client.islogin());
         client.messageListener();
@@ -190,7 +190,7 @@ public class ClientTest {
             Map<String, String> userMap = new HashMap<>();
             for (String s : user) {
                 String[] user_split = s.split("=");
-                userMap.put(user_split[0], user_split[1]);
+                userMap.put(user_split[0], user_split[1].replace("'",""));
             }
             userMessage.setUID(userMap.get("UID"));
             userMessage.setPassword(userMap.get("password"));
@@ -205,7 +205,22 @@ public class ClientTest {
         roomUser.setRoomID(Integer.parseInt(split[2].replace(" roomID=", "")));
         System.out.println(roomUser);
     }
-
+    @Test
+    void testTransferxy(){
+        String str="command-game:game={var=write,xy=(2|2),roomID=1};";//"command-game:game={var=(while),xy=(x|y),roomID=(id)};"
+        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        Pattern compile = Pattern.compile(regex);
+        Matcher matcher = compile.matcher(str);
+        matcher.find();
+        String[] messageGame = matcher.group().replaceAll("\\{|\\}","").split(",");
+        Map<String,String>gameMap=new HashMap<>();
+        for (String s : messageGame) {
+            String[] game_split = s.split("=");
+            gameMap.put(game_split[0], game_split[1].replace("|",","));
+        }
+        System.out.println(gameMap);
+        System.out.println(Arrays.toString(gameMap.get("xy").replaceAll("\\(|\\)","").split(",")));
+    }
     @Test
     void testSendMessage() {//
         //Chat-[(UID)]:send=\"[(value)]\",obj=[(UID/Server)];

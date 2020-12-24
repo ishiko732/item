@@ -16,12 +16,14 @@ public class GameGUI extends JPanel implements MouseListener {
     private static final long serialVersionUID = 1L;
     private int var = 1;
     private PlayerTime playerTime1,playerTime2;
+//    private ClientGUI gui;
 
     public GameGUI(Core core,PlayerTime playerTime1,PlayerTime playerTime2) {
         this.core = core;
         this.addMouseListener(this);
         this.playerTime1=playerTime1;
         this.playerTime2=playerTime2;
+//        gui.getClient().sendCommand();
         playerTime1.start_time();
     }
 
@@ -69,7 +71,7 @@ public class GameGUI extends JPanel implements MouseListener {
     public void mousePressed(MouseEvent e) {
         // TODO Auto-generated method stub
         if (e.getX() < 570 && e.getY() < 600) {
-//            System.out.println("("+e.getX()+","+e.getY()+")");
+
             int a = core.ChessIt(_CgetX(e.getX()), (_CgetY(e.getY())), var);
             this.repaint();
             if (a == 1) {

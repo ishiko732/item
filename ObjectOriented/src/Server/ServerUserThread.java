@@ -17,7 +17,6 @@ public class ServerUserThread extends Thread {
     private final InputStream is;
     private final OutputStream out;
     private final Socket client;
-    private final Map<Integer,GameRoomUser> room = new HashMap<>();
     public ServerUserThread(List<Object> list,  Socket client) {
         this.user =(User)list.get(0);
         this.is =(InputStream)list.get(1);
@@ -64,7 +63,7 @@ public class ServerUserThread extends Thread {
                     Map<String, List<Object>> userMap = Server.getUserMap();
                     Object o_write = userMap.get(arrayList.get(0)).get(0);
                     Object o_black = userMap.get(arrayList.get(1)).get(0);//黑棋是自己
-                    int id=room.size()+1;
+                    int id=Server.getRoom().size()+1;
                     GameRoomUser gameRoomUser = new GameRoomUser((User)o_write, (User)o_black, new Core(19, 19), id);
                     synchronized (user) {
                         dos.writeUTF("gameRoom:"+gameRoomUser.toString());//给被邀请人发消息
@@ -73,9 +72,9 @@ public class ServerUserThread extends Thread {
 //                        System.out.println(arrayList.get(1));//被邀请人
                         DataOutputStream dataOutputStream = new DataOutputStream((OutputStream) userMap.get(arrayList.get(0)).get(2));//黑棋是申请人
                         dataOutputStream.writeUTF("gameRoom:"+gameRoomUser.toString());
-                        room.put(id,gameRoomUser);
+                        Server.getRoom().put(id,gameRoomUser);
                     }
-                    System.out.println("Server:开启对局:房间号(" + room.size() + ")write:" +((User) o_write).getUID()+ " black:" + ((User) o_black).getUID());
+                    System.out.println("Server:开启对局:房间号(" + Server.getRoom().size() + ")write:" +((User) o_write).getUID()+ " black:" + ((User) o_black).getUID());
                 } else if (info.indexOf("command-game:errorGame={write=[") == 0) {
                     Matcher matcher = compile.matcher(info);// errorGame={write=[(userUID2)],black=[(userUID1)]}
                     ArrayList<String> arrayList = new ArrayList<>();
@@ -95,6 +94,16 @@ public class ServerUserThread extends Thread {
                         dataOutputStream.writeUTF("gameRoom:"+gameRoomUser.toString());
                     }
                     System.out.println("Server:无法开启对局:对方拒绝了游戏!");
+                }else if(info.indexOf("command-game:game={var=")==0){//仅仅做转发工作 ,服务器不处理太多细节
+                    //game={var=[(while)],xy=[(x|y)],roomID=[(id)]}
+                    Map<String, String> gameMap = transferGameMap(info);//{xy=(2,2), var=write, roomID=1}
+                    GameRoomUser gameRoom = Server.getRoom().get(Integer.parseInt(gameMap.get("roomID")));
+                    System.out.println(gameRoom);
+                    User user="white".equals(gameMap.get("var"))?gameRoom.getUser_black():gameRoom.getUser_write();//收到是白棋 发送给黑棋方
+
+                    Map<String, List<Object>> userMap = Server.getUserMap();
+                    DataOutputStream dataOutputStream = new DataOutputStream((OutputStream)userMap.get(user.getUID()).get(2));
+                    dataOutputStream.writeUTF(info);
                 }
             } catch (SocketException e) {
                 System.err.println("Client-" + uid + ":" + "移除用户信息。原因：与服务器断开了连接");
@@ -106,4 +115,20 @@ public class ServerUserThread extends Thread {
         }
 
     }
+
+    public Map<String,String> transferGameMap(String str){
+        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        Pattern compile = Pattern.compile(regex);
+        Matcher matcher = compile.matcher(str);
+        matcher.find();
+        String[] messageGame = matcher.group().replaceAll("\\{|\\}","").split(",");
+        Map<String,String>gameMap=new HashMap<>();
+        for (String s : messageGame) {
+            String[] game_split = s.split("=");
+            gameMap.put(game_split[0], game_split[1].replace("|",","));
+        }
+        return gameMap;
+    }
 }
+
+

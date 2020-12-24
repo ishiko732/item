@@ -211,7 +211,8 @@ public class GateWindows extends JFrame {
                     String user1 = uid.get(finalI);
                     String user2 = finalI != 0 && finalI % 2 == 0 ? uid.get(finalI + 1) : uid.get(finalI - 1);
                     RoomUser gameUser=gui.getClient().getGameRoom(user1,user2);
-                    GameRoomUser gameRoomUser = new GameRoomUser(gameUser.getUser_write(), gameUser.getUser_black(), new Core(19, 19), gameUser.getRoomID());
+                    gui.getClient().setCore(new Core(19, 19,gui.getClient(),gameUser.getRoomID()));
+                    GameRoomUser gameRoomUser = new GameRoomUser(gameUser.getUser_write(), gameUser.getUser_black(), gui.getClient().getCore(), gameUser.getRoomID());//将棋盘连起来
                     new RoomWindows(jtp, gui, uid, gameRoomUser);
                 }
 

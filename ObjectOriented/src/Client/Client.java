@@ -1,15 +1,14 @@
 package Client;
 
+import Game.Core;
 import Game.GameRoomUser;
+import Server.Server;
 
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +19,7 @@ public class Client {
     private final User user;
     private boolean push;
     private RoomUser roomUser;
+    private Core core;
 
     public Client(User user) {
         this.user = user;
@@ -111,7 +111,7 @@ public class Client {
         System.out.println(your);
         try {
             if (roomUser == null) {
-                sendCommand("attackUser:[" + my + "," + your + "]");//command:Client!attackUser:[(UID),(attackUserUID)];
+                sendCommand("attackUser:[" + my.replace(" ","") + "," + your.replace(" ","") + "]");//command:Client!attackUser:[(UID),(attackUserUID)];
                 while (roomUser == null) {
                     Thread.sleep(1000);
                 }
@@ -134,7 +134,6 @@ public class Client {
 
     private String message;
     private JTextArea jTXT;
-    private GameRoomUser gameRoomUser;
     private Map<String, String> userMap = null;
 
     private void clientThread() {
@@ -233,6 +232,11 @@ public class Client {
 //                                        }
 //                                    }
                                 }
+                            }else if(message.indexOf("command-game:game={var=")==0){
+                                //game={var=[(while)],xy=[(x|y)],roomID=[(id)]}
+                                Map<String, String> gameMap = transferGameMap(message);//{xy=(2,2), var=write, roomID=1}
+                                System.out.println("接受"+gameMap.get("var")+":"+gameMap.get("xy"));
+//                                gameMap.get("xy").replaceAll("\\(|\\)","").split(",");
                             }
                         }
                     } catch (SocketException e) {
@@ -254,7 +258,8 @@ public class Client {
         // 开启游戏对局 newGame={write=[(userUID2)],black=[(userUID1)]}
         // 拒绝对战 errorGame=={write=[(userUID2)],black=[(userUID1)]}
         // 请求对战 attackUser:[(UID),(attackUserUID)]
-        // 棋子信息 game={write=[(x,y)],roomID=[(id)]}
+        // 棋子信息 game={var=[(while)],xy=[(x|y)],roomID=[(id)]}
+
     }
 
     public JTextArea getjTXT() {
@@ -296,5 +301,26 @@ public class Client {
         }
         roomUser.setRoomID(Integer.parseInt(split[2].replace(" roomID=", "")));
         return roomUser;
+    }
+    public Map<String,String> transferGameMap(String str){
+        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        Pattern compile = Pattern.compile(regex);
+        Matcher matcher = compile.matcher(str);
+        matcher.find();
+        String[] messageGame = matcher.group().replaceAll("\\{|\\}","").split(",");
+        Map<String,String>gameMap=new HashMap<>();
+        for (String s : messageGame) {
+            String[] game_split = s.split("=");
+            gameMap.put(game_split[0], game_split[1].replace("|",","));
+        }
+        return gameMap;
+    }
+
+    public Core getCore() {
+        return core;
+    }
+
+    public void setCore(Core core) {
+        this.core = core;
     }
 }
