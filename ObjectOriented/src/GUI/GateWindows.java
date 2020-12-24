@@ -27,7 +27,7 @@ public class GateWindows extends JFrame {
     JTextArea serverTextArea;
 
     public static JButton[] btnseat = new JButton[30];
-//    public static JLabel[] btnLabel=new JLabel[30];
+    public JLabel[] userName = new JLabel[30];
 
     //    private ArrayList<Integer> finalI_arrayList=new ArrayList<>();
     //END GUI
@@ -147,9 +147,10 @@ public class GateWindows extends JFrame {
         for (int i = 0; i < btnseat.length; i += 2) {
             btnseat[i] = new JButton(new ImageIcon("./res/img/none.gif"));
             btnseat[i].setBounds(35 + a * 193, 35 + b * 150, 40, 45);
-//            btnLabel[i]=new JLabel();
+            userName[i] = new JLabel("", JLabel.CENTER);
+            userName[i].setBounds(33 + a * 193, 70 + b * 150, 40, 45);
             rightCenter.add(btnseat[i]);
-//            rightCenter.add(btnLabel[i]);
+            rightCenter.add(userName[i]);
             a++;
             if ((i + 2) % 6 == 0) {
                 a = 0;
@@ -161,9 +162,10 @@ public class GateWindows extends JFrame {
         for (int i = 1; i < btnseat.length; i += 2) {
             btnseat[i] = new JButton(new ImageIcon("./res/img/none.gif"));
             btnseat[i].setBounds(128 + a * 193, 35 + b * 150, 40, 45);
-//            btnLabel[i]=new JLabel();
+            userName[i] = new JLabel("", JLabel.CENTER);
+            userName[i].setBounds(128 + a * 193, 70 + b * 150, 40, 45);
             rightCenter.add(btnseat[i]);
-//            rightCenter.add(btnLabel[i]);
+            rightCenter.add(userName[i]);
             a++;
             if ((i + 1) % 6 == 0) {
                 a = 0;
@@ -212,7 +214,7 @@ public class GateWindows extends JFrame {
                     String user2 = finalI != 0 && finalI % 2 == 0 ? uid.get(finalI + 1) : uid.get(finalI - 1);
                     RoomUser gameUser = gui.getClient().getGameRoom(user1, user2);
                     serverTextArea.append("Server:" + gui.getClient().getUser().getUID() + "请等待信息\n");
-                    synchronized (this){
+                    synchronized (this) {
                         Client.setAttackUser(true);
                         try {
                             Thread.sleep(1000);
@@ -243,6 +245,7 @@ public class GateWindows extends JFrame {
 //        }
         for (String name : seat.keySet()) {
             btnseat[t].setIcon(new ImageIcon(seat.get(name)));
+            userName[t].setText(name);
 //            btnLabel[t].setText(name);
             uid.put(t, name);
             t += 2;
@@ -276,7 +279,7 @@ public class GateWindows extends JFrame {
             } else {
                 gui.getClient().setCore(new Core(19, 19, gui.getClient(), gui.getClient().getRoomUser().getRoomID()));
                 GameRoomUser gameRoomUser = null;
-                synchronized (this){
+                synchronized (this) {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
