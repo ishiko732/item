@@ -9,8 +9,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Server {
     private static final Map<String, List<Object>> userMap = new LinkedHashMap<>();
@@ -82,14 +80,7 @@ public class Server {
 
 
     public static void sendMessage(User user, String message) {
-        String regex = "\\[[^]]*]";//chat-正则匹配
-        Pattern compile = Pattern.compile(regex);
-        Matcher matcher = compile.matcher(message);//String test = "Chat-[康明]:send=[\"我是猪\"],obj=[Server];";
-        //Chat-[(UID)]:send=[(value)],obj=[(UID/Server)];
-        ArrayList<String> arrayList = new ArrayList<>();
-        while (matcher.find()) {
-            arrayList.add(matcher.group().replaceAll("[\\[\\]]", ""));
-        }
+        ArrayList<String> arrayList = Transfer.chat(message);
         if (arrayList.size() != 3) {
             System.err.println("Server:收到来自(" + user.getUID() + ")错误的聊天信息:" + message);
         }
@@ -134,7 +125,7 @@ public class Server {
     }
 
     public static void sendAttack(User user, String message) {
-        String[] userUID = Transfer.transferAttackDoubleUser(message);//0 申请人 1被邀请人
+        String[] userUID = Transfer.attackDoubleUser(message);//0 申请人 1被邀请人
         if (userUID.length != 2) {
             System.err.println("Server:收到来自(" + user.getUID() + ")错误的对战信息:" + message);
         }

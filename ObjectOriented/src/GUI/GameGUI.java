@@ -22,7 +22,7 @@ public class GameGUI extends JPanel implements MouseListener {
         this.core = core;
         ClientGUI.setGameGui(this);
         this.addMouseListener(this);
-        if(playerTime_your!=null && playerTime_my!=null){
+        if (playerTime_your != null && playerTime_my != null) {
             this.playerTime_your = playerTime_your;
             this.playerTime_my = playerTime_my;
             if (Client.isAttackUser()) {
@@ -76,38 +76,31 @@ public class GameGUI extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (e.getX() >= 15 &&e.getX() < 570 && e.getY() >=45 &&e.getY() < 600) {//确认范围
+        if (e.getX() >= 15 && e.getX() < 570 && e.getY() >= 45 && e.getY() < 600) {//确认范围
             //下棋方
-            if (ClientGUI.getGameGui().getPlayerTime_my()==ClientGUI.getGameGui().getPlayerTime_your()) {
-                core.ChessIt(_CgetX(e.getX()), (_CgetY(e.getY())),var);
-                if(var == 1){
-                    var=2;
-                }else{
-                    var=1;
+            if (ClientGUI.getGameGui().getPlayerTime_my() == ClientGUI.getGameGui().getPlayerTime_your()) {
+                core.ChessIt(_CgetX(e.getX()), (_CgetY(e.getY())), var);
+                if (var == 1) {
+                    var = 2;
+                } else {
+                    var = 1;
                 }
                 this.repaint();
-                return ;
+                return;
             }
             int flag = ClientGUI.getGameGui().getPlayerTime_my().getFlag();
-            boolean jg1=Client.isAttackUser()&&(flag==1||flag==-1);//是攻击方同时又是下方计时器==这肯定是黑棋
-            boolean jg2=!Client.isAttackUser()&&(flag==1||flag==-1);//非攻击方 同时又是下方计时器==这是白棋
-            var=Client.isAttackUser()?1:2;
+            boolean jg1 = Client.isAttackUser() && (flag == 1 || flag == -1);//是攻击方同时又是下方计时器==这肯定是黑棋
+            boolean jg2 = !Client.isAttackUser() && (flag == 1 || flag == -1);//非攻击方 同时又是下方计时器==这是白棋
+            var = Client.isAttackUser() ? 1 : 2;
 //            System.out.println(var==1&&jg1||var==2&&jg2);
-            if(var==1&&jg1||var==2&&jg2){
+            if (var == 1 && jg1 || var == 2 && jg2) {
                 core.ChessIt_newWork(_CgetX(e.getX()), (_CgetY(e.getY())));
-            }else{
-                JOptionPane.showMessageDialog(null,  "非你回合,非法下棋!!");
+            } else {
+                JOptionPane.showMessageDialog(null, "非你回合,非法下棋!!");
             }
 //            System.out.println(var==1&&jg1);//是黑棋同时也是攻击方
 //            System.out.println(var==2&&jg2);//是白棋同时也是被..
-        }// else if (e.getX() > 590 && e.getX() < 660 && e.getY() > 300 && e.getY() < 330) {//游戏状态
-//            Object[] options = {"白先", "黑先"};
-//            int n = JOptionPane.showOptionDialog(null, "白先还是黑先？", "游戏设置", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-//            if (n == 0) this.var = 1;
-//            if (n == 1) this.var = 2;
-//            this.core.Restart();
-//            this.repaint();
-//        }
+        }
     }
 
     @Override

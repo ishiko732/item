@@ -8,8 +8,6 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import Game.Transfer;
 
@@ -152,8 +150,6 @@ public class Client {
 
     private void clientThread() {
         Runnable run = () -> {
-            String regex = "\\[[^]]*]";//匹配中括号
-            Pattern compile = Pattern.compile(regex);
             while (true) {
                 try {
                     Thread.sleep(100);
@@ -162,11 +158,7 @@ public class Client {
                     if (!"".equals(message)) {
                         if (message.indexOf("get-chat[") == 0) {//接受到信息
                             // "get-chat["+chatMessage[0]+"],send=["+chatMessage[1]+"];"
-                            Matcher matcher = compile.matcher(message);
-                            ArrayList<String> arrayList = new ArrayList<>();
-                            while (matcher.find()) {
-                                arrayList.add(matcher.group().replaceAll("[\\[\\]]", ""));
-                            }
+                            ArrayList<String> arrayList =Transfer.chat(message);
                             if (textArea != null) {
                                 textArea.append(arrayList.get(0) + ":" + arrayList.get(1) + "\n");
                             } else {
@@ -175,21 +167,13 @@ public class Client {
                         } else if ("sendMessage:(Yes)".equals(message)) {
                             System.out.println("Client-" + user.getUID() + ":sendMessage=" + message);
                         } else if (message.indexOf("get-wait[") == 0) {//等待命令
-                            Matcher matcher = compile.matcher(message);//"get-wait[" + userUID[0] + "],command=[wait],send=[" + userUID[1] + "];";
-                            StringBuilder merge = new StringBuilder();
-                            while (matcher.find()) {
-                                merge.append(matcher.group().replaceAll("[()\\[\\]]", ""));
-                            }
-                            String[] waitMessage = merge.toString().split(",");
+                            String[] waitMessage = Transfer.transferWait(message);
                             if (waitMessage.length != 3) {
                                 System.err.println("Client-" + user.getUID() + ":" + "错误的等待信息");
                             }
                         } else if (message.indexOf("get-attack[") == 0) {
-                            Matcher matcher = compile.matcher(message);// "get-attack[" + userUID[0] + "],command=[game],send=[请求对战];";
-                            ArrayList<String> arrayList = new ArrayList<>();
-                            while (matcher.find()) {
-                                arrayList.add(matcher.group().replaceAll("[()\\[\\]]", ""));
-                            }
+                            // "get-attack[" + userUID[0] + "],command=[game],send=[请求对战];";
+                            ArrayList<String> arrayList = Transfer.getAttack(message);
                             if ("请求对战".equals(arrayList.get(2)) && "game".equals(arrayList.get(1))) {
                                 if (arrayList.get(0).equals(user.getUID())) {
                                     sendCommand("newGame={write=[" + arrayList.get(0) + "],black=[" + user.getUID() + "]}", true);
@@ -203,12 +187,6 @@ public class Client {
                                     if ("Y".equalsIgnoreCase(str)) {
                                         if (textArea != null) {
                                             textArea.append("Server:您已经接受对战,稍等一会,开始游戏!" + "\n");
-//                                                while(roomUser==null){
-//                                                    Thread.sleep(1000);
-//                                                }
-//                                                setCore(new Core(19, 19,Client.this, roomUser.getRoomID()));
-//                                                GameRoomUser gameRoomUser = new GameRoomUser(roomUser.getUser_write(), roomUser.getUser_black(), getCore(), roomUser.getRoomID());//将棋盘连起来
-////                                                new RoomWindows(GateWindows.jtp, Client.this, uid, gameRoomUser);
                                         } else {
                                             System.out.println("Client(" + user.getUID() + ")您已经同意对战!");
                                         }
@@ -225,25 +203,15 @@ public class Client {
                             }
                         } else if (message.indexOf("get-userList:") == 0) {
                             if (userMap == null) {
-                                userMap = new HashMap<>();
-                                String regex_list = "\\{[^]]*}";//匹配中括号
-                                Pattern compile_list = Pattern.compile(regex_list);
-                                Matcher matcher = compile_list.matcher(message);
-                                //noinspection ResultOfMethodCallIgnored
-                                matcher.find();
-                                String[] userList = matcher.group().replaceAll("[{}]", "").split(",");
-                                for (String s : userList) {
-                                    String[] user_split = s.split("=");
-                                    userMap.put(user_split[0], user_split[1]);
-                                }
+                                userMap = Transfer.transferUserMap(message);
                             }
                         } else if (message.indexOf("gameRoom:") == 0) {
                             if (roomUser == null) {
-                                roomUser = Transfer.transferRoomUser(message);
+                                roomUser = Transfer.roomUser(message);
                             }
                         } else if (message.indexOf("command-game:game={var=") == 0) {
                             //game={var=[(while)],xy=[(x|y)],roomID=[(id)]}
-                            Map<String, String> gameMap = Transfer.transferGameMap(message);//{xy=(2,2), var=write, roomID=1}
+                            Map<String, String> gameMap = Transfer.gameMap(message);//{xy=(2,2), var=write, roomID=1}
                             int var = "white".equals(gameMap.get("var")) ? 1 : 2;
                             String[] xy = gameMap.get("xy").replaceAll("[()]", "").split(",");
                             int a = core.ChessIt(Integer.parseInt(xy[0]), Integer.parseInt(xy[1]), var);
@@ -286,9 +254,9 @@ public class Client {
                             }
                         } else if (message.indexOf("command-game:game={command=") == 0) {
                             //game={command=remake,roomID=id}
-                            Map<String, String> map = Transfer.transferGameCommand(message);
+                            Map<String, String> map = Transfer.gameCommand(message);
                             String command = map.get("command");
-                            System.out.println(command);
+                            System.out.println("gameCommand:"+command);
                             if ("remake".equals(command)) {//重新开始
                                 if (!map.containsKey("isLogic") && sendUser) {
                                     Object[] options = {"确认", "取消"};

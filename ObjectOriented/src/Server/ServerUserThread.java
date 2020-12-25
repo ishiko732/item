@@ -9,8 +9,6 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ServerUserThread extends Thread {
     private final User user;
@@ -30,8 +28,6 @@ public class ServerUserThread extends Thread {
         super.run();
         String uid = user.getUID();
         String info;
-        String regex = "\\[[^]]*]";//匹配中括号
-        Pattern compile = Pattern.compile(regex);
         DataInputStream dis = new DataInputStream(is);
         DataOutputStream dos = new DataOutputStream(out);
         while (!client.isClosed()) {
@@ -56,11 +52,8 @@ public class ServerUserThread extends Thread {
                 } else if (info.indexOf("command:Client!attackUser:[") == 0) {//读取命令--命令:客户端!申请对战(申请人,邀请人)
                     Server.sendAttack(user, info);
                 } else if (info.indexOf("command-game:newGame={write=[") == 0) {//开启游戏对局
-                    Matcher matcher = compile.matcher(info);// newGame={write=[(userUID2)],black=[(userUID1)]}
-                    ArrayList<String> arrayList = new ArrayList<>();
-                    while (matcher.find()) {
-                        arrayList.add(matcher.group().replaceAll("[()\\[\\]]", ""));
-                    }
+                    // newGame={write=[(userUID2)],black=[(userUID1)]}
+                    ArrayList<String> arrayList =Transfer.transferGameMessage(info);
                     Map<String, List<Object>> userMap = Server.getUserMap();
                     Object o_write = userMap.get(arrayList.get(0)).get(0);
                     Object o_black = userMap.get(arrayList.get(1)).get(0);//黑棋是自己
@@ -77,11 +70,8 @@ public class ServerUserThread extends Thread {
                     }
                     System.out.println("Server:开启对局:房间号(" + Server.getRoom().size() + ")write:" + ((User) o_write).getUID() + " black:" + ((User) o_black).getUID());
                 } else if (info.indexOf("command-game:errorGame={write=[") == 0) {
-                    Matcher matcher = compile.matcher(info);// errorGame={write=[(userUID2)],black=[(userUID1)]}
-                    ArrayList<String> arrayList = new ArrayList<>();
-                    while (matcher.find()) {
-                        arrayList.add(matcher.group().replaceAll("[()\\[\\]]", ""));
-                    }
+                    // errorGame={write=[(userUID2)],black=[(userUID1)]}
+                    ArrayList<String> arrayList = Transfer.transferGameMessage(info);
                     Map<String, List<Object>> userMap = Server.getUserMap();
                     Object o_write = userMap.get(arrayList.get(0)).get(0);
                     Object o_black = userMap.get(arrayList.get(1)).get(0);//黑棋是自己
@@ -97,11 +87,11 @@ public class ServerUserThread extends Thread {
                     System.out.println("Server:无法开启对局:对方拒绝了游戏!");
                 } else if (info.indexOf("command-game:game={var=") == 0) {//仅仅做转发工作 ,服务器不处理太多细节
                     //game={var=[(while)],xy=[(x|y)],roomID=[(id)]};
-                    Map<String, String> gameMap = Transfer.transferGameMap(info);//{xy=(2,2), var=write, roomID=1}
+                    Map<String, String> gameMap = Transfer.gameMap(info);//{xy=(2,2), var=write, roomID=1}
                     forwardMessage(info, gameMap);
 
                 } else if (info.indexOf("command-game:game={command=") == 0) {//仅仅做转发工作 ,服务器不处理太多细节
-                    Map<String, String> map = Transfer.transferGameCommand(info);
+                    Map<String, String> map = Transfer.gameCommand(info);
 //                    String command = map.get("command");
                     forwardMessage(info, map);//转发信息
                 }
