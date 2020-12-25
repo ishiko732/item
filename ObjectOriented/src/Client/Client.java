@@ -20,6 +20,7 @@ public class Client {
     private RoomUser roomUser;
     private Core core;
     private static boolean attackUser;
+    public static boolean sendUser;
 
 
     public Client(User user) {
@@ -289,23 +290,50 @@ public class Client {
                                         JOptionPane.showOptionDialog(null, "和棋失败,进行对局", "和棋失败", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
                                     }
                                 } else if ("regret".equals(command)) {//悔棋
-                                    core.RetChess();
-                                    if (ClientGUI.getGameGui().getVar() == 1) {
-                                        ClientGUI.getGameGui().setVar(2);
-                                    } else if (ClientGUI.getGameGui().getVar() == 2) {
-                                        ClientGUI.getGameGui().setVar(1);
+                                    System.out.println(map);
+                                    int var = "write".equals(map.get("var")) ? 1 : 2;
+                                    if (!map.containsKey("isLogic")&&sendUser) {//第一份信息是没有islogic --发送同意悔棋请求
+                                        Object[] options = {"同意", "拒绝"};
+                                        int n = JOptionPane.showOptionDialog(null, "对方申请悔棋,是否同意?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                                        if (n == 0) {//同意
+                                            String v ="write".equals(map.get("var")) ? "write" : "black";//攻击方为黑棋
+                                            sendGameCommand("game={command=regret,roomID=" + map.get("roomID") + ",isLogic=1,var=" + v + "}");
+                                        }
+                                    } else if (map.containsKey("isLogic")) {//第二份信息是有islogic --收到请求情况
+                                        int isLogic = "1".equals(map.get("isLogic")) ? 1 : 0;
+                                        if (isLogic == 1) {
+                                            core.RetChess();
+                                            if (ClientGUI.getGameGui().getVar() == 1) {
+                                                ClientGUI.getGameGui().setVar(2);
+                                            } else if (ClientGUI.getGameGui().getVar() == 2) {
+                                                ClientGUI.getGameGui().setVar(1);
+                                            }
+                                            System.out.println("下方的计时器:" + ClientGUI.getGameGui().getPlayerTime_my().getFlag() + "上方的计时器:" + ClientGUI.getGameGui().getPlayerTime_your().getFlag());
+                                            ClientGUI.getGameGui().repaint();
+                                            if(ClientGUI.getGameGui().getPlayerTime_my() != null&&ClientGUI.getGameGui().getPlayerTime_your() != null){
+                                                int myFlag = ClientGUI.getGameGui().getPlayerTime_my().getFlag();
+                                                if(myFlag==1||myFlag==-1){
+                                                    ClientGUI.getGameGui().getPlayerTime_my().stop_time();
+                                                    ClientGUI.getGameGui().getPlayerTime_your().reset_time();
+                                                    ClientGUI.getGameGui().getPlayerTime_your().start_time();
+                                                }else{
+                                                    ClientGUI.getGameGui().getPlayerTime_your().stop_time();
+                                                    ClientGUI.getGameGui().getPlayerTime_my().reset_time();
+                                                    ClientGUI.getGameGui().getPlayerTime_my().start_time();
+                                                }
+                                            }
+                                        }
                                     }
-                                    ClientGUI.getGameGui().repaint();
+
+                                    Client.sendUser = false;//处理完信息以后 置未false
                                 } else if ("admit".equals(command)) {//认输
-                                    Object[] options = {"确认", "取消"};
-                                    String str = (ClientGUI.getGameGui().getVar() == 1) ? "白棋" : "黑棋";
-                                    int n = JOptionPane.showOptionDialog(null, str + ":确认申请认输吗?", "申请认输", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-                                    if (n == 0) {
-                                        core.Restart();
-                                        ClientGUI.getGameGui().repaint();
-                                        options = new Object[]{"确认"};
-                                        JOptionPane.showOptionDialog(null, str + "已经认输,开始新对局!", "确认认输", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
+                                    if (!sendUser) {
+                                        JOptionPane.showMessageDialog(null, "对方已经认输,游戏结束,退出程序!");
+                                        System.exit(0);
                                     }
+                                    core.Restart();
+                                    ClientGUI.getGameGui().repaint();
+                                    Client.sendUser = false;//处理完信息以后 置未false
                                 }
                             }
                         }
@@ -322,15 +350,16 @@ public class Client {
 
     }
 
+
     public void sendGameCommand(String command) throws IOException {//写入命令--命令:客户端! (命令指令)
         dos.writeUTF("command-game:" + command + ";");//写入命令--命令:客户端!
         // 开启游戏对局 newGame={write=[(userUID2)],black=[(userUID1)]}
         // 拒绝对战 errorGame=={write=[(userUID2)],black=[(userUID1)]}
         // 请求对战 attackUser:[(UID),(attackUserUID)]
-        // 棋子信息 game={var=[(while)],xy=[(x|y)],roomID=[(id)]}
+        // 棋子信息 game={var=[(write)],xy=[(x|y)],roomID=[(id)]}
         // 重新开始 game={command=remake,roomID=id}
         // 求和 game={command=summation,roomID=id}
-        // 悔棋 game={command=regret,roomID=id}
+        // 悔棋 game={command=regret,roomID=id,var=write,(isLogic=1)}
         // 认输 game={command=admit,roomID=id}
 
     }

@@ -167,16 +167,7 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == exit) {
-            jtp.remove(jsp1);
-            String userUID = client.getUser().getUID();
-            Iterator<Map.Entry<Integer, String>> it = roomMessage.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<Integer, String> entry = it.next();
-                if (userUID.equals(entry.getValue())) {
-                    GateWindows.btnseat[entry.getKey()].setIcon(new ImageIcon("./src/gobang/img/none.gif"));
-                    it.remove();
-                }
-            }
+            roomExit();
         } else if (e.getSource() == restart) {//重新开始
             try {
                 client.sendGameCommand("game={command=remake,roomID="+gameRoom.getRoomID()+"}");
@@ -191,44 +182,41 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
-//            Object[] options = {"确认", "取消"};
-//            int n = JOptionPane.showOptionDialog(null, "确认申请和棋?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-//            options = new Object[]{"确认"};
-//            if (n == 0) {
-//                core.Restart();
-//                gobang.repaint();
-//                JOptionPane.showOptionDialog(null, "平局,开始新对局!", "和棋成功", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
-//            } else if (n == 1) {
-//                JOptionPane.showOptionDialog(null, "和棋失败,进行对局", "和棋失败", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
-//            }
+            Object[] options = {"确认", "取消"};
+            int n = JOptionPane.showOptionDialog((Component)this, "确认申请和棋?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            options = new Object[]{"确认"};
+            if (n == 0) {
+                core.Restart();
+                gobang.repaint();
+                JOptionPane.showOptionDialog((Component)this, "平局,开始新对局!", "和棋成功", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
+            } else if (n == 1) {
+                JOptionPane.showOptionDialog((Component)this, "和棋失败,进行对局", "和棋失败", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+            }
         } else if (e.getSource() == regret) {//悔棋
             try {
-                client.sendGameCommand("game={command=regret,roomID="+gameRoom.getRoomID()+"}");
+                Client.sendUser=true;
+                String v =Client.isAttackUser()?"black" : "write";//攻击方为黑棋
+                client.sendGameCommand("game={command=regret,roomID="+gameRoom.getRoomID()+",var="+v+"}");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
-//            core.RetChess();
-//            if (gobang.getVar() == 1) {
-//                gobang.setVar(2);
-//            } else if (gobang.getVar() == 2) {
-//                gobang.setVar(1);
-//            }
-//            gobang.repaint();
         } else if (e.getSource() == admit) {//认输
-            try {
-                client.sendGameCommand("game={command=admit,roomID="+gameRoom.getRoomID()+"}");
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
+            Object[] options = {"确认", "取消"};
+            String str = (gobang.getVar() == 1) ? "白棋" : "黑棋";
+            int n = JOptionPane.showOptionDialog(null, str + ":确认申请认输吗?", "申请认输", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
+            if (n == 0) {
+                try {
+                    Client.sendUser=true;
+                    client.sendGameCommand("game={command=admit,roomID="+gameRoom.getRoomID()+"}");
+                    options = new Object[]{"确认"};
+                    JOptionPane.showOptionDialog(null, str + "已经认输,开始新对局!", "确认认输", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                core.Restart();
+                gobang.repaint();
+                roomExit();
             }
-//            Object[] options = {"确认", "取消"};
-//            String str = (gobang.getVar() == 1) ? "白棋" : "黑棋";
-//            int n = JOptionPane.showOptionDialog(null, str + ":确认申请认输吗?", "申请认输", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-//            if (n == 0) {
-//                core.Restart();
-//                gobang.repaint();
-//                options = new Object[]{"确认"};
-//                JOptionPane.showOptionDialog(null, str + "已经认输,开始新对局!", "确认认输", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
-//            }
         } else if (e.getSource() == send) {
             if(UserName_my.getText().equals(UserName_your.getText())){//黑白方都是自己
                 client.sendMessage(sendText_JFeild.getText(), "Server");
@@ -237,6 +225,19 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
                 String color= Client.isAttackUser()?"(黑):":"(白):";
                 client.sendMessage(sendText_JFeild.getText(), gameRoom.getUser_write().getUID());
                 chatMessage.append(client.getUser().getUID() + color + sendText_JFeild.getText() + "\n");
+            }
+        }
+    }
+
+    private void roomExit() {
+        jtp.remove(jsp1);
+        String userUID = client.getUser().getUID();
+        Iterator<Map.Entry<Integer, String>> it = roomMessage.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Integer, String> entry = it.next();
+            if (userUID.equals(entry.getValue())) {
+                GateWindows.btnseat[entry.getKey()].setIcon(new ImageIcon("./src/gobang/img/none.gif"));
+                it.remove();
             }
         }
     }

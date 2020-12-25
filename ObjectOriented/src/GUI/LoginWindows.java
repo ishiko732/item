@@ -122,7 +122,7 @@ public class LoginWindows extends JFrame implements ActionListener{
                 new GateWindows(gui);
                 setVisible(false);
             }else {
-                JOptionPane.showMessageDialog(null, "连接服务器失败!");
+                JOptionPane.showMessageDialog((Component)this, "连接服务器失败!");
             }
 
         } else if (e.getSource() == btnRest) {
