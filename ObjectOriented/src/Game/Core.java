@@ -9,6 +9,7 @@ import java.util.Stack;
  * @author GodofOrange
  * 棋盘数据结构
  */
+@SuppressWarnings("FieldMayBeFinal")//对该类的警告信息忽略
 public class Core {
     //棋盘大小
     private int[][] core;
@@ -110,7 +111,7 @@ public class Core {
         if (client != null) {
             try {
                 String v =Client.isAttackUser()?"black" : "white";//攻击方为黑棋
-                client.sendGameCommand("game={var=" + v + ",xy=(" + x + "|" + y + "),roomID=" + room + "}");
+                client.sendCommand("game={var=" + v + ",xy=(" + x + "|" + y + "),roomID=" + room + "}",true);
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -118,6 +119,7 @@ public class Core {
     }
 
     //悔棋
+    @SuppressWarnings("UnusedReturnValue")//对该方法禁止检查 返回值未使用情况
     public boolean RetChess() {
         if (stack.isEmpty()) return false;
         Chess chess = stack.pop();

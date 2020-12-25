@@ -3,6 +3,7 @@ package Server;
 import Client.User;
 import Game.Core;
 import Game.GameRoomUser;
+import Game.Transfer;
 
 import java.io.*;
 import java.net.Socket;
@@ -16,10 +17,11 @@ public class ServerUserThread extends Thread {
     private final InputStream is;
     private final OutputStream out;
     private final Socket client;
-    public ServerUserThread(List<Object> list,  Socket client) {
-        this.user =(User)list.get(0);
-        this.is =(InputStream)list.get(1);
-        this.out =(OutputStream)list.get(2);
+
+    public ServerUserThread(List<Object> list, Socket client) {
+        this.user = (User) list.get(0);
+        this.is = (InputStream) list.get(1);
+        this.out = (OutputStream) list.get(2);
         this.client = client;
     }
 
@@ -28,10 +30,10 @@ public class ServerUserThread extends Thread {
         super.run();
         String uid = user.getUID();
         String info;
-        String regex = "\\[[^\\]]*\\]";//匹配中括号
+        String regex = "\\[[^]]*]";//匹配中括号
         Pattern compile = Pattern.compile(regex);
         DataInputStream dis = new DataInputStream(is);
-        DataOutputStream dos=new DataOutputStream(out);
+        DataOutputStream dos = new DataOutputStream(out);
         while (!client.isClosed()) {
             try {
                 info = dis.readUTF();
@@ -50,83 +52,58 @@ public class ServerUserThread extends Thread {
                     }
                     // userMap -> String
 //                    System.out.println("get-list:"+userMap);
-                    dos.writeUTF("get-userList:"+userMap.toString());
+                    dos.writeUTF("get-userList:" + userMap.toString());
                 } else if (info.indexOf("command:Client!attackUser:[") == 0) {//读取命令--命令:客户端!申请对战(申请人,邀请人)
                     Server.sendAttack(user, info);
                 } else if (info.indexOf("command-game:newGame={write=[") == 0) {//开启游戏对局
                     Matcher matcher = compile.matcher(info);// newGame={write=[(userUID2)],black=[(userUID1)]}
                     ArrayList<String> arrayList = new ArrayList<>();
                     while (matcher.find()) {
-                        arrayList.add(matcher.group().replaceAll("\\(|\\)|\\[|\\]", ""));
+                        arrayList.add(matcher.group().replaceAll("[()\\[\\]]", ""));
                     }
                     Map<String, List<Object>> userMap = Server.getUserMap();
                     Object o_write = userMap.get(arrayList.get(0)).get(0);
                     Object o_black = userMap.get(arrayList.get(1)).get(0);//黑棋是自己
-                    int id=Server.getRoom().size()+1;
-                    GameRoomUser gameRoomUser = new GameRoomUser((User)o_write, (User)o_black, new Core(19, 19), id);
+                    int id = Server.getRoom().size() + 1;
+                    GameRoomUser gameRoomUser = new GameRoomUser((User) o_write, (User) o_black, new Core(19, 19), id);
                     synchronized (user) {
-                        dos.writeUTF("gameRoom:"+gameRoomUser.toString());//给被邀请人发消息
+                        dos.writeUTF("gameRoom:" + gameRoomUser.toString());//给被邀请人发消息
                         //给发起者消息
 //                        System.out.println(arrayList.get(0));//申请人
 //                        System.out.println(arrayList.get(1));//被邀请人
                         DataOutputStream dataOutputStream = new DataOutputStream((OutputStream) userMap.get(arrayList.get(0)).get(2));//黑棋是申请人
-                        dataOutputStream.writeUTF("gameRoom:"+gameRoomUser.toString());
-                        Server.getRoom().put(id,gameRoomUser);
+                        dataOutputStream.writeUTF("gameRoom:" + gameRoomUser.toString());
+                        Server.getRoom().put(id, gameRoomUser);
                     }
-                    System.out.println("Server:开启对局:房间号(" + Server.getRoom().size() + ")write:" +((User) o_write).getUID()+ " black:" + ((User) o_black).getUID());
+                    System.out.println("Server:开启对局:房间号(" + Server.getRoom().size() + ")write:" + ((User) o_write).getUID() + " black:" + ((User) o_black).getUID());
                 } else if (info.indexOf("command-game:errorGame={write=[") == 0) {
                     Matcher matcher = compile.matcher(info);// errorGame={write=[(userUID2)],black=[(userUID1)]}
                     ArrayList<String> arrayList = new ArrayList<>();
                     while (matcher.find()) {
-                        arrayList.add(matcher.group().replaceAll("\\(|\\)|\\[|\\]", ""));
+                        arrayList.add(matcher.group().replaceAll("[()\\[\\]]", ""));
                     }
                     Map<String, List<Object>> userMap = Server.getUserMap();
                     Object o_write = userMap.get(arrayList.get(0)).get(0);
                     Object o_black = userMap.get(arrayList.get(1)).get(0);//黑棋是自己
-                    GameRoomUser gameRoomUser = new GameRoomUser((User)o_write, (User)o_black, new Core(19, 19), -1);
+                    GameRoomUser gameRoomUser = new GameRoomUser((User) o_write, (User) o_black, new Core(19, 19), -1);
                     synchronized (user) {
-                        dos.writeUTF("gameRoom:"+gameRoomUser.toString());//给被邀请人发消息
+                        dos.writeUTF("gameRoom:" + gameRoomUser.toString());//给被邀请人发消息
                         //给发起者消息
 //                        System.out.println(arrayList.get(0));//申请人
 //                        System.out.println(arrayList.get(1));//被邀请人
                         DataOutputStream dataOutputStream = new DataOutputStream((OutputStream) userMap.get(arrayList.get(0)).get(2));//黑棋是申请人
-                        dataOutputStream.writeUTF("gameRoom:"+gameRoomUser.toString());
+                        dataOutputStream.writeUTF("gameRoom:" + gameRoomUser.toString());
                     }
                     System.out.println("Server:无法开启对局:对方拒绝了游戏!");
-                }else if(info.indexOf("command-game:game={var=")==0){//仅仅做转发工作 ,服务器不处理太多细节
+                } else if (info.indexOf("command-game:game={var=") == 0) {//仅仅做转发工作 ,服务器不处理太多细节
                     //game={var=[(while)],xy=[(x|y)],roomID=[(id)]};
-                    Map<String, String> gameMap = transferGameMap(info);//{xy=(2,2), var=write, roomID=1}
-                    GameRoomUser gameRoom = Server.getRoom().get(Integer.parseInt(gameMap.get("roomID")));
-                    User user1= gameRoom.getUser_black();
-                    User user2=gameRoom.getUser_write();
-                    Map<String, List<Object>> userMap = Server.getUserMap();
-                    DataOutputStream user1_out = new DataOutputStream((OutputStream)userMap.get(user1.getUID()).get(2));
-                    user1_out.writeUTF(info);
-                    DataOutputStream user2_out = new DataOutputStream((OutputStream)userMap.get(user2.getUID()).get(2));
-                    user2_out.writeUTF(info);
+                    Map<String, String> gameMap = Transfer.transferGameMap(info);//{xy=(2,2), var=write, roomID=1}
+                    forwardMessage(info, gameMap);
 
-                }else if(info.indexOf("command-game:game={command=")==0){//仅仅做转发工作 ,服务器不处理太多细节
-                    Map<String, String> map = transferGameCommand(info);
+                } else if (info.indexOf("command-game:game={command=") == 0) {//仅仅做转发工作 ,服务器不处理太多细节
+                    Map<String, String> map = Transfer.transferGameCommand(info);
 //                    String command = map.get("command");
-                    GameRoomUser gameRoom = Server.getRoom().get(Integer.parseInt(map.get("roomID")));
-                    User user1= gameRoom.getUser_black();
-                    User user2=gameRoom.getUser_write();
-                    Map<String, List<Object>> userMap = Server.getUserMap();
-                    DataOutputStream user1_out = new DataOutputStream((OutputStream)userMap.get(user1.getUID()).get(2));
-                    user1_out.writeUTF(info);
-                    DataOutputStream user2_out = new DataOutputStream((OutputStream)userMap.get(user2.getUID()).get(2));
-                    user2_out.writeUTF(info);
-
-//                    System.out.println(command);
-//                    if("remake".equals(command)){//重新开始
-//
-//                    }else if("summation".equals(command)){//求和
-//
-//                    }else if("regret".equals(command)){//悔棋
-//
-//                    }else if("admit".equals(command)){//认输
-//
-//                    }
+                    forwardMessage(info, map);//转发信息
                 }
             } catch (SocketException e) {
                 System.err.println("Client-" + uid + ":" + "移除用户信息。原因：与服务器断开了连接");
@@ -136,36 +113,19 @@ public class ServerUserThread extends Thread {
                 e.printStackTrace();
             }
         }
-
     }
 
-    public Map<String,String> transferGameMap(String str){
-        String regex = "\\{[^\\]]*\\}";//匹配中括号
-        Pattern compile = Pattern.compile(regex);
-        Matcher matcher = compile.matcher(str);
-        matcher.find();
-        String[] messageGame = matcher.group().replaceAll("\\{|\\}","").split(",");
-        Map<String,String>gameMap=new HashMap<>();
-        for (String s : messageGame) {
-            String[] game_split = s.split("=");
-            gameMap.put(game_split[0], game_split[1].replace("|",","));
-        }
-        return gameMap;
+    private void forwardMessage(String info, Map<String, String> map) throws IOException {
+        GameRoomUser gameRoom = Server.getRoom().get(Integer.parseInt(map.get("roomID")));
+        User user1 = gameRoom.getUser_black();
+        User user2 = gameRoom.getUser_write();
+        Map<String, List<Object>> userMap = Server.getUserMap();
+        DataOutputStream user1_out = new DataOutputStream((OutputStream) userMap.get(user1.getUID()).get(2));
+        user1_out.writeUTF(info);
+        DataOutputStream user2_out = new DataOutputStream((OutputStream) userMap.get(user2.getUID()).get(2));
+        user2_out.writeUTF(info);
     }
-    public Map<String,String> transferGameCommand(String str){
-        //"command-game:game={command=remake,roomID=id};"
-        String regex = "\\{[^\\]]*\\}";//匹配中括号
-        Pattern compile = Pattern.compile(regex);
-        Matcher matcher = compile.matcher(str);
-        matcher.find();
-        String[] messageGame = matcher.group().replaceAll("\\{|\\}","").split(",");
-        Map<String,String> gameMap=new HashMap<>();
-        for (String s : messageGame) {
-            String[] game_split = s.split("=");
-            gameMap.put(game_split[0], game_split[1].replace("|",","));
-        }
-        return gameMap;
-    }
+
 }
 
 

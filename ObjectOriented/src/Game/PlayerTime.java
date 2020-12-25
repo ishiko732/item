@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
+@SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal", "unused", "RedundantIfStatement"})
 public class PlayerTime extends JPanel  implements ActionListener{
     //定义一个标签用于显示
     private JLabel label;
@@ -39,7 +40,7 @@ public class PlayerTime extends JPanel  implements ActionListener{
             this.second = 0;
         }
         label.setBounds(88, 15, 100, 100);
-        label.setFont(new Font("Dialog", 1, 24));
+        label.setFont(new Font("Dialog", Font.BOLD, 24));
         add(label);
 
         timer = new Timer(1000, this);
@@ -110,8 +111,7 @@ public class PlayerTime extends JPanel  implements ActionListener{
         }else{
             this.second=0;
         }
-        String str = this.toString( this.minute, this.second);
-        return str;
+        return this.toString( this.minute, this.second);
     }
 
     /*
@@ -124,8 +124,7 @@ public class PlayerTime extends JPanel  implements ActionListener{
         }else{
             this.second=30;
         }
-        String str = this.toString( this.minute, this.second);
-        return str;
+        return this.toString( this.minute, this.second);
     }
 
     /*
@@ -140,7 +139,6 @@ public class PlayerTime extends JPanel  implements ActionListener{
     }
 
     public boolean getTimer(){
-
         if(second+minute*60>=20)
             return false;
         else

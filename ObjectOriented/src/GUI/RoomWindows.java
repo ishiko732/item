@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 
+@SuppressWarnings("FieldMayBeFinal")
 public class RoomWindows extends JPanel implements ActionListener {//由于申请对战的人是黑棋 所以需要再修改
     //分割界面
     public static JSplitPane jsp1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -22,15 +23,15 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     JSplitPane jsp3 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
     //选项卡
-    JTabbedPane jtp = new JTabbedPane();
+    JTabbedPane jtp;
     JTabbedPane yourself = new JTabbedPane();
     JTabbedPane myself = new JTabbedPane();
     JTabbedPane jtp3 = new JTabbedPane();
 
-    JLabel UserName_your = new JLabel();
-    JLabel UserName_my = new JLabel();
-    JLabel UserImg_your = new JLabel();
-    JLabel UserImg_my = new JLabel();
+    JLabel UserName_your;
+    JLabel UserName_my;
+    JLabel UserImg_your;
+    JLabel UserImg_my;
     JLabel time1 = new JLabel("本步剩余时间：");
     JLabel time2 = new JLabel("本步剩余时间：");
     JLabel title = new JLabel("<<<< 五子棋游戏 房间 >>>>");
@@ -47,8 +48,8 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     JPanel Three = new JPanel();
     JPanel Four = new JPanel();
 
-    JTextArea chatMessage = null;
-    JTextField sendText_JFeild = null;
+    JTextArea chatMessage;
+    JTextField sendText_JFiled;
 
     private Core core;
     private GameGUI gobang;
@@ -79,8 +80,8 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         //第一个界面
         One.setLayout(new BorderLayout());//设置边框式布局
         JPanel North1 = new JPanel(); //One界面的北部
-        PlayerTime playerTime_your = null;
-        PlayerTime playerTime_my = null;
+        PlayerTime playerTime_your;
+        PlayerTime playerTime_my;
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -132,8 +133,8 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         Three.setLayout(new BorderLayout());
         JPanel South3 = new JPanel(new BorderLayout()); //Three界面南部
         chatMessage = new JTextArea();
-        sendText_JFeild = new JTextField();
-        South3.add(sendText_JFeild, "Center");
+        sendText_JFiled = new JTextField();
+        South3.add(sendText_JFiled, "Center");
         South3.add(send, "East");
         send.addActionListener(this);
         Three.add(chatMessage, "Center");
@@ -171,7 +172,7 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         } else if (e.getSource() == restart) {//重新开始
             try {
                 Client.sendUser=true;
-                client.sendGameCommand("game={command=remake,roomID="+gameRoom.getRoomID()+"}");
+                client.sendCommand("game={command=remake,roomID="+gameRoom.getRoomID()+"}",true);
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -180,7 +181,7 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         } else if (e.getSource() == summation) {//求和
             try {
                 Client.sendUser=true;
-                client.sendGameCommand("game={command=summation,roomID="+gameRoom.getRoomID()+"}");
+                client.sendCommand("game={command=summation,roomID="+gameRoom.getRoomID()+"}",true);
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -198,7 +199,7 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
             try {
                 Client.sendUser=true;
                 String v =Client.isAttackUser()?"black" : "write";//攻击方为黑棋
-                client.sendGameCommand("game={command=regret,roomID="+gameRoom.getRoomID()+",var="+v+"}");
+                client.sendCommand("game={command=regret,roomID="+gameRoom.getRoomID()+",var="+v+"}",true);
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -209,9 +210,8 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
             if (n == 0) {
                 try {
                     Client.sendUser=true;
-                    client.sendGameCommand("game={command=admit,roomID="+gameRoom.getRoomID()+"}");
-                    options = new Object[]{"确认"};
-                    JOptionPane.showOptionDialog(null, str + "已经认输,开始新对局!", "确认认输", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
+                    client.sendCommand("game={command=admit,roomID="+gameRoom.getRoomID()+"}",true);
+                    JOptionPane.showMessageDialog(this, str + "已经认输,开始新对局!");
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
@@ -221,12 +221,12 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
             }
         } else if (e.getSource() == send) {
             if(UserName_my.getText().equals(UserName_your.getText())){//黑白方都是自己
-                client.sendMessage(sendText_JFeild.getText(), "Server");
-                chatMessage.append(client.getUser().getUID() + ":" + sendText_JFeild.getText() + "\n");
+                client.sendMessage(sendText_JFiled.getText(), "Server");
+                chatMessage.append(client.getUser().getUID() + ":" + sendText_JFiled.getText() + "\n");
             }else{
                 String color= Client.isAttackUser()?"(黑):":"(白):";
-                client.sendMessage(sendText_JFeild.getText(), gameRoom.getUser_write().getUID());
-                chatMessage.append(client.getUser().getUID() + color + sendText_JFeild.getText() + "\n");
+                client.sendMessage(sendText_JFiled.getText(), gameRoom.getUser_write().getUID());
+                chatMessage.append(client.getUser().getUID() + color + sendText_JFiled.getText() + "\n");
             }
         }
     }
@@ -238,12 +238,13 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         while (it.hasNext()) {
             Map.Entry<Integer, String> entry = it.next();
             if (userUID.equals(entry.getValue())) {
-                GateWindows.btnseat[entry.getKey()].setIcon(new ImageIcon("./src/gobang/img/none.gif"));
+                GateWindows.btnSeat[entry.getKey()].setIcon(new ImageIcon("./src/gobang/img/none.gif"));
                 it.remove();
             }
         }
     }
 
+    @SuppressWarnings("unused")
     public void setChatMessage(JTextArea chatMessage) {
         this.chatMessage = chatMessage;
     }

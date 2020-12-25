@@ -1,24 +1,22 @@
 package GUI;
 
 import Client.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class LoginWindows extends JFrame implements ActionListener{
-    private String ip;
-    private int port;
-    private ClientGUI gui;
+public class LoginWindows extends JFrame implements ActionListener {
+    private final String ip;
+    private final ClientGUI gui;
     private String text;
     //-----GUI
-    JLabel personInfo, userInfo, serverInfo, imgInfo,userImg;
-    JTextField severIP,userName;
+    JLabel personInfo, userInfo, serverInfo, imgInfo, userImg;
+    JTextField severIP, userName;
     JButton[] btnImg = new JButton[86];
     //插入图像列表
     JButton btnConnect, btnRest, btnExit;
-
-
 
     JPanel pNorth = new JPanel();
     JPanel pCenter = new JPanel();
@@ -69,13 +67,11 @@ public class LoginWindows extends JFrame implements ActionListener{
             //Center中区
             pCenter.setLayout(null);
             {
-                ActionListener imgListener = new ActionListener() {//创建同一监听器
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        String msg = e.getActionCommand();
-                        text=msg;
-                        userImg.setIcon(new ImageIcon(msg));
-                    }
+                //创建同一监听器
+                ActionListener imgListener = e -> {
+                    String msg = e.getActionCommand();
+                    text = msg;
+                    userImg.setIcon(new ImageIcon(msg));
                 };
                 int j = 0, k = 0;
                 for (int i = 1; i <= 85; i++) {
@@ -114,15 +110,15 @@ public class LoginWindows extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnConnect) {
-            String server_merge=severIP.getText();
-            String[] server=server_merge.split(":");
-            User user = new User(userName.getText(),text, server[0], Integer.parseInt(server[1]));
+            String server_merge = severIP.getText();
+            String[] server = server_merge.split(":");
+            User user = new User(userName.getText(), text, server[0], Integer.parseInt(server[1]));
             gui.setClient(new Client(user));
-            if(gui.getClient().islogin()) {
+            if (gui.getClient().isLogin()) {
                 new GateWindows(gui);
                 setVisible(false);
-            }else {
-                JOptionPane.showMessageDialog((Component)this, "连接服务器失败!");
+            } else {
+                JOptionPane.showMessageDialog(this, "连接服务器失败!");
             }
 
         } else if (e.getSource() == btnRest) {
@@ -133,22 +129,16 @@ public class LoginWindows extends JFrame implements ActionListener{
             System.exit(0);
         }
     }
+
     public LoginWindows(ClientGUI GUI) {
         this.ip = "127.0.0.1:8089";
-        this.gui=GUI;
-        text="./res/face/1-1.gif";
+        this.gui = GUI;
+        text = "./res/face/1-1.gif";
         try {//修改为windows画风格
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException exception) {
             exception.printStackTrace();
         }
-        init();
-    }
-
-    public LoginWindows(String ServerIP, int port,ClientGUI GUI) {
-        this.ip = ServerIP;
-        this.port = port;
-        this.gui=GUI;
         init();
     }
 }

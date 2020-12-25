@@ -118,7 +118,7 @@ public class GameGUI extends JPanel implements MouseListener {
 
     private int _CgetX(int x) {
         x -= 30;//对x进行偏移
-        System.out.println("x:"+x % 15);
+//        System.out.println("x:"+x % 15);
         if (x % 15 <= 7)
             return x / 30;
         else
@@ -127,7 +127,7 @@ public class GameGUI extends JPanel implements MouseListener {
 
     private int _CgetY(int y) {
         y -= 60;//对y进行偏移
-        System.out.println("y:"+y % 15);
+//        System.out.println("y:"+y % 15);
         if (y % 15 <= 7)
             return y / 30;
         else
@@ -146,6 +146,7 @@ public class GameGUI extends JPanel implements MouseListener {
         return playerTime_your;
     }
 
+    @SuppressWarnings("unused")
     public void setPlayerTime_your(PlayerTime playerTime_your) {
         this.playerTime_your = playerTime_your;
     }
@@ -154,6 +155,7 @@ public class GameGUI extends JPanel implements MouseListener {
         return playerTime_my;
     }
 
+    @SuppressWarnings("unused")
     public void setPlayerTime_my(PlayerTime playerTime_my) {
         this.playerTime_my = playerTime_my;
     }

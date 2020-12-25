@@ -13,7 +13,7 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+@SuppressWarnings("All")
 public class ClientTest {
     @Test
     void testUser() {
@@ -27,7 +27,7 @@ public class ClientTest {
 
     @Test
     void testServer() {
-        Server server = new Server();
+        new Server();
     }
 
     @Test
@@ -35,8 +35,8 @@ public class ClientTest {
         for (int i = 1; i < 10; i++) {
             User user = new User(String.valueOf(i), "2019112", "127.0.0.1", 8089);
             Client client = new Client(user);
-            assertTrue(client.islogin());
-            System.out.println("login(" + user.getUID() + "):" + client.islogin());
+            assertTrue(client.isLogin());
+            System.out.println("login(" + user.getUID() + "):" + client.isLogin());
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -49,13 +49,13 @@ public class ClientTest {
     void testLogin_name() {//测试重名登录
         User user1 = new User("001", "2019112", "127.0.0.1", 8089);
         Client client1 = new Client(user1);
-        assertTrue(client1.islogin());
-        System.out.println("login(" + user1.getUID() + "):" + client1.islogin());
+        assertTrue(client1.isLogin());
+        System.out.println("login(" + user1.getUID() + "):" + client1.isLogin());
 
         User user2 = new User("001", "2019112", "127.0.0.1", 8089);
         Client client2 = new Client(user2);
-        assertFalse(client2.islogin());
-        System.out.println("login(" + user2.getUID() + "):" + client2.islogin());
+        assertFalse(client2.isLogin());
+        System.out.println("login(" + user2.getUID() + "):" + client2.isLogin());
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -65,11 +65,11 @@ public class ClientTest {
 
     @Test
     void testClientMessage() {
-        ArrayList<Client> clients = new ArrayList<Client>();
+        ArrayList<Client> clients = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             User user = new User("UID-" + i, "2019112" + i, "127.0.0.1", 8089);
             clients.add(new Client(user));
-            assertTrue(clients.get(i).islogin());
+            assertTrue(clients.get(i).isLogin());
             clients.get(i).messageListener();
         }
         for (int i = 0; i < 3; i++) {//与客户端交流
@@ -87,11 +87,11 @@ public class ClientTest {
 
     @Test
     void testUserList() {
-        ArrayList<Client> clients = new ArrayList<Client>();//获取客户端在线列表
+        ArrayList<Client> clients = new ArrayList<>();//获取客户端在线列表
         for (int i = 0; i < 5; i++) {
             User user = new User("UID-" + i, "./res/face/" + (i + 1) + "-1.gif", "127.0.0.1", 8089);
             clients.add(new Client(user));
-            assertTrue(clients.get(i).islogin());
+            assertTrue(clients.get(i).isLogin());
             clients.get(i).messageListener();
 //            clients.get(i).messageListener();
         }
@@ -109,11 +109,11 @@ public class ClientTest {
     @Test
     void testTransferUserMap() {
         String userStr = "get-userList:{UID-0=./res/face/1-1.gif, UID-1=./res/face/2-1.gif, UID-2=./res/face/3-1.gif, UID-3=./res/face/4-1.gif, UID-4=./res/face/5-1.gif}";
-        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        String regex = "\\{[^]]*}";//匹配中括号
         Pattern compile = Pattern.compile(regex);
         Matcher matcher = compile.matcher(userStr);
         matcher.find();
-        String[] userList = matcher.group().replaceAll("\\{|\\}", "").split(",");
+        String[] userList = matcher.group().replaceAll("[{}]", "").split(",");
         Map<String, String> userMap = new HashMap<>();
         for (String s : userList) {
             String[] user_split = s.split("=");
@@ -124,11 +124,11 @@ public class ClientTest {
 
     @Test
     void testUserOnline() {//模拟客户端在线列表
-        ArrayList<Client> clients = new ArrayList<Client>();
+        ArrayList<Client> clients = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             User user = new User("UID-" + i, "./res/face/" + (i + 1) + "-1.gif", "127.0.0.1", 8089);
             clients.add(new Client(user));
-            assertTrue(clients.get(i).islogin());
+            assertTrue(clients.get(i).isLogin());
             clients.get(i).messageListener();
         }
         while (true) {
@@ -144,7 +144,7 @@ public class ClientTest {
     void testReceiveAttack() {//客户端1-接受方
         User user = new User("UID0", "./res/face/1-1.gif", "127.0.0.1", 8089);
         Client client = new Client(user);
-        assertTrue(client.islogin());
+        assertTrue(client.isLogin());
         client.messageListener();
         while (true) {
             try {
@@ -155,10 +155,10 @@ public class ClientTest {
         }
     }
     @Test
-    void testDoubleattack() {//客户端2-发起方
+    void testDoubleAttack() {//客户端2-发起方
         User user = new User("申请人", "2019110A", "127.0.0.1", 8089);
         Client client = new Client(user);
-        assertTrue(client.islogin());
+        assertTrue(client.isLogin());
         client.messageListener();
         System.out.println("申请与UID0对战");
         client.applyAttack("UID0");
@@ -175,7 +175,7 @@ public class ClientTest {
     void testTransferRoomUser() {
         RoomUser roomUser = new RoomUser();
         String userStr = "gameRoom:RoomUser{user_write=User{UID='UID-1', password='20191101', serverIP='127.0.0.1', serverPort=8089}, user_black=User{UID='UID-0', password='20191100', serverIP='127.0.0.1', serverPort=8089}, roomID=1}";
-        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        String regex = "\\{[^]]*}";//匹配中括号
         Pattern compile = Pattern.compile(regex);
         Matcher matcher = compile.matcher(userStr);
         matcher.find();
@@ -185,7 +185,7 @@ public class ClientTest {
             split[i] += "}";
             matcher = compile.matcher(split[i]);
             matcher.find();
-            String[] user = matcher.group().replaceAll("\\{|\\}| ", "").split(",");
+            String[] user = matcher.group().replaceAll("[{} ]", "").split(",");
             User userMessage = new User();
             Map<String, String> userMap = new HashMap<>();
             for (String s : user) {
@@ -206,29 +206,29 @@ public class ClientTest {
         System.out.println(roomUser);
     }
     @Test
-    void testTransferxy(){
+    void testTransferXY(){
         String str="command-game:game={var=write,xy=(2|2),roomID=1};";//"command-game:game={var=(while),xy=(x|y),roomID=(id)};"
-        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        String regex = "\\{[^]]*}";//匹配中括号
         Pattern compile = Pattern.compile(regex);
         Matcher matcher = compile.matcher(str);
         matcher.find();
-        String[] messageGame = matcher.group().replaceAll("\\{|\\}","").split(",");
+        String[] messageGame = matcher.group().replaceAll("[{}]","").split(",");
         Map<String,String>gameMap=new HashMap<>();
         for (String s : messageGame) {
             String[] game_split = s.split("=");
             gameMap.put(game_split[0], game_split[1].replace("|",","));
         }
         System.out.println(gameMap);
-        System.out.println(Arrays.toString(gameMap.get("xy").replaceAll("\\(|\\)","").split(",")));
+        System.out.println(Arrays.toString(gameMap.get("xy").replaceAll("[()]","").split(",")));
     }
     @Test
-    void testgameCommand(){
+    void testGameCommand(){
         String str="command-game:game={command=remake,roomID=id};";//"command-game:game={var=(while),xy=(x|y),roomID=(id)};"
-        String regex = "\\{[^\\]]*\\}";//匹配中括号
+        String regex = "\\{[^]]*}";//匹配中括号
         Pattern compile = Pattern.compile(regex);
         Matcher matcher = compile.matcher(str);
         matcher.find();
-        String[] messageGame = matcher.group().replaceAll("\\{|\\}","").split(",");
+        String[] messageGame = matcher.group().replaceAll("[{}]","").split(",");
         Map<String,String>gameMap=new HashMap<>();
         for (String s : messageGame) {
             String[] game_split = s.split("=");
@@ -241,41 +241,41 @@ public class ClientTest {
     @Test
     void testSendMessage() {//
         //Chat-[(UID)]:send=\"[(value)]\",obj=[(UID/Server)];
-        String regex = "\\[[^\\]]*\\]";//匹配中括号
+        String regex = "\\[[^]]*]";//匹配中括号
         Pattern compile = Pattern.compile(regex);
-        String dakuohao = "Chat-[康明]:send=[\"我是猪\"],obj=[Server]";
-        Matcher matcher = compile.matcher(dakuohao);
+        String Takao = "Chat-[康明]:send=[\"我是猪\"],obj=[Server]";
+        Matcher matcher = compile.matcher(Takao);
         while (matcher.find()) {
-            System.out.println(matcher.group().replaceAll("\\(|\\)|\\[|\\]", "") + ";");
+            System.out.println(matcher.group().replaceAll("[()\\[\\]]", "") + ";");
         }
     }
 
     @Test
     void testGetMessage() {
-        String regex = "\\[[^\\]]*\\]";//匹配中括号
+        String regex = "\\[[^]]*]";//匹配中括号
         Pattern compile = Pattern.compile(regex);
-        String dakuohao = "get-chat[" + "康明" + "],send=[" + "你是猪" + "];";
-        Matcher matcher = compile.matcher(dakuohao);
+        String Takao = "get-chat[" + "康明" + "],send=[" + "你是猪" + "];";
+        Matcher matcher = compile.matcher(Takao);
         while (matcher.find()) {
-            System.out.println(matcher.group().replaceAll("\\(|\\)|\\[|\\]", "") + ";");
+            System.out.println(matcher.group().replaceAll("[()\\[\\]]", "") + ";");
         }
     }
 
     @Test
     void testGetAttack() {
-        String regex = "\\[[^\\]]*\\]";//匹配中括号
+        String regex = "\\[[^]]*]";//匹配中括号
         Pattern compile = Pattern.compile(regex);
-        String dakuohao = "command:Client!attackUser:[(UID),(attackUserUID)];";
-        Matcher matcher = compile.matcher(dakuohao);
-        String message = "";
+        String Takao = "command:Client!attackUser:[(UID),(attackUserUID)];";
+        Matcher matcher = compile.matcher(Takao);
+        StringBuilder message = new StringBuilder();
         while (matcher.find()) {
-            message += matcher.group().replaceAll("\\(|\\)|\\[|\\]", "");
+            message.append(matcher.group().replaceAll("[()\\[\\]]", ""));
         }
-        System.out.println(Arrays.toString(message.split(",")));
+        System.out.println(Arrays.toString(message.toString().split(",")));
     }
 
     @Test
-    void testArrayListread() {
+    void testArrayListRead() {
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("w");
         arrayList.add("obj");
@@ -287,6 +287,7 @@ public class ClientTest {
             FileInputStream fi = new FileInputStream("1.ser");
             ObjectInputStream ooi = new ObjectInputStream(fi);
             ArrayList<String> ar = (ArrayList<String>) ooi.readObject();
+            System.out.println(ar);
             ooi.close();
             oos.close();
         } catch (IOException | ClassNotFoundException ioException) {
