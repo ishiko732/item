@@ -4,7 +4,6 @@ import GUI.ClientGUI;
 import Game.Core;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
@@ -241,10 +240,14 @@ public class Client {
                                 if (a == 1) {
                                     ClientGUI.getGameGui().repaint();
                                     JOptionPane.showMessageDialog(null, "白棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
+                                    ClientGUI.getGameGui().getPlayerTime_my().stop_time();
+                                    ClientGUI.getGameGui().getPlayerTime_your().stop_time();
                                 }
                                 if (a == 2) {
                                     ClientGUI.getGameGui().repaint();
                                     JOptionPane.showMessageDialog(null, "黑棋赢了", "恭喜", JOptionPane.DEFAULT_OPTION);
+                                    ClientGUI.getGameGui().getPlayerTime_my().stop_time();
+                                    ClientGUI.getGameGui().getPlayerTime_your().stop_time();
                                 }
                                 if (a != -1) {
                                     try {

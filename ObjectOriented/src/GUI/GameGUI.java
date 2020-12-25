@@ -8,10 +8,6 @@ import Client.Client;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 import javax.swing.*;
@@ -26,12 +22,14 @@ public class GameGUI extends JPanel implements MouseListener {
         this.core = core;
         ClientGUI.setGameGui(this);
         this.addMouseListener(this);
-        this.playerTime_your = playerTime_your;
-        this.playerTime_my = playerTime_my;
-        if (Client.isAttackUser()) {
-            playerTime_my.start_time();
-        } else {
-            playerTime_your.start_time();
+        if(playerTime_your!=null && playerTime_my!=null){
+            this.playerTime_your = playerTime_your;
+            this.playerTime_my = playerTime_my;
+            if (Client.isAttackUser()) {
+                playerTime_my.start_time();
+            } else {
+                playerTime_your.start_time();
+            }
         }
         repaint();
     }
@@ -78,13 +76,23 @@ public class GameGUI extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (e.getX() < 570 && e.getY() < 600) {
+        if (e.getX() >= 15 &&e.getX() < 570 && e.getY() >=45 &&e.getY() < 600) {//确认范围
             //下棋方
+            if (ClientGUI.getGameGui().getPlayerTime_my()==ClientGUI.getGameGui().getPlayerTime_your()) {
+                core.ChessIt(_CgetX(e.getX()), (_CgetY(e.getY())),var);
+                if(var == 1){
+                    var=2;
+                }else{
+                    var=1;
+                }
+                this.repaint();
+                return ;
+            }
             int flag = ClientGUI.getGameGui().getPlayerTime_my().getFlag();
             boolean jg1=Client.isAttackUser()&&(flag==1||flag==-1);//是攻击方同时又是下方计时器==这肯定是黑棋
             boolean jg2=!Client.isAttackUser()&&(flag==1||flag==-1);//非攻击方 同时又是下方计时器==这是白棋
             var=Client.isAttackUser()?1:2;
-            System.out.println(var==1&&jg1||var==2&&jg2);
+//            System.out.println(var==1&&jg1||var==2&&jg2);
             if(var==1&&jg1||var==2&&jg2){
                 core.ChessIt_newWork(_CgetX(e.getX()), (_CgetY(e.getY())));
             }else{
@@ -92,14 +100,14 @@ public class GameGUI extends JPanel implements MouseListener {
             }
 //            System.out.println(var==1&&jg1);//是黑棋同时也是攻击方
 //            System.out.println(var==2&&jg2);//是白棋同时也是被..
-        } else if (e.getX() > 590 && e.getX() < 660 && e.getY() > 300 && e.getY() < 330) {//游戏状态
-            Object[] options = {"白先", "黑先"};
-            int n = JOptionPane.showOptionDialog(null, "白先还是黑先？", "游戏设置", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-            if (n == 0) this.var = 1;
-            if (n == 1) this.var = 2;
-            this.core.Restart();
-            this.repaint();
-        }
+        }// else if (e.getX() > 590 && e.getX() < 660 && e.getY() > 300 && e.getY() < 330) {//游戏状态
+//            Object[] options = {"白先", "黑先"};
+//            int n = JOptionPane.showOptionDialog(null, "白先还是黑先？", "游戏设置", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+//            if (n == 0) this.var = 1;
+//            if (n == 1) this.var = 2;
+//            this.core.Restart();
+//            this.repaint();
+//        }
     }
 
     @Override
@@ -109,7 +117,8 @@ public class GameGUI extends JPanel implements MouseListener {
     }
 
     private int _CgetX(int x) {
-        x -= 30;
+        x -= 30;//对x进行偏移
+        System.out.println(x % 15);
         if (x % 15 <= 7)
             return x / 30;
         else
@@ -117,7 +126,7 @@ public class GameGUI extends JPanel implements MouseListener {
     }
 
     private int _CgetY(int y) {
-        y -= 60;
+        y -= 60;//对y进行偏移
         if (y % 15 <= 7)
             return y / 30;
         else

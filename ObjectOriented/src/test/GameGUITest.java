@@ -1,15 +1,11 @@
 package test;
 
 import GUI.GameGUI;
-import Game.Clock;
 import Game.Core;
-import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 
 import java.awt.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class GameGUITest {
     public static void main(String[] args) {
@@ -21,9 +17,4 @@ public class GameGUITest {
         Demo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    @Test
-    void Clock(){
-        Clock clock=new Clock(0,0,5);
-//        Clock.timeR(clock);
-    }
 }
