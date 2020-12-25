@@ -170,6 +170,7 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
             roomExit();
         } else if (e.getSource() == restart) {//重新开始
             try {
+                Client.sendUser=true;
                 client.sendGameCommand("game={command=remake,roomID="+gameRoom.getRoomID()+"}");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
@@ -178,20 +179,21 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
 //            gobang.repaint();
         } else if (e.getSource() == summation) {//求和
             try {
+                Client.sendUser=true;
                 client.sendGameCommand("game={command=summation,roomID="+gameRoom.getRoomID()+"}");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
-            Object[] options = {"确认", "取消"};
-            int n = JOptionPane.showOptionDialog((Component)this, "确认申请和棋?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-            options = new Object[]{"确认"};
-            if (n == 0) {
-                core.Restart();
-                gobang.repaint();
-                JOptionPane.showOptionDialog((Component)this, "平局,开始新对局!", "和棋成功", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
-            } else if (n == 1) {
-                JOptionPane.showOptionDialog((Component)this, "和棋失败,进行对局", "和棋失败", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
-            }
+//            Object[] options = {"确认", "取消"};
+//            int n = JOptionPane.showOptionDialog((Component)this, "确认申请和棋?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+//            options = new Object[]{"确认"};
+//            if (n == 0) {
+//                core.Restart();
+//                gobang.repaint();
+//                JOptionPane.showOptionDialog((Component)this, "平局,开始新对局!", "和棋成功", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
+//            } else if (n == 1) {
+//                JOptionPane.showOptionDialog((Component)this, "和棋失败,进行对局", "和棋失败", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+//            }
         } else if (e.getSource() == regret) {//悔棋
             try {
                 Client.sendUser=true;

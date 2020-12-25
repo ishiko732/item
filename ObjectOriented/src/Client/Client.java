@@ -4,6 +4,7 @@ import GUI.ClientGUI;
 import Game.Core;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
@@ -276,27 +277,60 @@ public class Client {
                                 String command = map.get("command");
                                 System.out.println(command);
                                 if ("remake".equals(command)) {//重新开始
-                                    core.Restart();
-                                    ClientGUI.getGameGui().repaint();
+                                    if (!map.containsKey("isLogic") && sendUser) {
+                                        Object[] options = {"确认", "取消"};
+                                        int n = JOptionPane.showOptionDialog(null, "是否同意重新开始?", "重新开始", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                                        if (n == 0) {
+                                            sendGameCommand("game={command=remake,roomID=" + map.get("roomID") + ",isLogic=1}");
+                                        } else {
+                                            sendGameCommand("game={command=remake,roomID=" + map.get("roomID") + ",isLogic=0}");
+                                        }
+                                    } else if (map.containsKey("isLogic")) {
+                                        int isLogic = "1".equals(map.get("isLogic")) ? 1 : 0;
+                                        if (isLogic == 1) {
+                                            core.Restart();
+                                            ClientGUI.getGameGui().getPlayerTime_my().stop_time();
+                                            ClientGUI.getGameGui().getPlayerTime_your().stop_time();
+                                            ClientGUI.getGameGui().getPlayerTime_my().reset_time();
+                                            ClientGUI.getGameGui().getPlayerTime_your().reset_time();
+                                            if (Client.isAttackUser()) {
+                                                ClientGUI.getGameGui().getPlayerTime_my().start_time();
+                                            } else {
+                                                ClientGUI.getGameGui().getPlayerTime_your().start_time();
+                                            }
+                                            ClientGUI.getGameGui().repaint();
+                                        }else{
+                                            JOptionPane.showMessageDialog(null, "重新开始失败!");
+                                        }
+                                    }
                                 } else if ("summation".equals(command)) {//求和
-                                    Object[] options = {"确认", "取消"};
-                                    int n = JOptionPane.showOptionDialog(null, "确认申请和棋?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-                                    options = new Object[]{"确认"};
-                                    if (n == 0) {
-                                        core.Restart();
-                                        ClientGUI.getGameGui().repaint();
-                                        JOptionPane.showOptionDialog(null, "平局,开始新对局!", "和棋成功", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
-                                    } else if (n == 1) {
-                                        JOptionPane.showOptionDialog(null, "和棋失败,进行对局", "和棋失败", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+                                    if (!map.containsKey("isLogic") && sendUser) {
+                                        Object[] options = {"确认", "取消"};
+                                        int n = JOptionPane.showOptionDialog(null, "确认申请和棋?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                                        if (n == 0) {
+                                            sendGameCommand("game={command=summation,roomID=" + map.get("roomID") + ",isLogic=1}");
+                                        } else {
+                                            sendGameCommand("game={command=summation,roomID=" + map.get("roomID") + ",isLogic=0}");
+                                        }
+                                    } else if (map.containsKey("isLogic")) {
+                                        int isLogic = "1".equals(map.get("isLogic")) ? 1 : 0;
+                                        if (isLogic == 1) {
+                                            core.Restart();
+                                            ClientGUI.getGameGui().getPlayerTime_my().stop_time();
+                                            ClientGUI.getGameGui().getPlayerTime_your().stop_time();
+                                            JOptionPane.showMessageDialog(null, "和棋成功,打成平局!新对局!");
+                                            ClientGUI.getGameGui().repaint();
+                                        }else{
+                                            JOptionPane.showMessageDialog(null, "和棋失败,进行对局!");
+                                        }
                                     }
                                 } else if ("regret".equals(command)) {//悔棋
-                                    System.out.println(map);
                                     int var = "write".equals(map.get("var")) ? 1 : 2;
-                                    if (!map.containsKey("isLogic")&&sendUser) {//第一份信息是没有islogic --发送同意悔棋请求
+                                    if (!map.containsKey("isLogic") && sendUser) {//第一份信息是没有islogic --发送同意悔棋请求
                                         Object[] options = {"同意", "拒绝"};
                                         int n = JOptionPane.showOptionDialog(null, "对方申请悔棋,是否同意?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                                         if (n == 0) {//同意
-                                            String v ="write".equals(map.get("var")) ? "write" : "black";//攻击方为黑棋
+                                            String v = "write".equals(map.get("var")) ? "write" : "black";//攻击方为黑棋
                                             sendGameCommand("game={command=regret,roomID=" + map.get("roomID") + ",isLogic=1,var=" + v + "}");
                                         }
                                     } else if (map.containsKey("isLogic")) {//第二份信息是有islogic --收到请求情况
@@ -308,20 +342,22 @@ public class Client {
                                             } else if (ClientGUI.getGameGui().getVar() == 2) {
                                                 ClientGUI.getGameGui().setVar(1);
                                             }
-                                            System.out.println("下方的计时器:" + ClientGUI.getGameGui().getPlayerTime_my().getFlag() + "上方的计时器:" + ClientGUI.getGameGui().getPlayerTime_your().getFlag());
+//                                            System.out.println("下方的计时器:" + ClientGUI.getGameGui().getPlayerTime_my().getFlag() + "上方的计时器:" + ClientGUI.getGameGui().getPlayerTime_your().getFlag());
                                             ClientGUI.getGameGui().repaint();
-                                            if(ClientGUI.getGameGui().getPlayerTime_my() != null&&ClientGUI.getGameGui().getPlayerTime_your() != null){
+                                            if (ClientGUI.getGameGui().getPlayerTime_my() != null && ClientGUI.getGameGui().getPlayerTime_your() != null) {
                                                 int myFlag = ClientGUI.getGameGui().getPlayerTime_my().getFlag();
-                                                if(myFlag==1||myFlag==-1){
+                                                if (myFlag == 1 || myFlag == -1) {
                                                     ClientGUI.getGameGui().getPlayerTime_my().stop_time();
                                                     ClientGUI.getGameGui().getPlayerTime_your().reset_time();
                                                     ClientGUI.getGameGui().getPlayerTime_your().start_time();
-                                                }else{
+                                                } else {
                                                     ClientGUI.getGameGui().getPlayerTime_your().stop_time();
                                                     ClientGUI.getGameGui().getPlayerTime_my().reset_time();
                                                     ClientGUI.getGameGui().getPlayerTime_my().start_time();
                                                 }
                                             }
+                                        }else{
+                                            JOptionPane.showMessageDialog(null, "悔棋失败!");
                                         }
                                     }
 
@@ -357,8 +393,8 @@ public class Client {
         // 拒绝对战 errorGame=={write=[(userUID2)],black=[(userUID1)]}
         // 请求对战 attackUser:[(UID),(attackUserUID)]
         // 棋子信息 game={var=[(write)],xy=[(x|y)],roomID=[(id)]}
-        // 重新开始 game={command=remake,roomID=id}
-        // 求和 game={command=summation,roomID=id}
+        // 重新开始 game={command=remake,roomID=id,(isLogic=1)}
+        // 求和 game={command=summation,roomID=id,(isLogic=1)}
         // 悔棋 game={command=regret,roomID=id,var=write,(isLogic=1)}
         // 认输 game={command=admit,roomID=id}
 
