@@ -105,7 +105,7 @@ public class ServerUserThread extends Thread {
         }
     }
 
-    private void forwardMessage(String info, Map<String, String> map) throws IOException {
+    private void forwardMessage(String info, Map<String, String> map) throws IOException {//需要修改 NullPointerException
         GameRoomUser gameRoom = Server.getRoom().get(Integer.parseInt(map.get("roomID")));
         User user1 = gameRoom.getUser_black();
         User user2 = gameRoom.getUser_write();

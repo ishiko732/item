@@ -20,7 +20,10 @@ public class Client {
     private Core core;
     private static boolean attackUser;
     public static boolean sendUser;
-
+    //客户端线程
+    private String message;
+    private JTextArea textArea;
+    private Map<String, String> userMap = null;
 
     public Client(User user) {
         this.user = user;
@@ -60,8 +63,6 @@ public class Client {
 
     public void messageListener() {//创建监听器
         System.out.println("Client-" + user.getUID() + ":listener message ing..");
-//        userMessage = new ClientUserMessage(user, dis, dos);
-//        new Thread(userMessage).start();
         clientThread();
     }
 
@@ -143,10 +144,33 @@ public class Client {
 
     }
 
-    //客户端线程
-    private String message;
-    private JTextArea textArea;
-    private Map<String, String> userMap = null;
+    public void setTextArea(JTextArea textArea) {
+        this.textArea = textArea;
+    }
+
+    public Core getCore() {
+        return core;
+    }
+
+    public void setCore(Core core) {
+        this.core = core;
+    }
+
+    public RoomUser getRoomUser() {
+        return roomUser;
+    }
+
+    public void setRoomUser(RoomUser roomUser) {
+        this.roomUser = roomUser;
+    }
+
+    public static boolean isAttackUser() {
+        return attackUser;
+    }
+
+    public static void setAttackUser(boolean attackUser) {
+        Client.attackUser = attackUser;
+    }
 
     private void clientThread() {
         Runnable run = () -> {
@@ -158,7 +182,7 @@ public class Client {
                     if (!"".equals(message)) {
                         if (message.indexOf("get-chat[") == 0) {//接受到信息
                             // "get-chat["+chatMessage[0]+"],send=["+chatMessage[1]+"];"
-                            ArrayList<String> arrayList =Transfer.chat(message);
+                            ArrayList<String> arrayList = Transfer.chat(message);
                             if (textArea != null) {
                                 textArea.append(arrayList.get(0) + ":" + arrayList.get(1) + "\n");
                             } else {
@@ -177,14 +201,16 @@ public class Client {
                             if ("请求对战".equals(arrayList.get(2)) && "game".equals(arrayList.get(1))) {
                                 if (arrayList.get(0).equals(user.getUID())) {
                                     sendCommand("newGame={write=[" + arrayList.get(0) + "],black=[" + user.getUID() + "]}", true);
+//                                    JOptionPane.showMessageDialog(this, "Server:你选择了自己,将进入单机模式!");
                                     if (textArea != null) {
                                         textArea.append("Server:你选择了自己,将进入单机模式!" + "\n");
                                     } else {
                                         System.out.println("Client(" + user.getUID() + ")您进入单机对战!");
                                     }
                                 } else {
-                                    String str = JOptionPane.showInputDialog(null, "是否同意与" + arrayList.get(0) + "对战?(Y/N)", "申请对战", JOptionPane.PLAIN_MESSAGE);
-                                    if ("Y".equalsIgnoreCase(str)) {
+                                    Object[] options = {"同意", "拒绝"};
+                                    int n = JOptionPane.showOptionDialog(null, "是否同意与" + arrayList.get(0) + "对战?", "申请对战("+user.getUID()+")", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                                    if (n==0) {
                                         if (textArea != null) {
                                             textArea.append("Server:您已经接受对战,稍等一会,开始游戏!" + "\n");
                                         } else {
@@ -256,7 +282,7 @@ public class Client {
                             //game={command=remake,roomID=id}
                             Map<String, String> map = Transfer.gameCommand(message);
                             String command = map.get("command");
-                            System.out.println("gameCommand:"+command);
+                            System.out.println("gameCommand:" + command);
                             if ("remake".equals(command)) {//重新开始
                                 if (!map.containsKey("isLogic") && sendUser) {
                                     Object[] options = {"确认", "取消"};
@@ -366,33 +392,5 @@ public class Client {
 
     }
 
-
-    public void setTextArea(JTextArea textArea) {
-        this.textArea = textArea;
-    }
-
-    public Core getCore() {
-        return core;
-    }
-
-    public void setCore(Core core) {
-        this.core = core;
-    }
-
-    public RoomUser getRoomUser() {
-        return roomUser;
-    }
-
-    public void setRoomUser(RoomUser roomUser) {
-        this.roomUser = roomUser;
-    }
-
-    public static boolean isAttackUser() {
-        return attackUser;
-    }
-
-    public static void setAttackUser(boolean attackUser) {
-        Client.attackUser = attackUser;
-    }
 
 }

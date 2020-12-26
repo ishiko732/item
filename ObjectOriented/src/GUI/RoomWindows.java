@@ -89,10 +89,10 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         }
         System.out.println(Client.isAttackUser());
 //        if(Client.isAttackUser()){//攻击方是自己
-            UserImg_my = new JLabel(new ImageIcon(gameRoom.getUser_black().getPassword()));
-            UserName_my = new JLabel(gameRoom.getUser_black().getUID());
-            UserImg_your = new JLabel(new ImageIcon(gameRoom.getUser_write().getPassword()));
-            UserName_your = new JLabel(gameRoom.getUser_write().getUID());
+        UserImg_my = new JLabel(new ImageIcon(gameRoom.getUser_black().getPassword()));
+        UserName_my = new JLabel(gameRoom.getUser_black().getUID());
+        UserImg_your = new JLabel(new ImageIcon(gameRoom.getUser_write().getPassword()));
+        UserName_your = new JLabel(gameRoom.getUser_write().getUID());
 //        }else{
 //            UserImg_my = new JLabel(new ImageIcon(gameRoom.getUser_write().getPassword()));
 //            UserName_my = new JLabel(gameRoom.getUser_write().getUID());
@@ -150,6 +150,9 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         Four.add(title, "North");
         jsp1.setRightComponent(Four);
         //棋盘
+        if (gameRoom.getUser_black().getUID().equals(gameRoom.getUser_write().getUID())) {
+            playerTime_your = playerTime_my = null;
+        }
         gobang = new GameGUI(core, playerTime_your, playerTime_my);
         Four.add(gobang, "Center");
         South4.add(exit);
@@ -171,35 +174,45 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
             roomExit();
         } else if (e.getSource() == restart) {//重新开始
             try {
-                Client.sendUser=true;
-                client.sendCommand("game={command=remake,roomID="+gameRoom.getRoomID()+"}",true);
+                if (ClientGUI.getGameGui().getPlayerTime_my() == ClientGUI.getGameGui().getPlayerTime_your()) {
+                    core.Restart();
+                    gobang.repaint();
+                } else {
+                    Client.sendUser = true;
+                    client.sendCommand("game={command=remake,roomID=" + gameRoom.getRoomID() + "}", true);
+                }
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
-//            core.Restart();
-//            gobang.repaint();
         } else if (e.getSource() == summation) {//求和
             try {
-                Client.sendUser=true;
-                client.sendCommand("game={command=summation,roomID="+gameRoom.getRoomID()+"}",true);
+                if (ClientGUI.getGameGui().getPlayerTime_my() == ClientGUI.getGameGui().getPlayerTime_your()) {
+                    Object[] options = {"确认", "取消"};
+                    int n = JOptionPane.showOptionDialog(this, "确认申请和棋?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                    if (n == 0) {
+                        core.Restart();
+                        gobang.repaint();
+                        JOptionPane.showMessageDialog(this, "平局,可以开始新对局!");
+                    } else if (n == 1) {
+                        JOptionPane.showMessageDialog(this, "和棋失败,进行对局");
+                    }
+                }
+                Client.sendUser = true;
+                client.sendCommand("game={command=summation,roomID=" + gameRoom.getRoomID() + "}", true);
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
-//            Object[] options = {"确认", "取消"};
-//            int n = JOptionPane.showOptionDialog((Component)this, "确认申请和棋?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-//            options = new Object[]{"确认"};
-//            if (n == 0) {
-//                core.Restart();
-//                gobang.repaint();
-//                JOptionPane.showOptionDialog((Component)this, "平局,开始新对局!", "和棋成功", JOptionPane.YES_NO_OPTION, JOptionPane.CLOSED_OPTION, null, options, options[0]);
-//            } else if (n == 1) {
-//                JOptionPane.showOptionDialog((Component)this, "和棋失败,进行对局", "和棋失败", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE, null, options, options[0]);
-//            }
         } else if (e.getSource() == regret) {//悔棋
             try {
-                Client.sendUser=true;
-                String v =Client.isAttackUser()?"black" : "write";//攻击方为黑棋
-                client.sendCommand("game={command=regret,roomID="+gameRoom.getRoomID()+",var="+v+"}",true);
+                if (ClientGUI.getGameGui().getPlayerTime_my() == ClientGUI.getGameGui().getPlayerTime_your()) {
+                    core.RetChess();
+                    gobang.repaint();
+                    gobang.setVar(gobang.getVar() == 1?2:1);
+                } else {
+                    Client.sendUser = true;
+                    String v = Client.isAttackUser() ? "black" : "write";//攻击方为黑棋
+                    client.sendCommand("game={command=regret,roomID=" + gameRoom.getRoomID() + ",var=" + v + "}", true);
+                }
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -209,8 +222,10 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
             int n = JOptionPane.showOptionDialog(null, str + ":确认申请认输吗?", "申请认输", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
             if (n == 0) {
                 try {
-                    Client.sendUser=true;
-                    client.sendCommand("game={command=admit,roomID="+gameRoom.getRoomID()+"}",true);
+                    if (ClientGUI.getGameGui().getPlayerTime_my() != ClientGUI.getGameGui().getPlayerTime_your()){
+                        Client.sendUser = true;
+                        client.sendCommand("game={command=admit,roomID=" + gameRoom.getRoomID() + "}", true);
+                    }
                     JOptionPane.showMessageDialog(this, str + "已经认输,开始新对局!");
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
@@ -220,11 +235,11 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
                 roomExit();
             }
         } else if (e.getSource() == send) {
-            if(UserName_my.getText().equals(UserName_your.getText())){//黑白方都是自己
+            if (UserName_my.getText().equals(UserName_your.getText())) {//黑白方都是自己
                 client.sendMessage(sendText_JFiled.getText(), "Server");
                 chatMessage.append(client.getUser().getUID() + ":" + sendText_JFiled.getText() + "\n");
-            }else{
-                String color= Client.isAttackUser()?"(黑):":"(白):";
+            } else {
+                String color = Client.isAttackUser() ? "(黑):" : "(白):";
                 client.sendMessage(sendText_JFiled.getText(), gameRoom.getUser_write().getUID());
                 chatMessage.append(client.getUser().getUID() + color + sendText_JFiled.getText() + "\n");
             }
@@ -239,6 +254,7 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
             Map.Entry<Integer, String> entry = it.next();
             if (userUID.equals(entry.getValue())) {
                 GateWindows.btnSeat[entry.getKey()].setIcon(new ImageIcon("./src/gobang/img/none.gif"));
+                GateWindows.userName[entry.getKey()].setText("");
                 it.remove();
             }
         }

@@ -27,7 +27,7 @@ public class GateWindows extends JFrame {
     JTextArea serverTextArea;
 
     public static JButton[] btnSeat = new JButton[30];
-    public JLabel[] userName = new JLabel[30];
+    public static JLabel[] userName = new JLabel[30];
 
     //    private ArrayList<Integer> finalI_arrayList=new ArrayList<>();
     //END GUI
