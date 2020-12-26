@@ -79,13 +79,19 @@ public class GameGUI extends JPanel implements MouseListener {
         if (e.getX() >= 15 && e.getX() < 570 && e.getY() >= 45 && e.getY() < 600) {//确认范围
             //下棋方
             if (ClientGUI.getGameGui().getPlayerTime_my() == ClientGUI.getGameGui().getPlayerTime_your()) {
-                core.ChessIt(_CgetX(e.getX()), (_CgetY(e.getY())), var);
+                int a = core.ChessIt(_CgetX(e.getX()), (_CgetY(e.getY())), var);
                 if (var == 1) {
                     var = 2;
                 } else {
                     var = 1;
                 }
                 this.repaint();
+                if (a == 1) {
+                    JOptionPane.showMessageDialog(null, "白棋赢了");
+                }
+                if (a == 2) {
+                    JOptionPane.showMessageDialog(null, "黑棋赢了");
+                }
                 return;
             }
             int flag = ClientGUI.getGameGui().getPlayerTime_my().getFlag();

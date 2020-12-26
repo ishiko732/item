@@ -12,9 +12,10 @@ import java.awt.event.ActionListener;
 //import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class GateWindows extends JFrame {
-    private final ClientGUI gui;
+    private static ClientGUI gui;
     //GUI
     JSplitPane game_gate_jsp, jsp2;
     public static JTabbedPane jtp = new JTabbedPane();//选项卡
@@ -141,8 +142,9 @@ public class GateWindows extends JFrame {
 
         //添加座位按钮
         int a = 0, b = 0;
+        ImageIcon imageIcon = new ImageIcon("./res/img/none.gif");
         for (int i = 0; i < btnSeat.length; i += 2) {
-            btnSeat[i] = new JButton(new ImageIcon("./res/img/none.gif"));
+            btnSeat[i] = new JButton(imageIcon);
             btnSeat[i].setBounds(35 + a * 193, 35 + b * 150, 40, 45);
             userName[i] = new JLabel("", JLabel.CENTER);
             userName[i].setBounds(33 + a * 193, 70 + b * 150, 40, 45);
@@ -157,7 +159,7 @@ public class GateWindows extends JFrame {
         a = 0;
         b = 0;
         for (int i = 1; i < btnSeat.length; i += 2) {
-            btnSeat[i] = new JButton(new ImageIcon("./res/img/none.gif"));
+            btnSeat[i] = new JButton(imageIcon);
             btnSeat[i].setBounds(128 + a * 193, 35 + b * 150, 40, 45);
             userName[i] = new JLabel("", JLabel.CENTER);
             userName[i].setBounds(128 + a * 193, 70 + b * 150, 40, 45);
@@ -172,9 +174,10 @@ public class GateWindows extends JFrame {
         //添加桌子
         int j = 0, k = 0;
         JLabel[] table = new JLabel[15];
+        //noinspection SpellCheckingInspection
+        ImageIcon imageIcon1 = new ImageIcon("./res/img/xqnone.gif");
         for (int i = 0; i < table.length; i++) {
-            //noinspection SpellCheckingInspection
-            table[i] = new JLabel(new ImageIcon("./res/img/xqnone.gif"));
+            table[i] = new JLabel(imageIcon1);
             table[i].setBounds(75 + j * 193, 30 + k * 150, 53, 53);
             rightCenter.add(table[i]);
             j++;
@@ -191,7 +194,19 @@ public class GateWindows extends JFrame {
         //监听
         button_flush.addActionListener((ActionEvent e) -> {
             if (e.getSource() == button_flush) {
-                flushList();
+                uid.clear();
+                for (int i = 0; i < btnSeat.length; i++) {
+                    btnSeat[i].setIcon(imageIcon);
+                    userName[i].setText("");
+                }
+                int t = 0;
+                Map<String, String> seat = gui.getClient().getUserList();
+                for (String name : seat.keySet()) {
+                    btnSeat[t].setIcon(new ImageIcon(seat.get(name)));
+                    userName[t].setText(name);
+                    uid.put(t, name);
+                    t += 2;
+                }
             }
         });
         button_exit.addActionListener((ActionEvent) -> {//退出按钮
@@ -206,8 +221,9 @@ public class GateWindows extends JFrame {
                     btnSeat[finalI].setIcon(
                             new ImageIcon(gui.getClient().getUser().getPassword()));
                     btnSeat[finalI].setSize(38, 38);
-                    uid.put(finalI, gui.getClient().getUser().getUID());//用户信息
+                    userName[finalI].setText(gui.getClient().getUser().getUID());
 //                    System.out.println(uid);
+                    uid.put(finalI, gui.getClient().getUser().getUID());//用户信息
                     String user1 = uid.get(finalI);
                     String user2 = finalI != 0 && finalI % 2 == 0 ? uid.get(finalI + 1) : uid.get(finalI - 1);
                     RoomUser gameUser = gui.getClient().getGameRoom(user1, user2);
@@ -220,11 +236,6 @@ public class GateWindows extends JFrame {
                             interruptedException.printStackTrace();
                         }
                     }
-//                    gui.getClient().setAttackUser(true);
-//                    gui.getClient().setCore(new Core(19, 19,gui.getClient(),gameUser.getRoomID()));
-//                    GameRoomUser gameRoomUser = new GameRoomUser(gameUser.getUser_write(), gameUser.getUser_black(), gui.getClient().getCore(), gameUser.getRoomID());//将棋盘连起来
-//                    new RoomWindows(jtp, gui.getClient(), uid, gameRoomUser);
-
                 }
 
             });
@@ -233,17 +244,36 @@ public class GateWindows extends JFrame {
         newListener();
     }
 
-    private void flushList() {
-        uid.clear();
-        int t = 0;
-        Map<String, String> seat = gui.getClient().getUserList();
-        for (String name : seat.keySet()) {
-            btnSeat[t].setIcon(new ImageIcon(seat.get(name)));
-            userName[t].setText(name);
-            uid.put(t, name);
-            t += 2;
-        }
+    private Map<String, String> seat;
 
+    private void flushList() {
+        while (true) {
+            String temp = "";
+            if (seat != null) {
+                temp = seat.toString();
+            }
+            seat = gui.getClient().getUserList();
+            if (!Objects.equals(temp, seat.toString())) {
+                uid.clear();
+                ImageIcon imageIcon = new ImageIcon("./res/img/none.gif");
+                for (int i = 0; i < btnSeat.length; i++) {
+                    btnSeat[i].setIcon(imageIcon);
+                    userName[i].setText("");
+                }
+                int t = 0;
+                for (String name : seat.keySet()) {
+                    btnSeat[t].setIcon(new ImageIcon(seat.get(name)));
+                    userName[t].setText(name);
+                    uid.put(t, name);
+                    t += 2;
+                }
+            }
+            try {
+                Thread.sleep(4000);//4s
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void jFrame_operator() {
@@ -255,11 +285,10 @@ public class GateWindows extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    Map<Integer, String> uid = new HashMap<>();
+    static Map<Integer, String> uid = new HashMap<>();
 
-    public void newListener() {
+    public static void newListener() {
         new Thread(() -> {
-            flushList();
             while (gui.getClient().getRoomUser() == null) {
                 try {
                     Thread.sleep(1000);
@@ -272,7 +301,6 @@ public class GateWindows extends JFrame {
             } else {
                 gui.getClient().setCore(new Core(19, 19, gui.getClient(), gui.getClient().getRoomUser().getRoomID()));
                 RoomUser gameRoomUser;
-                synchronized (this) {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
@@ -283,7 +311,6 @@ public class GateWindows extends JFrame {
                     } else {
                         gameRoomUser = new RoomUser(gui.getClient().getRoomUser().getUser_black(), gui.getClient().getRoomUser().getUser_write(), gui.getClient().getRoomUser().getRoomID());//将棋盘连起来
                     }
-                }
                 jtp.addTab("五子棋游戏房间 " + gui.getClient().getRoomUser().getRoomID(), new ImageIcon(gui.getClient().getUser().getPassword()), RoomWindows.jsp1);
                 jtp.setSelectedIndex(1);
                 RoomWindows roomWindows = new RoomWindows(jtp, gui.getClient(), uid, gameRoomUser);
@@ -293,11 +320,11 @@ public class GateWindows extends JFrame {
     }
 
     public GateWindows(ClientGUI gui) {
-        this.gui = gui;
+        GateWindows.gui = gui;
         init();
         gui.getClient().messageListener();
         gui.getClient().setTextArea(serverTextArea);
-        flushList();
+        new Thread(this::flushList).start();
         //system.out -> Text
 //        PrintStream ps = new PrintStream(System.out) {
 //            @Override

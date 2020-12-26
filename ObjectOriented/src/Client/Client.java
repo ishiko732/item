@@ -1,6 +1,8 @@
 package Client;
 
 import GUI.ClientGUI;
+import GUI.GateWindows;
+import GUI.RoomWindows;
 import Game.Core;
 
 import javax.swing.*;
@@ -77,6 +79,7 @@ public class Client {
             // 求和 game={command=summation,roomID=id,(isLogic=1)}
             // 悔棋 game={command=regret,roomID=id,var=write,(isLogic=1)}
             // 认输 game={command=admit,roomID=id}
+            // 退出游戏 game={command=exit,roomID=id}
         } else {
             dos.writeUTF("command:Client!" + command + ";");//写入命令--命令:客户端!
             // 获取用户列表 getUserList
@@ -178,7 +181,7 @@ public class Client {
                 try {
                     Thread.sleep(100);
                     message = dis.readUTF();
-                    System.out.println("(get)Client-" + user.getUID() + ": " + message);
+//                    System.out.println("(get)Client-" + user.getUID() + ": " + message);
                     if (!"".equals(message)) {
                         if (message.indexOf("get-chat[") == 0) {//接受到信息
                             // "get-chat["+chatMessage[0]+"],send=["+chatMessage[1]+"];"
@@ -209,8 +212,8 @@ public class Client {
                                     }
                                 } else {
                                     Object[] options = {"同意", "拒绝"};
-                                    int n = JOptionPane.showOptionDialog(null, "是否同意与" + arrayList.get(0) + "对战?", "申请对战("+user.getUID()+")", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-                                    if (n==0) {
+                                    int n = JOptionPane.showOptionDialog(null, "是否同意与" + arrayList.get(0) + "对战?", "申请对战(" + user.getUID() + ")", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                                    if (n == 0) {
                                         if (textArea != null) {
                                             textArea.append("Server:您已经接受对战,稍等一会,开始游戏!" + "\n");
                                         } else {
@@ -244,17 +247,19 @@ public class Client {
                             System.out.println("接收" + gameMap.get("var") + ":" + gameMap.get("xy") + "执行状态:" + a);
                             if (a == 1) {
                                 ClientGUI.getGameGui().repaint();
-                                JOptionPane.showMessageDialog(null, "白棋赢了");
+                                String color = attackUser ? ":你输了" : ":你赢了";
+                                JOptionPane.showMessageDialog(null, user.getUID() + color);
                                 ClientGUI.getGameGui().getPlayerTime_my().stop_time();
                                 ClientGUI.getGameGui().getPlayerTime_your().stop_time();
                             }
                             if (a == 2) {
                                 ClientGUI.getGameGui().repaint();
-                                JOptionPane.showMessageDialog(null, "黑棋赢了");
+                                String color = attackUser ? ":你赢了" : ":你输了";
+                                JOptionPane.showMessageDialog(null, user.getUID() + color);
                                 ClientGUI.getGameGui().getPlayerTime_my().stop_time();
                                 ClientGUI.getGameGui().getPlayerTime_your().stop_time();
                             }
-                            if (a != -1) {
+                            if (a == 0) {
                                 try {
 //                                        System.out.println("是否是攻击方:" + attackUser + "下方的计时器:" + ClientGUI.getGameGui().getPlayerTime_my().getFlag() + "上方的计时器:" + ClientGUI.getGameGui().getPlayerTime_your().getFlag());
                                     if ((var == 1 && attackUser) || (var == 2 && !attackUser)) {//如果是黑棋,同时是发起方  --下边是发起方
@@ -367,16 +372,21 @@ public class Client {
                                         JOptionPane.showMessageDialog(null, "悔棋失败!");
                                     }
                                 }
-
                                 Client.sendUser = false;//处理完信息以后 置未false
                             } else if ("admit".equals(command)) {//认输
                                 if (!sendUser) {
-                                    JOptionPane.showMessageDialog(null, "对方已经认输,游戏结束,退出程序!");
-                                    System.exit(0);
+                                    JOptionPane.showMessageDialog(null, "对方已经认输,游戏结束!");
+                                    RoomWindows.roomExit();
                                 }
                                 core.Restart();
                                 ClientGUI.getGameGui().repaint();
                                 Client.sendUser = false;//处理完信息以后 置未false
+//                                roomUser=null;
+//                                GateWindows.newListener();
+                            } else if ("exit".equals(command)) {//退出游戏
+                                RoomWindows.roomExit();
+//                                roomUser=null;
+//                                GateWindows.newListener();
                             }
                         }
                     }
@@ -391,6 +401,4 @@ public class Client {
         new Thread(run).start();
 
     }
-
-
 }

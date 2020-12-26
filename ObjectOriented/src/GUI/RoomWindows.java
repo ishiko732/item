@@ -23,7 +23,7 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     JSplitPane jsp3 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
     //选项卡
-    JTabbedPane jtp;
+    static JTabbedPane jtp;
     JTabbedPane yourself = new JTabbedPane();
     JTabbedPane myself = new JTabbedPane();
     JTabbedPane jtp3 = new JTabbedPane();
@@ -53,16 +53,16 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
 
     private Core core;
     private GameGUI gobang;
-    private Map<Integer, String> roomMessage;
-    private Client client;
+    private static Map<Integer, String> roomMessage;
+    private static Client client;
     private RoomUser gameRoom;
 
     public RoomWindows(JTabbedPane jtp, Client client, Map<Integer, String> roomMessage, RoomUser gameRoom) {
         this.gameRoom = gameRoom;
         this.core = client.getCore();
-        this.jtp = jtp;
-        this.roomMessage = roomMessage;
-        this.client = client;
+        RoomWindows.jtp = jtp;
+        RoomWindows.roomMessage = roomMessage;
+        RoomWindows.client = client;
         jsp1.setLeftComponent(jsp2);
         jsp2.setRightComponent(jsp3);
         //设置分隔条大小
@@ -151,6 +151,10 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         jsp1.setRightComponent(Four);
         //棋盘
         if (gameRoom.getUser_black().getUID().equals(gameRoom.getUser_write().getUID())) {
+            One.remove(playerTime_your);
+            Two.remove(playerTime_my);
+            One.remove(time1);
+            Two.remove(time2);
             playerTime_your = playerTime_my = null;
         }
         gobang = new GameGUI(core, playerTime_your, playerTime_my);
@@ -171,7 +175,16 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == exit) {
-            roomExit();
+            if (ClientGUI.getGameGui().getPlayerTime_my() == ClientGUI.getGameGui().getPlayerTime_your()) {
+                roomExit();
+            } else {
+                try {
+                    Client.sendUser = true;
+                    client.sendCommand("game={command=exit,roomID=" + gameRoom.getRoomID() + "}", true);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
         } else if (e.getSource() == restart) {//重新开始
             try {
                 if (ClientGUI.getGameGui().getPlayerTime_my() == ClientGUI.getGameGui().getPlayerTime_your()) {
@@ -246,18 +259,22 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
         }
     }
 
-    private void roomExit() {
+    public static void roomExit() {
         jtp.remove(jsp1);
         String userUID = client.getUser().getUID();
         Iterator<Map.Entry<Integer, String>> it = roomMessage.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Integer, String> entry = it.next();
             if (userUID.equals(entry.getValue())) {
-                GateWindows.btnSeat[entry.getKey()].setIcon(new ImageIcon("./src/gobang/img/none.gif"));
-                GateWindows.userName[entry.getKey()].setText("");
-                it.remove();
+                if (entry.getKey() % 2 != 0) {
+                    GateWindows.btnSeat[entry.getKey()].setIcon(new ImageIcon("./src/gobang/img/none.gif"));
+                    GateWindows.userName[entry.getKey()].setText("");
+                    it.remove();
+                }
             }
         }
+        client.setRoomUser(null);
+        GateWindows.newListener();//重新绑定房间监听器
     }
 
     @SuppressWarnings("unused")
