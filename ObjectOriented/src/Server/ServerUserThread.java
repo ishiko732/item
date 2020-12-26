@@ -1,5 +1,6 @@
 package Server;
 
+import Client.RoomUser;
 import Client.User;
 import Game.Core;
 import Game.GameRoomUser;
@@ -58,7 +59,7 @@ public class ServerUserThread extends Thread {
                     Object o_write = userMap.get(arrayList.get(0)).get(0);
                     Object o_black = userMap.get(arrayList.get(1)).get(0);//黑棋是自己
                     int id = Server.getRoom().size() + 1;
-                    GameRoomUser gameRoomUser = new GameRoomUser((User) o_write, (User) o_black, new Core(19, 19), id);
+                    RoomUser gameRoomUser = new RoomUser((User) o_write, (User) o_black, id);
                     synchronized (user) {
                         dos.writeUTF("gameRoom:" + gameRoomUser.toString());//给被邀请人发消息
                         //给发起者消息
@@ -75,7 +76,7 @@ public class ServerUserThread extends Thread {
                     Map<String, List<Object>> userMap = Server.getUserMap();
                     Object o_write = userMap.get(arrayList.get(0)).get(0);
                     Object o_black = userMap.get(arrayList.get(1)).get(0);//黑棋是自己
-                    GameRoomUser gameRoomUser = new GameRoomUser((User) o_write, (User) o_black, new Core(19, 19), -1);
+                    RoomUser gameRoomUser = new RoomUser((User) o_write, (User) o_black, -1);
                     synchronized (user) {
                         dos.writeUTF("gameRoom:" + gameRoomUser.toString());//给被邀请人发消息
                         //给发起者消息
@@ -106,7 +107,7 @@ public class ServerUserThread extends Thread {
     }
 
     private void forwardMessage(String info, Map<String, String> map) throws IOException {//需要修改 NullPointerException
-        GameRoomUser gameRoom = Server.getRoom().get(Integer.parseInt(map.get("roomID")));
+        RoomUser gameRoom = Server.getRoom().get(Integer.parseInt(map.get("roomID")));
         User user1 = gameRoom.getUser_black();
         User user2 = gameRoom.getUser_write();
         Map<String, List<Object>> userMap = Server.getUserMap();

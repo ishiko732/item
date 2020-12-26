@@ -2,9 +2,9 @@ package GUI;
 
 
 import Game.Core;
-import Game.GameRoomUser;
 import Game.PlayerTime;
 import Client.Client;
+import Client.RoomUser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,11 +55,11 @@ public class RoomWindows extends JPanel implements ActionListener {//由于申�
     private GameGUI gobang;
     private Map<Integer, String> roomMessage;
     private Client client;
-    private GameRoomUser gameRoom;
+    private RoomUser gameRoom;
 
-    public RoomWindows(JTabbedPane jtp, Client client, Map<Integer, String> roomMessage, GameRoomUser gameRoom) {
+    public RoomWindows(JTabbedPane jtp, Client client, Map<Integer, String> roomMessage, RoomUser gameRoom) {
         this.gameRoom = gameRoom;
-        this.core = gameRoom.getCore();
+        this.core = client.getCore();
         this.jtp = jtp;
         this.roomMessage = roomMessage;
         this.client = client;

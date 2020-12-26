@@ -1,5 +1,6 @@
 package Server;
 
+import Client.RoomUser;
 import Client.User;
 import Game.GameRoomUser;
 import Game.Transfer;
@@ -12,7 +13,7 @@ import java.util.*;
 
 public class Server {
     private static final Map<String, List<Object>> userMap = new LinkedHashMap<>();
-    private static final Map<Integer, GameRoomUser> room = new HashMap<>();
+    private static final Map<Integer, RoomUser> room = new HashMap<>();
 
     public static void main(String[] args) {
         //noinspection InstantiationOfUtilityClass
@@ -152,7 +153,7 @@ public class Server {
         return userMap;
     }
 
-    public static Map<Integer, GameRoomUser> getRoom() {
+    public static Map<Integer, RoomUser> getRoom() {
         return room;
     }
 }
