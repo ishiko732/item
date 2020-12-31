@@ -2,7 +2,6 @@ package Server;
 
 import Client.RoomUser;
 import Client.User;
-import Game.GameRoomUser;
 import Game.Transfer;
 
 import java.io.*;

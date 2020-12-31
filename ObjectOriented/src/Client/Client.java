@@ -1,7 +1,6 @@
 package Client;
 
 import GUI.ClientGUI;
-import GUI.GateWindows;
 import GUI.RoomWindows;
 import Game.Core;
 
@@ -316,7 +315,7 @@ public class Client {
                                     }
                                 }
                             } else if ("summation".equals(command)) {//求和
-                                if (!map.containsKey("isLogic") && sendUser) {
+                                if (!map.containsKey("isLogic") && !sendUser) {
                                     Object[] options = {"确认", "取消"};
                                     int n = JOptionPane.showOptionDialog(null, "确认申请和棋?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                                     if (n == 0) {
@@ -338,7 +337,7 @@ public class Client {
                                 }
                             } else if ("regret".equals(command)) {//悔棋
 //                                    int var = "write".equals(map.get("var")) ? 1 : 2;
-                                if (!map.containsKey("isLogic") && sendUser) {//第一份信息是没有isLogic --发送同意悔棋请求
+                                if (!map.containsKey("isLogic") && !sendUser) {//第一份信息是没有isLogic --发送同意悔棋请求
                                     Object[] options = {"同意", "拒绝"};
                                     int n = JOptionPane.showOptionDialog(null, "对方申请悔棋,是否同意?", "申请和棋", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                                     if (n == 0) {//同意
