@@ -106,6 +106,7 @@ public class Server {
                     dataOutputStream.writeUTF(sendMessage);
                     //user1 -(Message)-> user2
                     //message: get char[(User1.uid)],send=[(message)];
+                    dataOutputStream = new DataOutputStream((OutputStream) userMap.get(arrayList.get(0)).get(2));
                     dataOutputStream.writeUTF("sendMessage:(Yes)");
                     //Server -( sendMessage:(Yes) )-> user1
                 }
