@@ -6,14 +6,13 @@
 #define SMS_TREE_TREE_H
 #include "student.h"
 typedef struct stuNode{//student tree structure
-    struct stu *student;
-    struct stuNode *lchild,*rchild;
+    stu *student;
+    stuNode *lchild,*rchild;
     int height;
 }stuNode;
 
 class tree {
 public:
-    tree();
     int height(stuNode *root1);
     stuNode * tree_node_LL(stuNode *root1);
     stuNode * tree_node_RR(stuNode *root1);
@@ -24,6 +23,7 @@ public:
     stuNode * insert(stuNode *root1,stuNode *stu,stuNode *e);
     stuNode * find(stuNode *root1,char * sno);
     stuNode * remove(stuNode *root1,char *sno);
+    void update(stuNode *root1,stu *stu,int updateTofile);
     void print(stuNode *root1);
     void print(stuNode *root1,int writeTofile);
     void writeToFile(struct stu *stu);

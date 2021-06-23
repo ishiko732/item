@@ -5,12 +5,13 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wformat"
 #pragma ide diagnostic ignored "cert-err34-c"
-stuNode *root = nullptr, *new_node = nullptr;
-
+stuNode *root = nullptr;
+int pos_extends=0;
 void readfile(tree *t) {
     FILE *fp;
-    int stuAmount = 0;
-    struct stu *s = (struct stu *) malloc(sizeof(struct stu));
+    int stuAmount;
+    stu *s = (struct stu *) malloc(sizeof(struct stu));
+    stuNode *new_node;
     if ((fp = fopen("student.txt", "r")) == nullptr)   //判断是否打开文件
     {
         if ((fp = fopen("student.txt", "w")) == nullptr) {
@@ -24,6 +25,7 @@ void readfile(tree *t) {
         rewind(fp);  //文件位置指针移动到文件开始位置。
         for (stuAmount = 0; !feof(fp) && fread(s, sizeof(struct stu), 1, fp); stuAmount++) {//文件导入
             s->pos = (int) (stuAmount * sizeof(struct stu));
+            pos_extends=s->pos;
             new_node = t->createStuNode(s);
             root = t->insert(root, new_node);
         }
@@ -44,7 +46,7 @@ void pos_stuNode(stuNode *s) {
 
 int deletetofile(tree *t, char *sno) {
     FILE *fp;
-    int pos = -1;
+    int pos;
     stuNode *sno_exists = t->find(root, sno);
     if (sno_exists == nullptr) {
         printf("未能找到该学生信息！\n");
@@ -84,8 +86,8 @@ int deletetofile(tree *t, char *sno) {
 }
 
 
-struct stu input_student() {
-    struct stu stu{};//定义一个学生结构体类型的数据用来缓存学生数据
+stu input_student() {
+    stu stu{};//定义一个学生结构体类型的数据用来缓存学生数据
     printf("请您输入学生信息：学号 姓名 性别 年龄 籍贯 专业(用空格分开)\n");//其中学号为12位（限定）
     scanf("%s %s %s %d %s %s",
           &stu.sno, &stu.name, &stu.sex, &stu.age, &stu.region, &stu.pro);
@@ -110,18 +112,15 @@ struct stu input_student() {
     if(stu.age<0 or stu.age>100){
         printf("年龄出错！");
     }
-
-
-
-
+    return stu;
 }
 
 int main() {
 //    system("chcp 65001 > nul");
-    int choose, input_value;
+    int choose;
     char sno[20];
     struct stu stu{};//定义一个学生结构体类型的数据用来缓存学生数据
-    stuNode *find_node;
+    stuNode *find_node,*new_node;
     tree *t = new tree();
     //初始化一个节点root为空
     //导入文件到树
@@ -131,18 +130,21 @@ int main() {
         printf("****************欢迎来到学生成绩管理系统************\n");
         printf("请输入数字选择相应的指令\n");
         printf("1、增加插入学生的信息\n");
-        printf("2、搜索学生成绩\n");
+        printf("2、搜索学生信息\n");
         printf("3、打印所有学生的信息\n");
-        printf("4、删除学生的成绩\n");
-        printf("5、退出学生信息管理系统\n");
+        printf("4、删除学生的信息\n");
+        printf("5、更新学生的信息\n");
+        printf("6、退出学生信息管理系统\n");
         printf("*****************************************************\n");
 
         scanf("%d", &choose);
         switch (choose) {
             case 1:
-                printf("请您输入学生信息：学号，姓名，性别，年龄，籍贯，专业\n");
+                printf("请您输入学生信息：学号 姓名 性别 年龄 籍贯 专业\n");
                 scanf("%s %s %s %d %s %s",
                       &stu.sno, &stu.name, &stu.sex, &stu.age, &stu.region, &stu.pro);
+                pos_extends+=sizeof(stu);
+                stu.pos=pos_extends;
                 new_node = t->createStuNode(&stu);
                 if ((find_node = t->find(root, stu.sno)) != nullptr) {
                     t->writeToFile(root->student);
@@ -177,9 +179,15 @@ int main() {
                 }
                 break;
             case 5:
+                printf("请输入更新后的学生信息（以学号作为关键）\n学号 姓名 性别 年龄 籍贯 专业\n");
+                scanf("%s %s %s %d %s %s",
+                      &stu.sno, &stu.name, &stu.sex, &stu.age, &stu.region, &stu.pro);
+
+                t->update(root,&stu,1);
+                break;
+            case 6:
                 t->writeToFileALL(root);
                 return 0;
-
         }
     }
 }

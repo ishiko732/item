@@ -9,9 +9,7 @@
 
 #define MAX(A, B) ((A)>(B)?(A):(B))
 
-tree::tree() {
 
-}
 
 
 int tree::height(stuNode *root1) {//tree height
@@ -59,7 +57,7 @@ stuNode *tree::tree_node_RL(stuNode *root1) {//L->R
 
 stuNode *tree::createStuNode(struct stu *student) {
     stuNode *node;
-    struct stu *stu = (struct stu *) malloc(sizeof(struct stu));
+    stu *stu = (struct stu *) malloc(sizeof(struct stu));
     stu = (struct stu *) memcpy(stu, student, sizeof(struct stu));
     node = (stuNode *) (malloc(sizeof(stuNode)));
     if (node == nullptr) {
@@ -270,4 +268,50 @@ stuNode *tree::remove(stuNode *root1, char *sno) {//删除学生成绩信息
     }
     root1->height = height(root1);
     return root1;//如果当前root这个节点不是我们删除的节点，我们便原封不动的返回出去
+}
+
+void tree::update(stuNode *root1, stu *stu,int isUpdate) {
+    stuNode *find_node=find(root1,stu->sno);
+    if(find_node==nullptr){
+        printf("您所选择的学生信息不存在！");
+        return ;
+    }
+
+    free(find_node->student);
+    struct stu *stu_node = (struct stu *) malloc(sizeof(struct stu));
+    stu_node = (struct stu *) memcpy(stu, stu, sizeof(struct stu));
+    find_node->student=stu_node;
+    if(isUpdate){
+        int frontlen;
+        FILE *fp;
+        frontlen = find_node->student->pos;
+        char *front = (char *) malloc(sizeof(char) * frontlen);
+        if ((fp = fopen("student.txt", "r")) == nullptr) {
+            printf("文件操作异常！\n");
+            return ;
+        }
+        fseek(fp, 0, SEEK_END); //文件位置指针移动到文件结束位置
+        unsigned int backlen = ftell(fp) - frontlen - sizeof(struct stu);
+        char *back = (char *) malloc(sizeof(char) * backlen);
+        fseek(fp, 0, SEEK_SET);
+        fread(front, frontlen, 1, fp);//front buf
+        //读取到该结点处
+        fseek(fp, sizeof(struct stu), SEEK_CUR);//偏移一个学生对象
+        fread(back, backlen, 1, fp);//读取要更新结点的后面信息
+        fclose(fp);
+
+        if ((fp = fopen("student.txt", "w")) == nullptr) {//覆盖文件
+            printf("文件操作异常！\n");
+            return ;
+        }
+        fseek(fp, 0, SEEK_SET);
+        fwrite(front, frontlen, 1, fp);
+        fwrite(stu,sizeof(struct stu),1,fp);
+        fwrite(back, backlen, 1, fp);
+
+        free(front);
+        free(back);
+        fclose(fp);
+        return ;
+    }
 }
