@@ -21,12 +21,15 @@ public:
     stuNode * tree_node_RL(stuNode *root1);
     stuNode * createStuNode(struct stu *student);
     stuNode * insert(stuNode *root1,stuNode *stu);
+    stuNode * insert(stuNode *root1,stuNode *stu,stuNode *e);
     stuNode * find(stuNode *root1,char * sno);
     stuNode * remove(stuNode *root1,char *sno);
     void print(stuNode *root1);
+    void print(stuNode *root1,int writeTofile);
+    void writeToFile(struct stu *stu);
+    void writeToFileALL(stuNode *root1);
 private:
-    stuNode *root;
-    stuNode * setroot(struct stu *stu);
+
 };
 
 
