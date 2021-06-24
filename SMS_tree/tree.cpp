@@ -10,8 +10,6 @@
 #define MAX(A, B) ((A)>(B)?(A):(B))
 
 
-
-
 int tree::height(stuNode *root1) {//tree height
     if (root1 == nullptr) {
         return 0;
@@ -72,6 +70,7 @@ stuNode *tree::createStuNode(struct stu *student) {
 }
 
 stuNode *tree::insert(stuNode *root1, stuNode *stu) {
+    int x;
     if (root1 == nullptr) {
         root1 = stu;
     } else {
@@ -80,22 +79,25 @@ stuNode *tree::insert(stuNode *root1, stuNode *stu) {
             printf("插入有相同的学号！拒绝插入！\n");
             return root1;
         } else {
-            if (stu->student->sno < root1->student->sno) {//元素小于根结点,插入左边
+            x = strcmp(stu->student->sno, root1->student->sno);
+            //<0 插入元素小于根结点元素
+            //>0 插入元素大于根结点元素
+            if (x < 0) {//元素小于根结点,插入左边
                 root1->lchild = insert(root1->lchild, stu);
 
                 if (height(root1->lchild) - height(root1->rchild) == 2) {//不平衡
-                    if (stu->student->sno < root1->student->sno) {//左左旋转
+                    if (x < 0) {//左左旋转
                         root1 = tree_node_LL(root1);
                     } else {//左右旋转
                         root1 = tree_node_LR(root1);
                     }
                 }
 
-            } else if (stu->student->sno > root1->student->sno) {//元素大于根结点，插入右边
+            } else if (x > 0) {//元素大于根结点，插入右边
                 root1->rchild = insert(root1->rchild, stu);
 
                 if (height(root1->rchild) - height(root1->lchild) == 2) {//不平衡
-                    if (stu->student->sno > root1->student->sno) {//右右旋转
+                    if (x > 0) {//右右旋转
                         root1 = tree_node_RR(root1);
                     } else {//左右旋转
                         root1 = tree_node_RL(root1);
@@ -108,7 +110,8 @@ stuNode *tree::insert(stuNode *root1, stuNode *stu) {
     return root1;
 }
 
-stuNode *tree::insert(stuNode *root1, stuNode *stu,stuNode *e) {
+stuNode *tree::insert(stuNode *root1, stuNode *stu, stuNode *e) {
+    int x;
     if (root1 == nullptr) {
         root1 = stu;
     } else {
@@ -116,22 +119,24 @@ stuNode *tree::insert(stuNode *root1, stuNode *stu,stuNode *e) {
             printf("插入有相同的学号！拒绝插入！\n");
             return root1;
         } else {
-            if (stu->student->sno < root1->student->sno) {//元素小于根结点,插入左边
+            x = strcmp(stu->student->sno, root1->student->sno);
+
+            if (x < 0) {//元素小于根结点,插入左边
                 root1->lchild = insert(root1->lchild, stu);
 
                 if (height(root1->lchild) - height(root1->rchild) == 2) {//不平衡
-                    if (stu->student->sno < root1->student->sno) {//左左旋转
+                    if (x < 0) {//左左旋转
                         root1 = tree_node_LL(root1);
                     } else {//左右旋转
                         root1 = tree_node_LR(root1);
                     }
                 }
 
-            } else if (stu->student->sno > root1->student->sno) {//元素大于根结点，插入右边
+            } else if (x > 0) {//元素大于根结点，插入右边
                 root1->rchild = insert(root1->rchild, stu);
 
                 if (height(root1->rchild) - height(root1->lchild) == 2) {//不平衡
-                    if (stu->student->sno > root1->student->sno) {//右右旋转
+                    if (x > 0) {//右右旋转
                         root1 = tree_node_RR(root1);
                     } else {//左右旋转
                         root1 = tree_node_RL(root1);
@@ -164,7 +169,7 @@ void tree::print(stuNode *root1) {
     print(root1->lchild);
     printf("学号：%s,学生姓名：%s,性别：%s,年龄：%d，地区：%s，专业：%s 偏移量:%d\n",
            root1->student->sno, root1->student->name, root1->student->sex, root1->student->age,
-           root1->student->region,root1->student->pro,root1->student->pos);
+           root1->student->region, root1->student->pro, root1->student->pos);
     print(root1->rchild);
 }
 
@@ -194,7 +199,7 @@ void tree::print(stuNode *root1, int writeTo) {
     if (writeTo == 0) {
         printf("学号：%s,学生姓名：%s,性别：%s,年龄：%d，地区：%s，专业：%s 偏移量:%d\n",
                root1->student->sno, root1->student->name, root1->student->sex, root1->student->age,
-               root1->student->region,root1->student->pro,root1->student->pos);
+               root1->student->region, root1->student->pro, root1->student->pos);
     } else {
         writeToFile(root1->student);
     }
@@ -270,25 +275,27 @@ stuNode *tree::remove(stuNode *root1, char *sno) {//删除学生成绩信息
     return root1;//如果当前root这个节点不是我们删除的节点，我们便原封不动的返回出去
 }
 
-void tree::update(stuNode *root1, stu *stu,int isUpdate) {
-    stuNode *find_node=find(root1,stu->sno);
-    if(find_node==nullptr){
+void tree::update(stuNode *root1, stu *stu, int isUpdate) {
+    stuNode *find_node = find(root1, stu->sno);
+    if (find_node == nullptr) {
         printf("您所选择的学生信息不存在！");
-        return ;
+        return;
     }
 
-    free(find_node->student);
-    struct stu *stu_node = (struct stu *) malloc(sizeof(struct stu));
-    stu_node = (struct stu *) memcpy(stu, stu, sizeof(struct stu));
-    find_node->student=stu_node;
-    if(isUpdate){
+    struct stu *s=find_node->student;
+    strcpy(s->name,stu->name);
+    strcpy(s->pro,stu->pro);
+    strcpy(s->region,stu->region);
+    s->age=stu->age;
+    strcpy(s->sex,stu->sex);
+    if (isUpdate) {
         int frontlen;
         FILE *fp;
         frontlen = find_node->student->pos;
         char *front = (char *) malloc(sizeof(char) * frontlen);
         if ((fp = fopen("student.txt", "r")) == nullptr) {
             printf("文件操作异常！\n");
-            return ;
+            return;
         }
         fseek(fp, 0, SEEK_END); //文件位置指针移动到文件结束位置
         unsigned int backlen = ftell(fp) - frontlen - sizeof(struct stu);
@@ -299,19 +306,21 @@ void tree::update(stuNode *root1, stu *stu,int isUpdate) {
         fseek(fp, sizeof(struct stu), SEEK_CUR);//偏移一个学生对象
         fread(back, backlen, 1, fp);//读取要更新结点的后面信息
         fclose(fp);
+        if(front[0]!=0 or back[0]!=0 ) {
+            if ((fp = fopen("student.txt", "w")) == nullptr) {//覆盖文件
+                printf("文件操作异常！\n");
+                return;
+            }
+            fseek(fp, 0, SEEK_SET);
 
-        if ((fp = fopen("student.txt", "w")) == nullptr) {//覆盖文件
-            printf("文件操作异常！\n");
-            return ;
+            fwrite(front, frontlen, 1, fp);
+            fwrite(stu, sizeof(struct stu), 1, fp);
+            fwrite(back, backlen, 1, fp);
+
+            free(front);
+            free(back);
+            fclose(fp);
         }
-        fseek(fp, 0, SEEK_SET);
-        fwrite(front, frontlen, 1, fp);
-        fwrite(stu,sizeof(struct stu),1,fp);
-        fwrite(back, backlen, 1, fp);
-
-        free(front);
-        free(back);
-        fclose(fp);
-        return ;
+        return;
     }
 }
