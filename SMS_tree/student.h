@@ -12,8 +12,8 @@ struct stu{//student message 学号，姓名，性别，年龄，籍贯，专业
     int age;
     char region[20];
     char pro[20];
-    char addcount;//增加的字段个数
-    char *message;//内容
+    //char addcount;//增加的字段个数
+    //char *message;//内容
 };
 
 class student {

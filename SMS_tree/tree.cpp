@@ -180,6 +180,7 @@ void tree::writeToFile(struct stu *stu) {
         if (fwrite(stu, sizeof(struct stu), 1, fp) != 1) {
             printf("写入文件错误！\n");
         }
+        fflush(fp);
         fclose(fp);
     }
 }
@@ -187,6 +188,7 @@ void tree::writeToFile(struct stu *stu) {
 void tree::writeToFileALL(stuNode *root1) {
     FILE *fp;
     fp = fopen("student.txt", "w");
+    fflush(fp);
     fclose(fp);
     print(root1, 1);
 }
@@ -305,6 +307,7 @@ void tree::update(stuNode *root1, stu *stu, int isUpdate) {
         //读取到该结点处
         fseek(fp, sizeof(struct stu), SEEK_CUR);//偏移一个学生对象
         fread(back, backlen, 1, fp);//读取要更新结点的后面信息
+        fflush(fp);
         fclose(fp);
         if(front[0]!=0 or back[0]!=0 ) {
             if ((fp = fopen("student.txt", "w")) == nullptr) {//覆盖文件
@@ -319,6 +322,7 @@ void tree::update(stuNode *root1, stu *stu, int isUpdate) {
 
             free(front);
             free(back);
+            fflush(fp);
             fclose(fp);
         }
         return;

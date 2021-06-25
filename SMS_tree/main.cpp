@@ -32,6 +32,8 @@ void readfile(tree *t) {
         }
         printf("读取到%d条学生信息\n", stuAmount);
     }
+    free(s);
+    fflush(fp);
     fclose(fp);
 }
 
@@ -68,6 +70,7 @@ int deletetofile(tree *t, char *sno) {
     //读取到该结点处
     fseek(fp, sizeof(struct stu), SEEK_CUR);//偏移一个学生对象
     fread(back, backlen, 1, fp);//读取被删除结点的后面信息
+    fflush(fp);
     fclose(fp);
 
     if ((fp = fopen("student.txt", "w")) == nullptr) {//覆盖文件
@@ -82,10 +85,38 @@ int deletetofile(tree *t, char *sno) {
     pos_stuNode(sno_exists);
     free(front);
     free(back);
+    fflush(fp);
     fclose(fp);
     return 1;
 }
-
+void findfromfile(int count,char *message) {//基于寻找文件信息来定下sno，再传递给find
+    FILE *fp;
+    if ((fp = fopen("student.txt", "r")) == nullptr) {
+        return ;
+    }
+    int stuAmount;
+    stu *s = (struct stu*) malloc(sizeof(struct stu));
+    fseek(fp, 0, SEEK_END);   //文件位置指针移动到文件末尾。
+    if (ftell(fp) > 0) //文件不为空。
+    {
+        rewind(fp);  //文件位置指针移动到文件开始位置。
+        char *find;
+        for (stuAmount = 0; !feof(fp) && fread(s, sizeof(struct stu), 1, fp);) {//信息读取
+            if(strstr(s->sno,message) or strstr(s->name,message) or strstr(s->sex,message) or (s->age==atoi(message)) or strstr(s->region,message) or strstr(s->pro,message)){
+                printf("学号：%s 学生姓名：%s 性别：%s 年龄：%d 地区：%s 专业：%s\n",
+                       s->sno, s->name, s->sex, s->age,s->region, s->pro);
+                stuAmount++;
+            }
+            if(count!=0 && stuAmount>count){
+                break;
+            }
+        }
+    }
+    printf("读取到%d条学生信息\n", stuAmount);
+    free(s);
+    fflush(fp);
+    fclose(fp);
+}
 
 stu input_student() {
     stu stu{};//定义一个学生结构体类型的数据用来缓存学生数据
@@ -132,10 +163,11 @@ int main() {
         printf("请输入数字选择相应的指令\n");
         printf("1、增加插入学生的信息\n");
         printf("2、搜索学生信息\n");
-        printf("3、打印所有学生的信息\n");
-        printf("4、删除学生的信息\n");
-        printf("5、更新学生的信息\n");
-        printf("6、退出学生信息管理系统\n");
+        printf("3、模糊查找学生\n");
+        printf("4、打印所有学生的信息\n");
+        printf("5、删除学生的信息\n");
+        printf("6、更新学生的信息\n");
+        printf("7、退出学生信息管理系统\n");
         printf("*****************************************************\n");
 
         scanf("%d", &choose);
@@ -169,24 +201,31 @@ int main() {
                 }
                 break;
             case 3:
+                printf("请输入信息：\n");
+                char s[1024];
+                scanf("%s",&s);
+                findfromfile(0,s);
+//                t->print(root);
+                break;
+            case 4:
                 printf("所有的学生的信息为\n");
                 t->print(root);
                 break;
-            case 4:
+            case 5:
                 printf("请输入学生的编号来删除学生信息\n");
                 scanf("%s", &sno);
                 if (deletetofile(t, sno)) {
                     root = t->remove(root, sno);
                 }
                 break;
-            case 5:
+            case 6:
                 printf("请输入更新后的学生信息（以学号作为关键）\n学号 姓名 性别 年龄 籍贯 专业\n");
                 scanf("%s %s %s %d %s %s",
                       &stu.sno, &stu.name, &stu.sex, &stu.age, &stu.region, &stu.pro);
 
                 t->update(root,&stu,1);
                 break;
-            case 6:
+            case 7:
                 t->writeToFileALL(root);
                 return 0;
         }
