@@ -1,13 +1,8 @@
 //
 // Created by 刘源峰 on 2021/6/21.
 //
-
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
 #include "tree.h"
-//#include <io.h>
-#include <unistd.h>
+
 
 #define MAX(A, B) ((A)>(B)?(A):(B))
 
@@ -231,7 +226,7 @@ stuNode *tree::remove(stuNode *root1, char *sno) {//删除学生信息
             for (tmp = root1->lchild; tmp->rchild != nullptr; tmp = tmp->rchild);//用tmp来记录root的左子树当中的最右边的节点（也就是左树当中的最大值）
 //            struct stu *swap =(struct stu *)malloc(sizeof(struct stu));
 //            swap = (struct stu *) memcpy(swap, tmp->student, sizeof(struct stu));//交换结点
-            struct stu *swap=tmp->student;
+            struct stu *swap = tmp->student;
             tmp->student = root1->student;
             root1->student = swap;
             root1->lchild = remove(root1->lchild, sno);//递归的删除掉重复出来的这个节点,将左子树的数据更新进来
@@ -239,14 +234,14 @@ stuNode *tree::remove(stuNode *root1, char *sno) {//删除学生信息
             for (tmp = root1->rchild; tmp->lchild != nullptr; tmp = tmp->lchild);//用tmp来记录root的右子树中的最左边的节点（也就是有树当中的最小值）
 //            struct stu *swap =(struct stu *)malloc(sizeof(struct stu));
 //            swap = (struct stu *) memcpy(swap, tmp->student, sizeof(struct stu));//交换结点
-            struct stu *swap=tmp->student;
+            struct stu *swap = tmp->student;
             tmp->student = root1->student;
             root1->student = swap;
             root1->rchild = remove(root1->lchild, sno);//递归的删除掉重复出来的这个节点,将右子树的数据更新进来
         }
-    } else if (x > 0){//如果删除的数据比这个节点要小，则继续往左边去删除节点
+    } else if (x > 0) {//如果删除的数据比这个节点要小，则继续往左边去删除节点
         root1->lchild = remove(root1->lchild, sno);
-    } else if (x < 0){//如果删除的数据比这个节点要大，则继续往右边去删除
+    } else if (x < 0) {//如果删除的数据比这个节点要大，则继续往右边去删除
         root1->rchild = remove(root1->rchild, sno);
     }
 
