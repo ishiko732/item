@@ -2,7 +2,8 @@
 #include "student.h"
 #include <iostream>
 #include <cstring>
-#include <io.h>
+//#include <io.h>
+#include <unistd.h>
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wformat"
 #pragma ide diagnostic ignored "cert-err34-c"
@@ -35,7 +36,8 @@ void readfile(tree *t) {
     }
     free(s);
     fflush(fp);
-    _commit(_fileno(fp));//获取文件描述符后强制写硬盘
+    fsync(fileno(fp));
+//    _commit(_fileno(fp));//获取文件描述符后强制写硬盘
     fclose(fp);
 }
 
@@ -73,7 +75,8 @@ int deletetofile(tree *t, char *sno) {
     fseek(fp, sizeof(struct stu), SEEK_CUR);//偏移一个学生对象
     fread(back, backlen, 1, fp);//读取被删除结点的后面信息
     fflush(fp);
-    _commit(_fileno(fp));//获取文件描述符后强制写硬盘
+    fsync(fileno(fp));
+    //_commit(_fileno(fp));//获取文件描述符后强制写硬盘
     fclose(fp);
 
     if ((fp = fopen("student.txt", "w")) == nullptr) {//覆盖文件
@@ -89,7 +92,8 @@ int deletetofile(tree *t, char *sno) {
     free(front);
     free(back);
     fflush(fp);
-    _commit(_fileno(fp));//获取文件描述符后强制写硬盘
+    fsync(fileno(fp));
+    //_commit(_fileno(fp));//获取文件描述符后强制写硬盘
     fclose(fp);
     return 1;
 }
@@ -119,7 +123,8 @@ void findfromfile(int count,char *message) {//基于寻找文件信息来定下s
     printf("读取到%d条学生信息\n", stuAmount);
     free(s);
     fflush(fp);
-    _commit(_fileno(fp));//获取文件描述符后强制写硬盘
+    fsync(fileno(fp));
+    //_commit(_fileno(fp));//获取文件描述符后强制写硬盘
     fclose(fp);
 }
 
@@ -153,7 +158,6 @@ stu input_student() {
 }
 
 int main() {
-//    system("chcp 65001 > nul");
     int choose;
     char sno[20];
     struct stu stu{};//定义一个学生结构体类型的数据用来缓存学生数据
@@ -217,7 +221,7 @@ int main() {
                 t->print(root);
                 break;
             case 5:
-                printf("请输入学生的编号来删除学生信息\n");
+                printf("请输入学生的学号来删除学生信息\n");
                 scanf("%s", &sno);
                 if (deletetofile(t, sno)) {
                     root = t->remove(root, sno);

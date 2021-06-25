@@ -6,7 +6,8 @@
 #include <cstdio>
 #include <cstring>
 #include "tree.h"
-#include <io.h>
+//#include <io.h>
+#include <unistd.h>
 
 #define MAX(A, B) ((A)>(B)?(A):(B))
 
@@ -168,9 +169,9 @@ void tree::print(stuNode *root1) {
         return;
     }
     print(root1->lchild);
-    printf("学号：%s,学生姓名：%s,性别：%s,年龄：%d，地区：%s，专业：%s 偏移量:%d\n",
+    printf("学号：%s 学生姓名：%s 性别：%s 年龄：%d 地区：%s 专业：%s\n",
            root1->student->sno, root1->student->name, root1->student->sex, root1->student->age,
-           root1->student->region, root1->student->pro, root1->student->pos);
+           root1->student->region, root1->student->pro);
     print(root1->rchild);
 }
 
@@ -182,7 +183,8 @@ void tree::writeToFile(struct stu *stu) {
             printf("写入文件错误！\n");
         }
         fflush(fp);
-        _commit(_fileno(fp));//获取文件描述符后强制写硬盘
+        fsync(fileno(fp));
+//        _commit(_fileno(fp));//获取文件描述符后强制写硬盘
         fclose(fp);
     }
 }
@@ -191,7 +193,8 @@ void tree::writeToFileALL(stuNode *root1) {
     FILE *fp;
     fp = fopen("student.txt", "w");
     fflush(fp);
-    _commit(_fileno(fp));//获取文件描述符后强制写硬盘
+    fsync(fileno(fp));
+//    _commit(_fileno(fp));//获取文件描述符后强制写硬盘
     fclose(fp);
     print(root1, 1);
 }
@@ -211,7 +214,7 @@ void tree::print(stuNode *root1, int writeTo) {
     print(root1->rchild, writeTo);
 }
 
-stuNode *tree::remove(stuNode *root1, char *sno) {//删除学生成绩信息
+stuNode *tree::remove(stuNode *root1, char *sno) {//删除学生信息
     stuNode *tmp;
 
     if (root1 == nullptr) {
@@ -219,33 +222,32 @@ stuNode *tree::remove(stuNode *root1, char *sno) {//删除学生成绩信息
     }
 
     int x = strcmp(root1->student->sno, sno);//0 相等 学号大 <0，结点大 >0
-
     if (x == 0) {
         if (root1->lchild == nullptr && root1->rchild == nullptr) {
             free(root1->student);
             free(root1);
             return nullptr;
-        } else if (root1->lchild != nullptr)//如果有左子树
-        {
+        } else if (root1->lchild != nullptr) {//如果有左子树
             for (tmp = root1->lchild; tmp->rchild != nullptr; tmp = tmp->rchild);//用tmp来记录root的左子树当中的最右边的节点（也就是左树当中的最大值）
-            struct stu *swap = tmp->student; //交换结点
+//            struct stu *swap =(struct stu *)malloc(sizeof(struct stu));
+//            swap = (struct stu *) memcpy(swap, tmp->student, sizeof(struct stu));//交换结点
+            struct stu *swap=tmp->student;
             tmp->student = root1->student;
             root1->student = swap;
             root1->lchild = remove(root1->lchild, sno);//递归的删除掉重复出来的这个节点,将左子树的数据更新进来
-        } else//如果只有右子树
-        {
+        } else {//如果只有右子树
             for (tmp = root1->rchild; tmp->lchild != nullptr; tmp = tmp->lchild);//用tmp来记录root的右子树中的最左边的节点（也就是有树当中的最小值）
-            struct stu *swap = tmp->student;//交换结点
+//            struct stu *swap =(struct stu *)malloc(sizeof(struct stu));
+//            swap = (struct stu *) memcpy(swap, tmp->student, sizeof(struct stu));//交换结点
+            struct stu *swap=tmp->student;
             tmp->student = root1->student;
             root1->student = swap;
             root1->rchild = remove(root1->lchild, sno);//递归的删除掉重复出来的这个节点,将右子树的数据更新进来
         }
-    } else if (x > 0)//如果删除的数据比这个节点要小，则继续往左边去删除节点
-    {
+    } else if (x > 0){//如果删除的数据比这个节点要小，则继续往左边去删除节点
         root1->lchild = remove(root1->lchild, sno);
-    } else//如果删除的数据比这个节点要大，则继续往右边去删除
-    {
-        root1->rchild = remove(root1->lchild, sno);
+    } else if (x < 0){//如果删除的数据比这个节点要大，则继续往右边去删除
+        root1->rchild = remove(root1->rchild, sno);
     }
 
     //插入新节点结束后再判断是否出现不平衡
@@ -287,12 +289,12 @@ void tree::update(stuNode *root1, stu *stu, int isUpdate) {
         return;
     }
 
-    struct stu *s=find_node->student;
-    strcpy(s->name,stu->name);
-    strcpy(s->pro,stu->pro);
-    strcpy(s->region,stu->region);
-    s->age=stu->age;
-    strcpy(s->sex,stu->sex);
+    struct stu *s = find_node->student;
+    strcpy(s->name, stu->name);
+    strcpy(s->pro, stu->pro);
+    strcpy(s->region, stu->region);
+    s->age = stu->age;
+    strcpy(s->sex, stu->sex);
     if (isUpdate) {
         int frontlen;
         FILE *fp;
@@ -311,9 +313,10 @@ void tree::update(stuNode *root1, stu *stu, int isUpdate) {
         fseek(fp, sizeof(struct stu), SEEK_CUR);//偏移一个学生对象
         fread(back, backlen, 1, fp);//读取要更新结点的后面信息
         fflush(fp);
-        _commit(_fileno(fp));//获取文件描述符后强制写硬盘
+        fsync(fileno(fp));
+//        _commit(_fileno(fp));//获取文件描述符后强制写硬盘
         fclose(fp);
-        if(front[0]!=0 or back[0]!=0 ) {
+        if (front[0] != 0 or back[0] != 0) {
             if ((fp = fopen("student.txt", "w")) == nullptr) {//覆盖文件
                 printf("文件操作异常！\n");
                 return;
@@ -327,7 +330,8 @@ void tree::update(stuNode *root1, stu *stu, int isUpdate) {
             free(front);
             free(back);
             fflush(fp);
-            _commit(_fileno(fp));//获取文件描述符后强制写硬盘
+            fsync(fileno(fp));
+//            _commit(_fileno(fp));//获取文件描述符后强制写硬盘
             fclose(fp);
         }
         return;
