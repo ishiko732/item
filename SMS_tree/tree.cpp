@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cstring>
 #include "tree.h"
+#include <io.h>
 
 #define MAX(A, B) ((A)>(B)?(A):(B))
 
@@ -181,6 +182,7 @@ void tree::writeToFile(struct stu *stu) {
             printf("写入文件错误！\n");
         }
         fflush(fp);
+        _commit(_fileno(fp));//获取文件描述符后强制写硬盘
         fclose(fp);
     }
 }
@@ -189,6 +191,7 @@ void tree::writeToFileALL(stuNode *root1) {
     FILE *fp;
     fp = fopen("student.txt", "w");
     fflush(fp);
+    _commit(_fileno(fp));//获取文件描述符后强制写硬盘
     fclose(fp);
     print(root1, 1);
 }
@@ -308,6 +311,7 @@ void tree::update(stuNode *root1, stu *stu, int isUpdate) {
         fseek(fp, sizeof(struct stu), SEEK_CUR);//偏移一个学生对象
         fread(back, backlen, 1, fp);//读取要更新结点的后面信息
         fflush(fp);
+        _commit(_fileno(fp));//获取文件描述符后强制写硬盘
         fclose(fp);
         if(front[0]!=0 or back[0]!=0 ) {
             if ((fp = fopen("student.txt", "w")) == nullptr) {//覆盖文件
@@ -323,6 +327,7 @@ void tree::update(stuNode *root1, stu *stu, int isUpdate) {
             free(front);
             free(back);
             fflush(fp);
+            _commit(_fileno(fp));//获取文件描述符后强制写硬盘
             fclose(fp);
         }
         return;
