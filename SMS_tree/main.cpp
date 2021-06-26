@@ -3,6 +3,7 @@
 #include "files.h"
 #include <iostream>
 #include <cstring>
+#include "course.h"
 //#include <io.h>
 #include <unistd.h>
 
@@ -47,13 +48,52 @@ int input_student(struct stu *stu) {
     return ret;
 }
 
+void test_couse() {
+    courses *c = new courses();
+    c->readintolist();
+//    c->insert();//19221101 高等数学Ⅰ 9.5 152
+//    c->insert();//16522105 C++程序设计 4 64
+//    printf("%p\n",c->find("高等数学Ⅰ"));
+//    printf("%p\n",c->find("16221301"));
+//    c->update("19221101");// 高级数学 5 15
+    c->print_list();
+//    c->sort_c();
+//    c->print_list();
+//    c->writetofile();
+
+}
+
+void test_sc() {
+    student *sc = new student();
+    scoreNode scNode1{"201611701208", "19221101", 99};
+    scoreNode scNode2{"201611701209", "19221101", 100};
+    scoreNode scNode3{"201611301107", "16522105", 60};
+    scoreNode scNode4{"201611701201", "16522105", 85};
+    sc->insert(scNode1);
+    sc->insert(scNode2);
+    sc->insert(scNode3);
+    sc->insert(scNode4);
+
+    printf("sno:%s cno:%s grade:%.1f\n", "201611701201", "16522105", sc->find("201611701201", "16522105"));
+    printf("sno:%s cno:%s grade:%.1f\n", "201611701201", "16522105", sc->find("201611701201", "16522106"));
+    sc->delete_sc("201611701201", "16522105");
+    sc->writetofile();
+
+}
+
 int main() {
+//    test_couse();
+//    test_sc();
+//    return 0;
     int choose;
     char sno[20];
     struct stu stu{};//定义一个学生结构体类型的数据用来缓存学生数据
     stuNode *find_node, *new_node;
     tree *t = new tree();
+    courses *c = new courses();
+    student *sc = new student();
     files_student *fs = new files_student(root, &pos_extends);
+
     root = fs->readfile(t);//读取学生信息文件到树
 
     while (1) {
