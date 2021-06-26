@@ -190,7 +190,7 @@ void gradeMenu(tree *t, student *sc, courses *c) {
                     printf("该学生不存在或者课程不存在!\n");
                     break;
                 } else {
-                    printf("请输入%s学生的%s课程的考试成绩:%.1f分", sNode->student->name, cNode->cname,
+                    printf("请输入%s学生的%s课程的考试成绩:%.1f分\n", sNode->student->name, cNode->cname,
                            sc->find(sNode->student->sno, cNode->cno));
                 }
                 break;
