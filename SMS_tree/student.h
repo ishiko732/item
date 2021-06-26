@@ -21,14 +21,14 @@ struct stu {//student message 学号，姓名，性别，年龄，籍贯，专�
 };
 
 
-typedef struct course {
+typedef struct course {//课程信息
     char cno[20];
     char cname[20];
     double credit;
     int time;
 } courseNode;
 
-typedef struct score {
+typedef struct score {//成绩信息
     char sno[20];
     char cno[20];
     double grade;
@@ -62,23 +62,23 @@ struct comnode_sc {
 
 class student {
 public:
-    void insert(scoreNode node);
+    void insert(scoreNode node);//插入sc
 
-    double find(char *sno, char *cno);
+    double find(char *sno, char *cno);//查找
 
-    void delete_sc(char *sno, char *cno);
+    void delete_sc(char *sno, char *cno);//删除
 
-    void update(char *sno, char *cno, double grade);
+    void update(char *sno, char *cno, double grade);//更新
 
-    void sort_c() {
+    void sort_c() {//排序
         list1.sort(comnode_sc());
     }
 
-    void writetofile();
+    void writetofile();//写到文件
 
-    void readintolist();
+    void readintolist();//导入到list
 
-    void print_list();
+    void print_list();//输出sc(sno,cno,grade) 不启用
 
 private:
     std::list<scoreNode> list1;

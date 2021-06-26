@@ -31,27 +31,27 @@ struct comnode {
 
 class courses {
 public:
-    void insert(courseNode node);
+    void insert(courseNode node);//插入结点
 
-    void insert();
+    void insert();//提示插入
 
-    courseNode *find(char *cno);
+    courseNode *find(char *cno);//查找，课程号，课程名
 
-    void delete_c(char *cno);
+    void delete_c(char *cno);//删除
 
-    void update(char *cno);
+    void update(char *cno);//更新
 
-    void sort_c() {
+    void sort_c() {//排序
         list1.sort(comnode());
     }
 
-    void print_list();
+    void print_list();//输出课程列表
 
-    void writetofile();
+    void writetofile();//写到文件
 
-    void readintolist();
+    void readintolist();//导入到list
 
-    char **getCnos(char **cnames) {
+    char **getCnos(char **cnames) {//获取课程号数组
         char **cnos = (char **) malloc(20 * sizeof(char *));
         if (cnos == nullptr) {
             printf("分配空间失败");
