@@ -48,37 +48,181 @@ int input_student(struct stu *stu) {
     return ret;
 }
 
-void test_couse() {
-    courses *c = new courses();
-    c->readintolist();
-//    c->insert();//19221101 高等数学Ⅰ 9.5 152
-//    c->insert();//16522105 C++程序设计 4 64
-//    printf("%p\n",c->find("高等数学Ⅰ"));
-//    printf("%p\n",c->find("16221301"));
-//    c->update("19221101");// 高级数学 5 15
-    c->print_list();
-//    c->sort_c();
+//void test_couse() {
+//    courses *c = new courses();
+//    c->readintolist();
+////    c->insert();//19221101 高等数学Ⅰ 9.5 152
+////    c->insert();//16522105 C++程序设计 4 64
+////    printf("%p\n",c->find("高等数学Ⅰ"));
+////    printf("%p\n",c->find("16221301"));
+////    c->update("19221101");// 高级数学 5 15
 //    c->print_list();
-//    c->writetofile();
+////    c->sort_c();
+////    c->print_list();
+////    c->writetofile();
+//
+//}
+//
+//void test_sc() {
+//    student *sc = new student();
+//    scoreNode scNode1{"201611701208", "19221101", 99};
+//    scoreNode scNode2{"201611701209", "19221101", 100};
+//    scoreNode scNode3{"201611301107", "16522105", 60};
+//    scoreNode scNode4{"201611701201", "16522105", 85};
+//    sc->insert(scNode1);
+//    sc->insert(scNode2);
+//    sc->insert(scNode3);
+//    sc->insert(scNode4);
+//
+//    printf("sno:%s cno:%s grade:%.1f\n", "201611701201", "16522105", sc->find("201611701201", "16522105"));
+//    printf("sno:%s cno:%s grade:%.1f\n", "201611701201", "16522105", sc->find("201611701201", "16522106"));
+//    sc->delete_sc("201611701201", "16522105");
+//    sc->writetofile();
+//
+//}
 
+void courseMenu(courses *c) {
+    int choose;
+    char cno[20];
+    courseNode *cNode;
+    while (1) {
+        printf("****************欢迎进入课程管理系统********************\n");
+        printf("请输入数字选择相应的指令\n");
+        printf("1.添加课程信息\n");
+        printf("2.查找课程信息\n");
+        printf("3.删除课程信息\n");
+        printf("4.更新课程信息\n");
+        printf("5.打印所有课程信息\n");
+        printf("6.退出课程管理系统\n");
+        printf("*****************************************************\n");
+        scanf("%d", &choose);
+        switch (choose) {
+            case 1:
+                c->insert();
+                break;
+            case 2:
+                printf("请输入课程号或者课程名称:");
+                scanf("%s", cno);
+                cNode = c->find(cno);
+                if (cNode == nullptr) {
+                    printf("未找到该(%s)课程信息！\n", cno);
+                } else {
+                    printf("%s\t%s\t%.1f\t%d\n", cNode->cno, cNode->cname, cNode->credit, cNode->time);
+                }
+                free(cNode);
+                break;
+            case 3:
+                printf("请输入课程号或者课程名称:");
+                scanf("%s", cno);
+                c->delete_c(cno);
+                break;
+            case 4:
+                printf("请输入课程号或者课程名称:");
+                scanf("%s", cno);
+                c->update(cno);
+                break;
+            case 5:
+                c->print_list();
+                break;
+            case 6:
+                c->writetofile();
+                return;
+                break;
+        }
+    }
 }
 
-void test_sc() {
-    student *sc = new student();
-    scoreNode scNode1{"201611701208", "19221101", 99};
-    scoreNode scNode2{"201611701209", "19221101", 100};
-    scoreNode scNode3{"201611301107", "16522105", 60};
-    scoreNode scNode4{"201611701201", "16522105", 85};
-    sc->insert(scNode1);
-    sc->insert(scNode2);
-    sc->insert(scNode3);
-    sc->insert(scNode4);
+void gradeMenu(stuNode *root, tree *t, student *sc, courses *c) {
+    int choose, flag;
+    scoreNode scNode{};
+    stuNode *sNode;
+    courseNode *cNode;
+    while (1) {
+        printf("****************欢迎进入成绩管理系统********************\n");
+        printf("请输入数字选择相应的指令\n");
+        printf("1.登记成绩\n");
+        printf("2.查询成绩\n");
+        printf("3.修改成绩\n");
+        printf("4.删除成绩\n");
+        printf("5.打印所有学生成绩\n");
+        printf("6.退出课程管理系统\n");
+        printf("*****************************************************\n");
+        scanf("%d", &choose);
+        switch (choose) {
+            case 1:
+                printf("请输入学号和课程号[课程名称]（用空格分割）:");
+                scanf("%s %s", &scNode.sno, &scNode.cno);
 
-    printf("sno:%s cno:%s grade:%.1f\n", "201611701201", "16522105", sc->find("201611701201", "16522105"));
-    printf("sno:%s cno:%s grade:%.1f\n", "201611701201", "16522105", sc->find("201611701201", "16522106"));
-    sc->delete_sc("201611701201", "16522105");
-    sc->writetofile();
+                sNode = t->find(root, scNode.sno);
+                cNode = c->find(scNode.cno);
+                if (sNode == nullptr or cNode == nullptr) {
+                    printf("该学生不存在或者课程不存在!\n");
+                    break;
+                }
+                flag = 0;
+                while (flag == 0) {
+                    printf("请输入%s学生的%s课程的考试成绩：", sNode->student->name, cNode->cname);
+                    scanf("%lf", &scNode.grade);
+                    if (scNode.grade < 0 or scNode.grade > 100) {
+                        printf("成绩输入错误！请重新输入！\n");
+                    } else {
+                        flag = 1;
+                    }
+                }
+                sc->insert(scNode);
+                break;
+            case 2:
+                printf("请输入学号和课程号[课程名称]（用空格分割）:");
+                scanf("%s %s", &scNode.sno, &scNode.cno);
 
+                sNode = t->find(root, scNode.sno);
+                cNode = c->find(scNode.cno);
+                if (sNode == nullptr or cNode == nullptr) {
+                    printf("该学生不存在或者课程不存在!\n");
+                    break;
+                } else {
+                    printf("请输入%s学生的%s课程的考试成绩:%.1f分", sNode->student->name, cNode->cname,
+                           sc->find(scNode.sno, scNode.cno));
+                }
+                break;
+            case 3:
+                printf("请输入学号和课程号[课程名称]（用空格分割）:");
+                scanf("%s %s", &scNode.sno, &scNode.cno);
+
+                sNode = t->find(root, scNode.sno);
+                cNode = c->find(scNode.cno);
+                if (sNode == nullptr or cNode == nullptr) {
+                    printf("该学生不存在或者课程不存在!\n");
+                    break;
+                } else {
+                    printf("请输入%s学生的%s课程的新考试成绩：", sNode->student->name, cNode->cname);
+                    scanf("%lf", &scNode.grade);
+                    sc->update(scNode.sno, scNode.cno, scNode.grade);
+                }
+                break;
+            case 4:
+                printf("请输入学号和课程号[课程名称]（用空格分割）:");
+                scanf("%s %s", &scNode.sno, &scNode.cno);
+
+                sNode = t->find(root, scNode.sno);
+                cNode = c->find(scNode.cno);
+                if (sNode == nullptr or cNode == nullptr) {
+                    printf("该学生不存在或者课程不存在!\n");
+                    break;
+                } else {
+                    sc->delete_sc(scNode.sno, scNode.cno);
+                }
+                break;
+            case 5://student.sno*sc*course
+                t->print_ALL(root, sc, c);
+
+                break;
+            case 6:
+                sc->writetofile();
+                return;
+                break;
+        }
+    }
 }
 
 int main() {
@@ -95,7 +239,8 @@ int main() {
     files_student *fs = new files_student(root, &pos_extends);
 
     root = fs->readfile(t);//读取学生信息文件到树
-
+    c->readintolist();//课程信息
+    sc->readintolist();
     while (1) {
         printf("****************欢迎来到学生成绩管理系统************\n");
         printf("请输入数字选择相应的指令\n");
@@ -105,7 +250,9 @@ int main() {
         printf("4、打印所有学生的信息\n");
         printf("5、删除学生的信息\n");
         printf("6、更新学生的信息\n");
-        printf("7、退出学生信息管理系统\n");
+        printf("7、编辑课表信息\n");
+        printf("8、编辑成绩信息\n");
+        printf("9、退出学生信息管理系统\n");
         printf("*****************************************************\n");
 
         scanf("%d", &choose);
@@ -160,7 +307,15 @@ int main() {
                 t->update(root, &stu, 1);
                 break;
             case 7:
+                courseMenu(c);
+                break;
+            case 8:
+                gradeMenu(root, t, sc, c);
+                break;
+            case 9:
                 t->writeToFileALL(root);
+                c->writetofile();
+                sc->writetofile();
                 return 0;
         }
     }

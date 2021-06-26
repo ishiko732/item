@@ -62,7 +62,7 @@ void student::writetofile() {
     }
     for (it = list1.begin(); it != list1.end(); it++) {
         fprintf(fp, "%s\t%s\t%f\r\n", it->sno, it->cno, it->grade);
-        printf("write_Sc:%s\t%s\t%f\r", it->sno, it->cno, it->grade);
+//        printf("write_Sc:%s\t%s\t%f\r", it->sno, it->cno, it->grade);
     }
     fflush(fp);
     fsync(fileno(fp));

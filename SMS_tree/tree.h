@@ -6,6 +6,7 @@
 #define SMS_TREE_TREE_H
 
 #include "student.h"
+#include "course.h"
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -45,6 +46,8 @@ public:
     void print(stuNode *root1);
 
     void print(stuNode *root1, int writeTofile);
+
+    void print_ALL(stuNode *root1, student *sc, courses *c);
 
     void writeToFile(struct stu *stu);
 
