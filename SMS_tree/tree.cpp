@@ -165,12 +165,12 @@ void tree::print_ALL(stuNode *root1, student *sc, courses *c) {
     }
     double grade;
     print_ALL(root1->lchild, sc, c);
-    printf("学号：%s 学生姓名：%s 性别：%s 年龄：%d 地区：%s 专业：%s",
-           root1->student->sno, root1->student->name, root1->student->sex, root1->student->age,
-           root1->student->region, root1->student->pro);
     char **cnames = (char **) malloc(20 * sizeof(char *));
     char **cnos = c->getCnos(cnames);
     if (cnos != nullptr) {
+        printf("学号：%s 学生姓名：%s 性别：%s 年龄：%d 地区：%s 专业：%s",
+               root1->student->sno, root1->student->name, root1->student->sex, root1->student->age,
+               root1->student->region, root1->student->pro);
         for (int i = 0; cnos[i] != nullptr; i++) {
             grade = sc->find(root1->student->sno, cnos[i]);
             if (grade != -1) {

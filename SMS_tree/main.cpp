@@ -48,23 +48,26 @@ int input_student(struct stu *stu) {
     return ret;
 }
 
-//void test_couse() {
-//    courses *c = new courses();
-//    c->readintolist();
-////    c->insert();//19221101 高等数学Ⅰ 9.5 152
-////    c->insert();//16522105 C++程序设计 4 64
-////    printf("%p\n",c->find("高等数学Ⅰ"));
-////    printf("%p\n",c->find("16221301"));
-////    c->update("19221101");// 高级数学 5 15
+void test_couse() {
+    courses *c = new courses();
+    c->readintolist();
+//    c->insert();//19221101 高等数学Ⅰ 9.5 152
+//    c->insert();//16522105 C++程序设计 4 64
+//    printf("%p\n",c->find("高等数学Ⅰ"));
+//    printf("%p\n",c->find("16221301"));
 //    c->print_list();
-////    c->sort_c();
-////    c->print_list();
-////    c->writetofile();
+//    c->update("19221101");// 高级数学 5 15
+//    c->print_list();
+//    c->sort_c();
+//    c->print_list();
+//    c->writetofile();
+
+}
+
 //
-//}
-//
-//void test_sc() {
-//    student *sc = new student();
+void test_sc() {
+    student *sc = new student();
+    sc->readintolist();
 //    scoreNode scNode1{"201611701208", "19221101", 99};
 //    scoreNode scNode2{"201611701209", "19221101", 100};
 //    scoreNode scNode3{"201611301107", "16522105", 60};
@@ -75,11 +78,16 @@ int input_student(struct stu *stu) {
 //    sc->insert(scNode4);
 //
 //    printf("sno:%s cno:%s grade:%.1f\n", "201611701201", "16522105", sc->find("201611701201", "16522105"));
-//    printf("sno:%s cno:%s grade:%.1f\n", "201611701201", "16522105", sc->find("201611701201", "16522106"));
-//    sc->delete_sc("201611701201", "16522105");
+//    printf("sno:%s cno:%s grade:%.1f\n", "201611701209", "19221101", sc->find("201611701209", "19221101"));
+////    sc->delete_sc("201611701201", "16522105");
+//    sc->update("201611701209", "19221101",70);
+//    printf("sno:%s cno:%s grade:%.1f\n", "201611701209", "19221101", sc->find("201611701209", "19221101"));
+    sc->print_list();
 //    sc->writetofile();
-//
-//}
+
+//201611701209 高等数学Ⅰ
+
+}
 
 void courseMenu(courses *c) {
     int choose;
@@ -132,7 +140,7 @@ void courseMenu(courses *c) {
     }
 }
 
-void gradeMenu(stuNode *root, tree *t, student *sc, courses *c) {
+void gradeMenu(tree *t, student *sc, courses *c) {
     int choose, flag;
     scoreNode scNode{};
     stuNode *sNode;
@@ -152,7 +160,6 @@ void gradeMenu(stuNode *root, tree *t, student *sc, courses *c) {
             case 1:
                 printf("请输入学号和课程号[课程名称]（用空格分割）:");
                 scanf("%s %s", &scNode.sno, &scNode.cno);
-
                 sNode = t->find(root, scNode.sno);
                 cNode = c->find(scNode.cno);
                 if (sNode == nullptr or cNode == nullptr) {
@@ -169,6 +176,8 @@ void gradeMenu(stuNode *root, tree *t, student *sc, courses *c) {
                         flag = 1;
                     }
                 }
+                strcpy(scNode.sno, sNode->student->sno);
+                strcpy(scNode.cno, cNode->cno);
                 sc->insert(scNode);
                 break;
             case 2:
@@ -182,7 +191,7 @@ void gradeMenu(stuNode *root, tree *t, student *sc, courses *c) {
                     break;
                 } else {
                     printf("请输入%s学生的%s课程的考试成绩:%.1f分", sNode->student->name, cNode->cname,
-                           sc->find(scNode.sno, scNode.cno));
+                           sc->find(sNode->student->sno, cNode->cno));
                 }
                 break;
             case 3:
@@ -197,7 +206,7 @@ void gradeMenu(stuNode *root, tree *t, student *sc, courses *c) {
                 } else {
                     printf("请输入%s学生的%s课程的新考试成绩：", sNode->student->name, cNode->cname);
                     scanf("%lf", &scNode.grade);
-                    sc->update(scNode.sno, scNode.cno, scNode.grade);
+                    sc->update(sNode->student->sno, cNode->cno, scNode.grade);
                 }
                 break;
             case 4:
@@ -205,22 +214,22 @@ void gradeMenu(stuNode *root, tree *t, student *sc, courses *c) {
                 scanf("%s %s", &scNode.sno, &scNode.cno);
 
                 sNode = t->find(root, scNode.sno);
-                cNode = c->find(scNode.cno);
+                cNode = c->find(scNode.cno);//201611701209 19221101
                 if (sNode == nullptr or cNode == nullptr) {
                     printf("该学生不存在或者课程不存在!\n");
                     break;
                 } else {
-                    sc->delete_sc(scNode.sno, scNode.cno);
+                    sc->delete_sc(sNode->student->sno, cNode->cno);
                 }
                 break;
             case 5://student.sno*sc*course
+//                sc->print_list();
                 t->print_ALL(root, sc, c);
 
                 break;
             case 6:
                 sc->writetofile();
                 return;
-                break;
         }
     }
 }
@@ -236,11 +245,11 @@ int main() {
     tree *t = new tree();
     courses *c = new courses();
     student *sc = new student();
-    files_student *fs = new files_student(root, &pos_extends);
+    auto *fs = new files_student(root, &pos_extends);
 
     root = fs->readfile(t);//读取学生信息文件到树
     c->readintolist();//课程信息
-    sc->readintolist();
+    sc->readintolist();//成绩信息
     while (1) {
         printf("****************欢迎来到学生成绩管理系统************\n");
         printf("请输入数字选择相应的指令\n");
@@ -310,7 +319,7 @@ int main() {
                 courseMenu(c);
                 break;
             case 8:
-                gradeMenu(root, t, sc, c);
+                gradeMenu(t, sc, c);
                 break;
             case 9:
                 t->writeToFileALL(root);

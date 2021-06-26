@@ -21,14 +21,22 @@ void courses::readintolist() {
 }
 
 void courses::insert(courseNode node) {
-    list1.push_back(node);
+    if (find(node.cno) != nullptr) {
+        printf("该课程信息已存在！\n");
+    } else {
+        list1.push_back(node);
+    }
 }
 
 void courses::insert() {
     courseNode c{};
     printf("输入课程号 课程名称 学分 学时（用空格分割）:");
     scanf("%s %s %lf %d", c.cno, c.cname, &c.credit, &c.time);
-    list1.push_back(c);
+    if (find(c.cno) != nullptr) {
+        printf("该课程信息已存在！\n");
+    } else {
+        list1.push_back(c);
+    }
 }
 
 courseNode *courses::find(char *cno) {

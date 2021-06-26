@@ -78,6 +78,8 @@ public:
 
     void readintolist();
 
+    void print_list();
+
 private:
     std::list<scoreNode> list1;
 };

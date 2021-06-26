@@ -26,7 +26,11 @@ void student::readintolist() {
 }
 
 void student::insert(scoreNode node) {
-    list1.push_back(node);
+    if (find(node.sno, node.cno) == -1) {
+        list1.push_back(node);
+    } else {
+        printf("已经存在该学生该课程成绩！\n");
+    }
 }
 
 double student::find(char *sno, char *cno) {
@@ -48,7 +52,7 @@ void student::delete_sc(char *sno, char *cno) {
 
 void student::update(char *sno, char *cno, double grade) {
     std::list<scoreNode>::iterator it = std::find_if(list1.begin(), list1.end(), findgrade(sno, cno));
-    if (it != list1.end()) {
+    if (it != list1.end()) {//201611701209 高等数学Ⅰ
         it->grade = grade;
     }
 }
@@ -68,4 +72,14 @@ void student::writetofile() {
     fsync(fileno(fp));
     //        _commit(_fileno(fp));//获取文件描述符后强制写硬盘
     fclose(fp);
+}
+
+void student::print_list() {
+    std::list<scoreNode>::iterator it;
+    if (list1.size() != 0) {
+        printf("学号\t课程号\t成绩\n");
+        for (it = list1.begin(); it != list1.end(); it++) {
+            printf("%s\t%s\t%.1f\n", it->sno, it->cno, it->grade);
+        }
+    }
 }
