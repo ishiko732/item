@@ -24,7 +24,7 @@ stuNode *files_student::readfile(tree *t) {
             s->pos = (int) (stuAmount * sizeof(struct stu));
             *pos_extends = s->pos;
             new_node = t->createStuNode(s);
-            printf("sno:%s,pos:%d\n", s->sno, s->pos);
+//            printf("sno:%s,pos:%d\n", s->sno, s->pos);
             root = t->insert(root, new_node);
         }
         printf("读取到%d条学生信息\n", stuAmount);

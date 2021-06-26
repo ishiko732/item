@@ -51,6 +51,25 @@ public:
 
     void readintolist();
 
+    char **getCnos(char **cnames) {
+        char **cnos = (char **) malloc(20 * sizeof(char *));
+        if (cnos == nullptr) {
+            printf("分配空间失败");
+            return nullptr;
+        }
+        int i = 0;
+        std::list<courseNode>::iterator it;
+        if (list1.size() != 0) {
+            for (i = 0, it = list1.begin(); it != list1.end(); it++, i++) {
+                cnos[i] = (char *) malloc(sizeof(char) * 20);
+                strcpy(cnos[i], it->cno);
+                cnames[i] = (char *) malloc(sizeof(char) * 20);
+                strcpy(cnames[i], it->cname);
+            }
+        }
+        return cnos;
+    }
+
 private:
     std::list<courseNode> list1;
 };

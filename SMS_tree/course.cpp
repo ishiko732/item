@@ -32,6 +32,9 @@ void courses::insert() {
 }
 
 courseNode *courses::find(char *cno) {
+    if (cno == nullptr) {
+        return nullptr;
+    }
     std::list<courseNode>::iterator it = std::find_if(list1.begin(), list1.end(), findcno(cno));
     courseNode *c = (courseNode *) malloc(sizeof(struct course));
     if (it == list1.end()) {//迭代器尾=链表尾
@@ -63,7 +66,7 @@ void courses::update(char *cno) {
         }
         scanf("%s", s);
         if (s[0] != 0) {
-            it->credit = atoi(s);
+            it->credit = atof(s);
         }
         scanf("%s", s);
         if (s[0] != 0) {
@@ -74,11 +77,11 @@ void courses::update(char *cno) {
 
 void courses::print_list() {
     std::list<courseNode>::iterator it;
-    if (list1.begin() != list1.end()) {
-        printf("课程号\t\t课程名称\t\t学号\t\t学时\n");
-    }
-    for (it = list1.begin(); it != list1.end(); it++) {
-        printf("%s\t%s\t%.1f\t%d\n", it->cno, it->cname, it->credit, it->time);
+    if (list1.size() != 0) {
+        printf("课程号\t\t课程名称\t\t\t学分\t\t学时\n");
+        for (it = list1.begin(); it != list1.end(); it++) {
+            printf("%s\t%-20s\t%5.1f%5d\n", it->cno, it->cname, it->credit, it->time);
+        }
     }
 }
 
