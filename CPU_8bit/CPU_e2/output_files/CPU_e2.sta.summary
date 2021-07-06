@@ -1,0 +1,197 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow Model Setup 'CPU:inst8|IR_8bit:inst4|Q1[4]'
+Slack : -11.837
+TNS   : -113.763
+
+Type  : Slow Model Setup 'load_data'
+Slack : -11.311
+TNS   : -93.175
+
+Type  : Slow Model Setup 'CPU:inst8|beat_pulse:inst23|T1'
+Slack : -6.001
+TNS   : -33.244
+
+Type  : Slow Model Setup 'CPU:inst8|beat_pulse:inst23|T2'
+Slack : -1.813
+TNS   : -26.527
+
+Type  : Slow Model Setup 'CPU:inst8|beat_pulse:inst23|T0'
+Slack : -0.795
+TNS   : -2.879
+
+Type  : Slow Model Setup 'clk'
+Slack : -0.090
+TNS   : -0.090
+
+Type  : Slow Model Hold 'load_data'
+Slack : -4.583
+TNS   : -31.705
+
+Type  : Slow Model Hold 'CPU:inst8|IR_8bit:inst4|Q1[4]'
+Slack : -4.057
+TNS   : -29.440
+
+Type  : Slow Model Hold 'CPU:inst8|beat_pulse:inst23|T2'
+Slack : -1.344
+TNS   : -9.323
+
+Type  : Slow Model Hold 'CPU:inst8|beat_pulse:inst23|T0'
+Slack : -0.873
+TNS   : -3.492
+
+Type  : Slow Model Hold 'clk'
+Slack : 0.522
+TNS   : 0.000
+
+Type  : Slow Model Hold 'CPU:inst8|beat_pulse:inst23|T1'
+Slack : 3.841
+TNS   : 0.000
+
+Type  : Slow Model Recovery 'CPU:inst8|beat_pulse:inst23|T2'
+Slack : 0.724
+TNS   : 0.000
+
+Type  : Slow Model Recovery 'CPU:inst8|IR_8bit:inst4|Q1[4]'
+Slack : 2.260
+TNS   : 0.000
+
+Type  : Slow Model Recovery 'load_data'
+Slack : 2.786
+TNS   : 0.000
+
+Type  : Slow Model Removal 'load_data'
+Slack : -4.096
+TNS   : -40.069
+
+Type  : Slow Model Removal 'CPU:inst8|IR_8bit:inst4|Q1[4]'
+Slack : -3.570
+TNS   : -34.809
+
+Type  : Slow Model Removal 'CPU:inst8|beat_pulse:inst23|T2'
+Slack : -1.337
+TNS   : -20.851
+
+Type  : Slow Model Minimum Pulse Width 'CPU:inst8|beat_pulse:inst23|T0'
+Slack : -1.423
+TNS   : -15.384
+
+Type  : Slow Model Minimum Pulse Width 'load_data'
+Slack : -1.222
+TNS   : -11.222
+
+Type  : Slow Model Minimum Pulse Width 'clk'
+Slack : -1.222
+TNS   : -9.222
+
+Type  : Slow Model Minimum Pulse Width 'CPU:inst8|beat_pulse:inst23|T2'
+Slack : -0.500
+TNS   : -16.000
+
+Type  : Slow Model Minimum Pulse Width 'CPU:inst8|IR_8bit:inst4|Q1[4]'
+Slack : -0.500
+TNS   : -10.000
+
+Type  : Slow Model Minimum Pulse Width 'CPU:inst8|beat_pulse:inst23|T1'
+Slack : -0.500
+TNS   : -8.000
+
+Type  : Fast Model Setup 'CPU:inst8|IR_8bit:inst4|Q1[4]'
+Slack : -4.520
+TNS   : -45.325
+
+Type  : Fast Model Setup 'load_data'
+Slack : -4.193
+TNS   : -35.695
+
+Type  : Fast Model Setup 'CPU:inst8|beat_pulse:inst23|T1'
+Slack : -3.127
+TNS   : -16.762
+
+Type  : Fast Model Setup 'CPU:inst8|beat_pulse:inst23|T2'
+Slack : -0.287
+TNS   : -4.170
+
+Type  : Fast Model Setup 'CPU:inst8|beat_pulse:inst23|T0'
+Slack : 0.170
+TNS   : 0.000
+
+Type  : Fast Model Setup 'clk'
+Slack : 0.465
+TNS   : 0.000
+
+Type  : Fast Model Hold 'load_data'
+Slack : -2.677
+TNS   : -18.869
+
+Type  : Fast Model Hold 'CPU:inst8|IR_8bit:inst4|Q1[4]'
+Slack : -2.350
+TNS   : -17.697
+
+Type  : Fast Model Hold 'CPU:inst8|beat_pulse:inst23|T2'
+Slack : -1.056
+TNS   : -11.164
+
+Type  : Fast Model Hold 'CPU:inst8|beat_pulse:inst23|T0'
+Slack : -0.800
+TNS   : -3.200
+
+Type  : Fast Model Hold 'clk'
+Slack : 0.240
+TNS   : 0.000
+
+Type  : Fast Model Hold 'CPU:inst8|beat_pulse:inst23|T1'
+Slack : 2.363
+TNS   : 0.000
+
+Type  : Fast Model Recovery 'CPU:inst8|beat_pulse:inst23|T2'
+Slack : 1.070
+TNS   : 0.000
+
+Type  : Fast Model Recovery 'CPU:inst8|IR_8bit:inst4|Q1[4]'
+Slack : 1.573
+TNS   : 0.000
+
+Type  : Fast Model Recovery 'load_data'
+Slack : 1.900
+TNS   : 0.000
+
+Type  : Fast Model Removal 'load_data'
+Slack : -2.352
+TNS   : -23.117
+
+Type  : Fast Model Removal 'CPU:inst8|IR_8bit:inst4|Q1[4]'
+Slack : -2.025
+TNS   : -19.847
+
+Type  : Fast Model Removal 'CPU:inst8|beat_pulse:inst23|T2'
+Slack : -0.935
+TNS   : -14.781
+
+Type  : Fast Model Minimum Pulse Width 'CPU:inst8|beat_pulse:inst23|T0'
+Slack : -1.423
+TNS   : -15.384
+
+Type  : Fast Model Minimum Pulse Width 'load_data'
+Slack : -1.222
+TNS   : -11.222
+
+Type  : Fast Model Minimum Pulse Width 'clk'
+Slack : -1.222
+TNS   : -9.222
+
+Type  : Fast Model Minimum Pulse Width 'CPU:inst8|beat_pulse:inst23|T2'
+Slack : -0.500
+TNS   : -16.000
+
+Type  : Fast Model Minimum Pulse Width 'CPU:inst8|IR_8bit:inst4|Q1[4]'
+Slack : -0.500
+TNS   : -10.000
+
+Type  : Fast Model Minimum Pulse Width 'CPU:inst8|beat_pulse:inst23|T1'
+Slack : -0.500
+TNS   : -8.000
+
+------------------------------------------------------------

@@ -1,0 +1,197 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow Model Setup 'IR_8bit:inst4|Q1[4]'
+Slack : -12.318
+TNS   : -115.774
+
+Type  : Slow Model Setup 'load_data'
+Slack : -11.325
+TNS   : -89.264
+
+Type  : Slow Model Setup 'beat_pulse:inst23|T1'
+Slack : -5.415
+TNS   : -33.882
+
+Type  : Slow Model Setup 'beat_pulse:inst23|T2'
+Slack : -2.372
+TNS   : -72.450
+
+Type  : Slow Model Setup 'beat_pulse:inst23|T0'
+Slack : -0.937
+TNS   : -4.458
+
+Type  : Slow Model Setup 'CLK'
+Slack : 0.113
+TNS   : 0.000
+
+Type  : Slow Model Hold 'load_data'
+Slack : -4.347
+TNS   : -32.492
+
+Type  : Slow Model Hold 'IR_8bit:inst4|Q1[4]'
+Slack : -3.354
+TNS   : -25.292
+
+Type  : Slow Model Hold 'beat_pulse:inst23|T2'
+Slack : -1.928
+TNS   : -25.959
+
+Type  : Slow Model Hold 'beat_pulse:inst23|T0'
+Slack : -1.158
+TNS   : -4.632
+
+Type  : Slow Model Hold 'CLK'
+Slack : 0.531
+TNS   : 0.000
+
+Type  : Slow Model Hold 'beat_pulse:inst23|T1'
+Slack : 4.283
+TNS   : 0.000
+
+Type  : Slow Model Recovery 'beat_pulse:inst23|T2'
+Slack : 0.237
+TNS   : 0.000
+
+Type  : Slow Model Recovery 'IR_8bit:inst4|Q1[4]'
+Slack : 1.473
+TNS   : 0.000
+
+Type  : Slow Model Recovery 'load_data'
+Slack : 2.466
+TNS   : 0.000
+
+Type  : Slow Model Removal 'load_data'
+Slack : -4.027
+TNS   : -36.762
+
+Type  : Slow Model Removal 'IR_8bit:inst4|Q1[4]'
+Slack : -3.034
+TNS   : -26.832
+
+Type  : Slow Model Removal 'beat_pulse:inst23|T2'
+Slack : -0.767
+TNS   : -20.782
+
+Type  : Slow Model Minimum Pulse Width 'beat_pulse:inst23|T0'
+Slack : -1.423
+TNS   : -15.384
+
+Type  : Slow Model Minimum Pulse Width 'load_data'
+Slack : -1.380
+TNS   : -11.380
+
+Type  : Slow Model Minimum Pulse Width 'CLK'
+Slack : -1.380
+TNS   : -9.380
+
+Type  : Slow Model Minimum Pulse Width 'beat_pulse:inst23|T2'
+Slack : -0.500
+TNS   : -32.000
+
+Type  : Slow Model Minimum Pulse Width 'IR_8bit:inst4|Q1[4]'
+Slack : -0.500
+TNS   : -10.000
+
+Type  : Slow Model Minimum Pulse Width 'beat_pulse:inst23|T1'
+Slack : -0.500
+TNS   : -8.000
+
+Type  : Fast Model Setup 'IR_8bit:inst4|Q1[4]'
+Slack : -4.889
+TNS   : -47.225
+
+Type  : Fast Model Setup 'load_data'
+Slack : -4.301
+TNS   : -34.416
+
+Type  : Fast Model Setup 'beat_pulse:inst23|T1'
+Slack : -2.863
+TNS   : -16.933
+
+Type  : Fast Model Setup 'beat_pulse:inst23|T2'
+Slack : -0.629
+TNS   : -18.588
+
+Type  : Fast Model Setup 'beat_pulse:inst23|T0'
+Slack : 0.103
+TNS   : 0.000
+
+Type  : Fast Model Setup 'CLK'
+Slack : 0.429
+TNS   : 0.000
+
+Type  : Fast Model Hold 'load_data'
+Slack : -2.554
+TNS   : -19.677
+
+Type  : Fast Model Hold 'IR_8bit:inst4|Q1[4]'
+Slack : -1.966
+TNS   : -15.800
+
+Type  : Fast Model Hold 'beat_pulse:inst23|T2'
+Slack : -1.322
+TNS   : -25.972
+
+Type  : Fast Model Hold 'beat_pulse:inst23|T0'
+Slack : -0.941
+TNS   : -3.764
+
+Type  : Fast Model Hold 'CLK'
+Slack : 0.250
+TNS   : 0.000
+
+Type  : Fast Model Hold 'beat_pulse:inst23|T1'
+Slack : 2.544
+TNS   : 0.000
+
+Type  : Fast Model Recovery 'beat_pulse:inst23|T2'
+Slack : 0.839
+TNS   : 0.000
+
+Type  : Fast Model Recovery 'IR_8bit:inst4|Q1[4]'
+Slack : 1.128
+TNS   : 0.000
+
+Type  : Fast Model Recovery 'load_data'
+Slack : 1.716
+TNS   : 0.000
+
+Type  : Fast Model Removal 'load_data'
+Slack : -2.304
+TNS   : -21.486
+
+Type  : Fast Model Removal 'IR_8bit:inst4|Q1[4]'
+Slack : -1.716
+TNS   : -15.606
+
+Type  : Fast Model Removal 'beat_pulse:inst23|T2'
+Slack : -0.684
+TNS   : -20.292
+
+Type  : Fast Model Minimum Pulse Width 'beat_pulse:inst23|T0'
+Slack : -1.423
+TNS   : -15.384
+
+Type  : Fast Model Minimum Pulse Width 'load_data'
+Slack : -1.380
+TNS   : -11.380
+
+Type  : Fast Model Minimum Pulse Width 'CLK'
+Slack : -1.380
+TNS   : -9.380
+
+Type  : Fast Model Minimum Pulse Width 'beat_pulse:inst23|T2'
+Slack : -0.500
+TNS   : -32.000
+
+Type  : Fast Model Minimum Pulse Width 'IR_8bit:inst4|Q1[4]'
+Slack : -0.500
+TNS   : -10.000
+
+Type  : Fast Model Minimum Pulse Width 'beat_pulse:inst23|T1'
+Slack : -0.500
+TNS   : -8.000
+
+------------------------------------------------------------
