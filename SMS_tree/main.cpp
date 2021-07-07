@@ -33,6 +33,9 @@ int input_student(struct stu *stu) {
             printf("学号的年份出错！\n");
             ret = 0;
         }
+    }else if(count <12){
+        printf("学号格式错误！");
+        ret=0;
     }
 
     if (strcmp(stu->sex, "男") != 0 and strcmp(stu->sex, "女") != 0) {
@@ -42,6 +45,12 @@ int input_student(struct stu *stu) {
     if (stu->age < 0 or stu->age > 100) {
         printf("年龄出错！\n");
         ret = 0;
+    }
+    if(strcmp(stu->pro,"null")==0){
+        strcpy(stu->pro,"");
+    }
+    if(strcmp(stu->region,"null")==0){
+        strcpy(stu->region,"");
     }
     pos_extends += sizeof(struct stu);
     stu->pos = pos_extends;
