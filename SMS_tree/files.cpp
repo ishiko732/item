@@ -1,5 +1,5 @@
 //
-// Created by åˆ˜æºå³° on 2021/6/26.
+// Created by ÁõÔ´·å on 2021/6/26.
 //
 
 #include "files.h"
@@ -9,51 +9,51 @@ stuNode *files_student::readfile(tree *t) {
     int stuAmount;
     stu *s = (struct stu *) malloc(sizeof(struct stu));
     stuNode *new_node;
-    if ((fp = fopen("student.txt", "r")) == nullptr)   //åˆ¤æ–­æ˜¯å¦æ‰“å¼€æ–‡ä»¶
+    if ((fp = fopen("student.txt", "r")) == nullptr)   //ÅĞ¶ÏÊÇ·ñ´ò¿ªÎÄ¼ş
     {
         if ((fp = fopen("student.txt", "w")) == nullptr) {
-            printf("student.txt ä¿¡æ¯è¡¨å»ºç«‹å¤±è´¥,é€€å‡ºç¨‹åº!\n");
+            printf("student.txt ĞÅÏ¢±í½¨Á¢Ê§°Ü,ÍË³ö³ÌĞò!\n");
             exit(0);
         }
     }
-    fseek(fp, 0, SEEK_END);   //æ–‡ä»¶ä½ç½®æŒ‡é’ˆç§»åŠ¨åˆ°æ–‡ä»¶æœ«å°¾ã€‚
-    if (ftell(fp) > 0) //æ–‡ä»¶ä¸ä¸ºç©ºã€‚
+    fseek(fp, 0, SEEK_END);   //ÎÄ¼şÎ»ÖÃÖ¸ÕëÒÆ¶¯µ½ÎÄ¼şÄ©Î²¡£
+    if (ftell(fp) > 0) //ÎÄ¼ş²»Îª¿Õ¡£
     {
-        rewind(fp);  //æ–‡ä»¶ä½ç½®æŒ‡é’ˆç§»åŠ¨åˆ°æ–‡ä»¶å¼€å§‹ä½ç½®ã€‚
-        for (stuAmount = 0; !feof(fp) && fread(s, sizeof(struct stu), 1, fp); stuAmount++) {//æ–‡ä»¶å¯¼å…¥
+        rewind(fp);  //ÎÄ¼şÎ»ÖÃÖ¸ÕëÒÆ¶¯µ½ÎÄ¼ş¿ªÊ¼Î»ÖÃ¡£
+        for (stuAmount = 0; !feof(fp) && fread(s, sizeof(struct stu), 1, fp); stuAmount++) {//ÎÄ¼şµ¼Èë
             s->pos = (int) (stuAmount * sizeof(struct stu));
             *pos_extends = s->pos;
             new_node = t->createStuNode(s);
 //            printf("sno:%s,pos:%d\n", s->sno, s->pos);
             root = t->insert(root, new_node);
         }
-        printf("è¯»å–åˆ°%dæ¡å­¦ç”Ÿä¿¡æ¯\n", stuAmount);
+        printf("¶ÁÈ¡µ½%dÌõÑ§ÉúĞÅÏ¢\n", stuAmount);
     }
     free(s);
     fflush(fp);
-    fsync(fileno(fp));
-//    _commit(_fileno(fp));//è·å–æ–‡ä»¶æè¿°ç¬¦åå¼ºåˆ¶å†™ç¡¬ç›˜
+//    fsync(fileno(fp));
+    _commit(_fileno(fp));//»ñÈ¡ÎÄ¼şÃèÊö·ûºóÇ¿ÖÆĞ´Ó²ÅÌ
     fclose(fp);
     return root;
 }
 
 
-void files_student::findfromfile(int count, char *message) {//åŸºäºå¯»æ‰¾æ–‡ä»¶ä¿¡æ¯æ¥å®šä¸‹snoï¼Œå†ä¼ é€’ç»™find
+void files_student::findfromfile(int count, char *message) {//»ùÓÚÑ°ÕÒÎÄ¼şĞÅÏ¢À´¶¨ÏÂsno£¬ÔÙ´«µİ¸øfind
     FILE *fp;
     if ((fp = fopen("student.txt", "r")) == nullptr) {
         return;
     }
     int stuAmount;
     stu *s = (struct stu *) malloc(sizeof(struct stu));
-    fseek(fp, 0, SEEK_END);   //æ–‡ä»¶ä½ç½®æŒ‡é’ˆç§»åŠ¨åˆ°æ–‡ä»¶æœ«å°¾ã€‚
-    if (ftell(fp) > 0) //æ–‡ä»¶ä¸ä¸ºç©ºã€‚
+    fseek(fp, 0, SEEK_END);   //ÎÄ¼şÎ»ÖÃÖ¸ÕëÒÆ¶¯µ½ÎÄ¼şÄ©Î²¡£
+    if (ftell(fp) > 0) //ÎÄ¼ş²»Îª¿Õ¡£
     {
-        rewind(fp);  //æ–‡ä»¶ä½ç½®æŒ‡é’ˆç§»åŠ¨åˆ°æ–‡ä»¶å¼€å§‹ä½ç½®ã€‚
+        rewind(fp);  //ÎÄ¼şÎ»ÖÃÖ¸ÕëÒÆ¶¯µ½ÎÄ¼ş¿ªÊ¼Î»ÖÃ¡£
         char *find;
-        for (stuAmount = 0; !feof(fp) && fread(s, sizeof(struct stu), 1, fp);) {//ä¿¡æ¯è¯»å–
+        for (stuAmount = 0; !feof(fp) && fread(s, sizeof(struct stu), 1, fp);) {//ĞÅÏ¢¶ÁÈ¡
             if (strstr(s->sno, message) or strstr(s->name, message) or strstr(s->sex, message) or
                 (s->age == atoi(message)) or strstr(s->region, message) or strstr(s->pro, message)) {
-                printf("å­¦å·ï¼š%s å­¦ç”Ÿå§“åï¼š%s æ€§åˆ«ï¼š%s å¹´é¾„ï¼š%d åœ°åŒºï¼š%s ä¸“ä¸šï¼š%s\n",
+                printf("Ñ§ºÅ£º%s Ñ§ÉúĞÕÃû£º%s ĞÔ±ğ£º%s ÄêÁä£º%d µØÇø£º%s ×¨Òµ£º%s\n",
                        s->sno, s->name, s->sex, s->age, s->region, s->pro);
                 stuAmount++;
             }
@@ -62,11 +62,11 @@ void files_student::findfromfile(int count, char *message) {//åŸºäºå¯»æ‰¾æ–‡ä»¶
             }
         }
     }
-    printf("è¯»å–åˆ°%dæ¡å­¦ç”Ÿä¿¡æ¯\n", stuAmount);
+    printf("¶ÁÈ¡µ½%dÌõÑ§ÉúĞÅÏ¢\n", stuAmount);
     free(s);
     fflush(fp);
-    fsync(fileno(fp));
-    //_commit(_fileno(fp));//è·å–æ–‡ä»¶æè¿°ç¬¦åå¼ºåˆ¶å†™ç¡¬ç›˜
+//    fsync(fileno(fp));
+    _commit(_fileno(fp));//»ñÈ¡ÎÄ¼şÃèÊö·ûºóÇ¿ÖÆĞ´Ó²ÅÌ
     fclose(fp);
 }
 
@@ -86,44 +86,44 @@ int files_student::deletetofile(tree *t, char *sno, stuNode *root) {
     this->root = root;
     stuNode *sno_exists = t->find(root, sno);
     if (sno_exists == nullptr) {
-        printf("æœªèƒ½æ‰¾åˆ°è¯¥å­¦ç”Ÿä¿¡æ¯ï¼\n");
+        printf("Î´ÄÜÕÒµ½¸ÃÑ§ÉúĞÅÏ¢£¡\n");
         return 0;
     }
 
     pos = sno_exists->student->pos;
     char *front = (char *) malloc(sizeof(char) * pos);
     if ((fp = fopen("student.txt", "r")) == nullptr) {
-        printf("æ–‡ä»¶æ“ä½œå¼‚å¸¸ï¼\n");
+        printf("ÎÄ¼ş²Ù×÷Òì³££¡\n");
         return 0;
     }
-    fseek(fp, 0, SEEK_END); //æ–‡ä»¶ä½ç½®æŒ‡é’ˆç§»åŠ¨åˆ°æ–‡ä»¶ç»“æŸä½ç½®
+    fseek(fp, 0, SEEK_END); //ÎÄ¼şÎ»ÖÃÖ¸ÕëÒÆ¶¯µ½ÎÄ¼ş½áÊøÎ»ÖÃ
     unsigned int backlen = ftell(fp) - pos - sizeof(struct stu);
     char *back = (char *) malloc(sizeof(char) * backlen);
     fseek(fp, 0, SEEK_SET);
     fread(front, pos, 1, fp);//front buf
-    //è¯»å–åˆ°è¯¥ç»“ç‚¹å¤„
-    fseek(fp, sizeof(struct stu), SEEK_CUR);//åç§»ä¸€ä¸ªå­¦ç”Ÿå¯¹è±¡
-    fread(back, backlen, 1, fp);//è¯»å–è¢«åˆ é™¤ç»“ç‚¹çš„åé¢ä¿¡æ¯
+    //¶ÁÈ¡µ½¸Ã½áµã´¦
+    fseek(fp, sizeof(struct stu), SEEK_CUR);//Æ«ÒÆÒ»¸öÑ§Éú¶ÔÏó
+    fread(back, backlen, 1, fp);//¶ÁÈ¡±»É¾³ı½áµãµÄºóÃæĞÅÏ¢
     fflush(fp);
-    fsync(fileno(fp));
-    //_commit(_fileno(fp));//è·å–æ–‡ä»¶æè¿°ç¬¦åå¼ºåˆ¶å†™ç¡¬ç›˜
+//    fsync(fileno(fp));
+    _commit(_fileno(fp));//»ñÈ¡ÎÄ¼şÃèÊö·ûºóÇ¿ÖÆĞ´Ó²ÅÌ
     fclose(fp);
 
-    if ((fp = fopen("student.txt", "w")) == nullptr) {//è¦†ç›–æ–‡ä»¶
-        printf("æ–‡ä»¶æ“ä½œå¼‚å¸¸ï¼\n");
+    if ((fp = fopen("student.txt", "w")) == nullptr) {//¸²¸ÇÎÄ¼ş
+        printf("ÎÄ¼ş²Ù×÷Òì³££¡\n");
         return 0;
     }
     fseek(fp, 0, SEEK_SET);
     fwrite(front, pos, 1, fp);
     fwrite(back, backlen, 1, fp);
 
-    //å¯¹å­ç»“ç‚¹åç§»ä¿®æ”¹
+    //¶Ô×Ó½áµãÆ«ÒÆĞŞ¸Ä
     pos_stuNode(sno_exists);
     free(front);
     free(back);
     fflush(fp);
-    fsync(fileno(fp));
-    //_commit(_fileno(fp));//è·å–æ–‡ä»¶æè¿°ç¬¦åå¼ºåˆ¶å†™ç¡¬ç›˜
+//    fsync(fileno(fp));
+    _commit(_fileno(fp));//»ñÈ¡ÎÄ¼şÃèÊö·ûºóÇ¿ÖÆĞ´Ó²ÅÌ
     fclose(fp);
     return 1;
 }

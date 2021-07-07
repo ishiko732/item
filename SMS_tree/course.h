@@ -1,5 +1,5 @@
 //
-// Created by åˆ˜æºå³° on 2021/6/26.
+// Created by ÁõÔ´·å on 2021/6/26.
 //
 
 #ifndef SMS_TREE_COURSE_H
@@ -7,9 +7,13 @@
 
 #include <list>
 #include <unistd.h>
+#include <cstdlib>
+#include <cstdio>
+#include <iostream>
 #include "student.h"
+#include <algorithm>
 
-class findcno {//STLæŸ¥æ‰¾corseæ˜¯å¦å«æœ‰
+class findcno {//STL²éÕÒcorseÊÇ·ñº¬ÓĞ
 public:
     findcno(char *message) {
         this->msg = message;
@@ -24,37 +28,37 @@ private:
 };
 
 struct comnode {
-    bool operator()(courseNode &a, courseNode &b) {//æ¯”è¾ƒå™¨
+    bool operator()(courseNode &a, courseNode &b) {//±È½ÏÆ÷
         return strcmp(a.cno, b.cno) < 0;
     }
 };
 
 class courses {
 public:
-    void insert(courseNode node);//æ’å…¥ç»“ç‚¹
+    void insert(courseNode node);//²åÈë½áµã
 
-    void insert();//æç¤ºæ’å…¥
+    void insert();//ÌáÊ¾²åÈë
 
-    courseNode *find(char *cno);//æŸ¥æ‰¾ï¼Œè¯¾ç¨‹å·ï¼Œè¯¾ç¨‹å
+    courseNode *find(char *cno);//²éÕÒ£¬¿Î³ÌºÅ£¬¿Î³ÌÃû
 
-    void delete_c(char *cno);//åˆ é™¤
+    void delete_c(char *cno);//É¾³ı
 
-    void update(char *cno);//æ›´æ–°
+    void update(char *cno);//¸üĞÂ
 
-    void sort_c() {//æ’åº
+    void sort_c() {//ÅÅĞò
         list1.sort(comnode());
     }
 
-    void print_list();//è¾“å‡ºè¯¾ç¨‹åˆ—è¡¨
+    void print_list();//Êä³ö¿Î³ÌÁĞ±í
 
-    void writetofile();//å†™åˆ°æ–‡ä»¶
+    void writetofile();//Ğ´µ½ÎÄ¼ş
 
-    void readintolist();//å¯¼å…¥åˆ°list
+    void readintolist();//µ¼Èëµ½list
 
-    char **getCnos(char **cnames) {//è·å–è¯¾ç¨‹å·æ•°ç»„
+    char **getCnos(char **cnames) {//»ñÈ¡¿Î³ÌºÅÊı×é
         char **cnos = (char **) malloc(20 * sizeof(char *));
         if (cnos == nullptr) {
-            printf("åˆ†é…ç©ºé—´å¤±è´¥");
+            printf("·ÖÅä¿Õ¼äÊ§°Ü");
             return nullptr;
         }
         int i = 0;

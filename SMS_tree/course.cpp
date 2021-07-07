@@ -1,5 +1,5 @@
 //
-// Created by åˆ˜æºå³° on 2021/6/26.
+// Created by ÁõÔ´·å on 2021/6/26.
 //
 
 #include "course.h"
@@ -9,11 +9,11 @@ void courses::readintolist() {
     if ((fp = fopen("course.txt", "r")) == nullptr) {
         return;
     }
-    fseek(fp, 0, SEEK_END);   //æ–‡ä»¶ä½ç½®æŒ‡é’ˆç§»åŠ¨åˆ°æ–‡ä»¶æœ«å°¾ã€‚
+    fseek(fp, 0, SEEK_END);   //ÎÄ¼şÎ»ÖÃÖ¸ÕëÒÆ¶¯µ½ÎÄ¼şÄ©Î²¡£
     if (ftell(fp) <= 0) {
         return;
     }
-    rewind(fp);  //æ–‡ä»¶ä½ç½®æŒ‡é’ˆç§»åŠ¨åˆ°æ–‡ä»¶å¼€å§‹ä½ç½®ã€‚
+    rewind(fp);  //ÎÄ¼şÎ»ÖÃÖ¸ÕëÒÆ¶¯µ½ÎÄ¼ş¿ªÊ¼Î»ÖÃ¡£
     courseNode c{};
     while (fscanf(fp, "%s\t%s\t%lf\t%d\r\n", c.cno, c.cname, &c.credit, &c.time) != -1) {
         list1.push_back(c);
@@ -22,7 +22,7 @@ void courses::readintolist() {
 
 void courses::insert(courseNode node) {
     if (find(node.cno) != nullptr) {
-        printf("è¯¥è¯¾ç¨‹ä¿¡æ¯å·²å­˜åœ¨ï¼\n");
+        printf("¸Ã¿Î³ÌĞÅÏ¢ÒÑ´æÔÚ£¡\n");
     } else {
         list1.push_back(node);
     }
@@ -30,10 +30,10 @@ void courses::insert(courseNode node) {
 
 void courses::insert() {
     courseNode c{};
-    printf("è¾“å…¥è¯¾ç¨‹å· è¯¾ç¨‹åç§° å­¦åˆ† å­¦æ—¶ï¼ˆç”¨ç©ºæ ¼åˆ†å‰²ï¼‰:");
+    printf("ÊäÈë¿Î³ÌºÅ ¿Î³ÌÃû³Æ Ñ§·Ö Ñ§Ê±£¨ÓÃ¿Õ¸ñ·Ö¸î£©:");
     scanf("%s %s %lf %d", c.cno, c.cname, &c.credit, &c.time);
     if (find(c.cno) != nullptr) {
-        printf("è¯¥è¯¾ç¨‹ä¿¡æ¯å·²å­˜åœ¨ï¼\n");
+        printf("¸Ã¿Î³ÌĞÅÏ¢ÒÑ´æÔÚ£¡\n");
     } else {
         list1.push_back(c);
     }
@@ -45,7 +45,7 @@ courseNode *courses::find(char *cno) {
     }
     std::list<courseNode>::iterator it = std::find_if(list1.begin(), list1.end(), findcno(cno));
     courseNode *c = (courseNode *) malloc(sizeof(struct course));
-    if (it == list1.end()) {//è¿­ä»£å™¨å°¾=é“¾è¡¨å°¾
+    if (it == list1.end()) {//µü´úÆ÷Î²=Á´±íÎ²
         return nullptr;
     } else {
         strcpy(c->cno, it->cno);
@@ -59,7 +59,7 @@ courseNode *courses::find(char *cno) {
 void courses::delete_c(char *cno) {
     std::list<courseNode>::iterator it = std::find_if(list1.begin(), list1.end(), findcno(cno));
     if (it != list1.end()) {
-        list1.erase(it);//ç§»é™¤ç»“ç‚¹
+        list1.erase(it);//ÒÆ³ı½áµã
     }
 }
 
@@ -67,7 +67,7 @@ void courses::update(char *cno) {
     std::list<courseNode>::iterator it = std::find_if(list1.begin(), list1.end(), findcno(cno));
     char s[20];
     if (it != list1.end()) {
-        printf("è¾“å…¥æ–°çš„è¯¾ç¨‹åç§° å­¦åˆ† å­¦æ—¶ï¼ˆç”¨ç©ºæ ¼åˆ†å‰²ï¼‰:");
+        printf("ÊäÈëĞÂµÄ¿Î³ÌÃû³Æ Ñ§·Ö Ñ§Ê±£¨ÓÃ¿Õ¸ñ·Ö¸î£©:");
         scanf("%s", s);
         if (s[0] != 0) {
             strcpy(it->cname, s);
@@ -86,7 +86,7 @@ void courses::update(char *cno) {
 void courses::print_list() {
     std::list<courseNode>::iterator it;
     if (list1.size() != 0) {
-        printf("è¯¾ç¨‹å·\t\tè¯¾ç¨‹åç§°\t\t\tå­¦åˆ†\t\tå­¦æ—¶\n");
+        printf("¿Î³ÌºÅ\t\t¿Î³ÌÃû³Æ\t\t\tÑ§·Ö\t\tÑ§Ê±\n");
         for (it = list1.begin(); it != list1.end(); it++) {
             printf("%s\t%-20s\t%5.1f%5d\n", it->cno, it->cname, it->credit, it->time);
         }
@@ -97,14 +97,14 @@ void courses::writetofile() {
     std::list<courseNode>::iterator it;
     FILE *fp;
     if ((fp = fopen("course.txt", "w")) == nullptr) {
-        printf("æœªèƒ½å¯¹è¯¾ç¨‹ä¿¡æ¯æ–‡ä»¶æ“ä½œ\n");
+        printf("Î´ÄÜ¶Ô¿Î³ÌĞÅÏ¢ÎÄ¼ş²Ù×÷\n");
         return;
     }
     for (it = list1.begin(); it != list1.end(); it++) {
         fprintf(fp, "%s\t%s\t%f\t%d\r\n", it->cno, it->cname, it->credit, it->time);
     }
     fflush(fp);
-    fsync(fileno(fp));
-    //        _commit(_fileno(fp));//è·å–æ–‡ä»¶æè¿°ç¬¦åå¼ºåˆ¶å†™ç¡¬ç›˜
+//    fsync(fileno(fp));
+            _commit(_fileno(fp));//»ñÈ¡ÎÄ¼şÃèÊö·ûºóÇ¿ÖÆĞ´Ó²ÅÌ
     fclose(fp);
 }

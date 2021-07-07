@@ -1,5 +1,5 @@
 //
-// Created by åˆ˜æºå³° on 2021/6/21.
+// Created by ÁõÔ´·å on 2021/6/21.
 //
 #include "tree.h"
 
@@ -56,7 +56,7 @@ stuNode *tree::createStuNode(struct stu *student) {
     stu = (struct stu *) memcpy(stu, student, sizeof(struct stu));
     node = (stuNode *) (malloc(sizeof(stuNode)));
     if (node == nullptr) {
-        printf("æœªèƒ½ç”³è¯·åˆ°äºŒå‰æ ‘ç»“ç‚¹\n");
+        printf("Î´ÄÜÉêÇëµ½¶ş²æÊ÷½áµã\n");
         return nullptr;
     } else {
         node->rchild = nullptr;
@@ -73,30 +73,30 @@ stuNode *tree::insert(stuNode *root1, stuNode *stu) {
     } else {
         stuNode *e = find(root1, stu->student->sno);
         if (e != nullptr) {
-            printf("æ’å…¥æœ‰ç›¸åŒçš„å­¦å·ï¼æ‹’ç»æ’å…¥ï¼\n");
+            printf("²åÈëÓĞÏàÍ¬µÄÑ§ºÅ£¡¾Ü¾ø²åÈë£¡\n");
             return root1;
         } else {
             x = strcmp(stu->student->sno, root1->student->sno);
-            //<0 æ’å…¥å…ƒç´ å°äºæ ¹ç»“ç‚¹å…ƒç´ 
-            //>0 æ’å…¥å…ƒç´ å¤§äºæ ¹ç»“ç‚¹å…ƒç´ 
-            if (x < 0) {//å…ƒç´ å°äºæ ¹ç»“ç‚¹,æ’å…¥å·¦è¾¹
+            //<0 ²åÈëÔªËØĞ¡ÓÚ¸ù½áµãÔªËØ
+            //>0 ²åÈëÔªËØ´óÓÚ¸ù½áµãÔªËØ
+            if (x < 0) {//ÔªËØĞ¡ÓÚ¸ù½áµã,²åÈë×ó±ß
                 root1->lchild = insert(root1->lchild, stu);
 
-                if (height(root1->lchild) - height(root1->rchild) == 2) {//ä¸å¹³è¡¡
-                    if (x < 0) {//å·¦å·¦æ—‹è½¬
+                if (height(root1->lchild) - height(root1->rchild) == 2) {//²»Æ½ºâ
+                    if (x < 0) {//×ó×óĞı×ª
                         root1 = tree_node_LL(root1);
-                    } else {//å·¦å³æ—‹è½¬
+                    } else {//×óÓÒĞı×ª
                         root1 = tree_node_LR(root1);
                     }
                 }
 
-            } else if (x > 0) {//å…ƒç´ å¤§äºæ ¹ç»“ç‚¹ï¼Œæ’å…¥å³è¾¹
+            } else if (x > 0) {//ÔªËØ´óÓÚ¸ù½áµã£¬²åÈëÓÒ±ß
                 root1->rchild = insert(root1->rchild, stu);
 
-                if (height(root1->rchild) - height(root1->lchild) == 2) {//ä¸å¹³è¡¡
-                    if (x > 0) {//å³å³æ—‹è½¬
+                if (height(root1->rchild) - height(root1->lchild) == 2) {//²»Æ½ºâ
+                    if (x > 0) {//ÓÒÓÒĞı×ª
                         root1 = tree_node_RR(root1);
-                    } else {//å·¦å³æ—‹è½¬
+                    } else {//×óÓÒĞı×ª
                         root1 = tree_node_RL(root1);
                     }
                 }
@@ -113,29 +113,29 @@ stuNode *tree::insert(stuNode *root1, stuNode *stu, stuNode *e) {
         root1 = stu;
     } else {
         if (e != nullptr) {
-            printf("æ’å…¥æœ‰ç›¸åŒçš„å­¦å·ï¼æ‹’ç»æ’å…¥ï¼\n");
+            printf("²åÈëÓĞÏàÍ¬µÄÑ§ºÅ£¡¾Ü¾ø²åÈë£¡\n");
             return root1;
         } else {
             x = strcmp(stu->student->sno, root1->student->sno);
 
-            if (x < 0) {//å…ƒç´ å°äºæ ¹ç»“ç‚¹,æ’å…¥å·¦è¾¹
+            if (x < 0) {//ÔªËØĞ¡ÓÚ¸ù½áµã,²åÈë×ó±ß
                 root1->lchild = insert(root1->lchild, stu);
 
-                if (height(root1->lchild) - height(root1->rchild) == 2) {//ä¸å¹³è¡¡
-                    if (x < 0) {//å·¦å·¦æ—‹è½¬
+                if (height(root1->lchild) - height(root1->rchild) == 2) {//²»Æ½ºâ
+                    if (x < 0) {//×ó×óĞı×ª
                         root1 = tree_node_LL(root1);
-                    } else {//å·¦å³æ—‹è½¬
+                    } else {//×óÓÒĞı×ª
                         root1 = tree_node_LR(root1);
                     }
                 }
 
-            } else if (x > 0) {//å…ƒç´ å¤§äºæ ¹ç»“ç‚¹ï¼Œæ’å…¥å³è¾¹
+            } else if (x > 0) {//ÔªËØ´óÓÚ¸ù½áµã£¬²åÈëÓÒ±ß
                 root1->rchild = insert(root1->rchild, stu);
 
-                if (height(root1->rchild) - height(root1->lchild) == 2) {//ä¸å¹³è¡¡
-                    if (x > 0) {//å³å³æ—‹è½¬
+                if (height(root1->rchild) - height(root1->lchild) == 2) {//²»Æ½ºâ
+                    if (x > 0) {//ÓÒÓÒĞı×ª
                         root1 = tree_node_RR(root1);
-                    } else {//å·¦å³æ—‹è½¬
+                    } else {//×óÓÒĞı×ª
                         root1 = tree_node_RL(root1);
                     }
                 }
@@ -146,11 +146,11 @@ stuNode *tree::insert(stuNode *root1, stuNode *stu, stuNode *e) {
     return root1;
 }
 
-stuNode *tree::find(stuNode *root1, char *sno) {//æœç´¢æŸ¥è¯¢å­¦ç”Ÿä¿¡æ¯
+stuNode *tree::find(stuNode *root1, char *sno) {//ËÑË÷²éÑ¯Ñ§ÉúĞÅÏ¢
     if (root1 == nullptr) {
         return nullptr;
     }
-    int x = strcmp(root1->student->sno, sno);//0 ç›¸ç­‰ å­¦å·å¤§ <0ï¼Œç»“ç‚¹å¤§ >0
+    int x = strcmp(root1->student->sno, sno);//0 ÏàµÈ Ñ§ºÅ´ó <0£¬½áµã´ó >0
     if (x > 0) {
         return find(root1->lchild, sno);
     } else if (x < 0) {
@@ -168,7 +168,7 @@ void tree::print_ALL(stuNode *root1, student *sc, courses *c) {
     char **cnames = (char **) malloc(20 * sizeof(char *));
     char **cnos = c->getCnos(cnames);
     if (cnos != nullptr) {
-        printf("å­¦å·ï¼š%s å­¦ç”Ÿå§“åï¼š%s æ€§åˆ«ï¼š%s å¹´é¾„ï¼š%d åœ°åŒºï¼š%s ä¸“ä¸šï¼š%s",
+        printf("Ñ§ºÅ£º%s Ñ§ÉúĞÕÃû£º%s ĞÔ±ğ£º%s ÄêÁä£º%d µØÇø£º%s ×¨Òµ£º%s",
                root1->student->sno, root1->student->name, root1->student->sex, root1->student->age,
                root1->student->region, root1->student->pro);
         for (int i = 0; cnos[i] != nullptr; i++) {
@@ -189,7 +189,7 @@ void tree::print(stuNode *root1) {
         return;
     }
     print(root1->lchild);
-    printf("å­¦å·ï¼š%s å­¦ç”Ÿå§“åï¼š%s æ€§åˆ«ï¼š%s å¹´é¾„ï¼š%d åœ°åŒºï¼š%s ä¸“ä¸šï¼š%s\n",
+    printf("Ñ§ºÅ£º%s Ñ§ÉúĞÕÃû£º%s ĞÔ±ğ£º%s ÄêÁä£º%d µØÇø£º%s ×¨Òµ£º%s\n",
            root1->student->sno, root1->student->name, root1->student->sex, root1->student->age,
            root1->student->region, root1->student->pro);
     print(root1->rchild);
@@ -197,14 +197,14 @@ void tree::print(stuNode *root1) {
 
 void tree::writeToFile(struct stu *stu) {
     FILE *fp;
-    if ((fp = fopen("student.txt", "a")) != nullptr)//è¿½åŠ ä¿¡æ¯
+    if ((fp = fopen("student.txt", "a")) != nullptr)//×·¼ÓĞÅÏ¢
     {
         if (fwrite(stu, sizeof(struct stu), 1, fp) != 1) {
-            printf("å†™å…¥æ–‡ä»¶é”™è¯¯ï¼\n");
+            printf("Ğ´ÈëÎÄ¼ş´íÎó£¡\n");
         }
         fflush(fp);
-        fsync(fileno(fp));
-//        _commit(_fileno(fp));//è·å–æ–‡ä»¶æè¿°ç¬¦åå¼ºåˆ¶å†™ç¡¬ç›˜
+//        fsync(fileno(fp));
+        _commit(_fileno(fp));//»ñÈ¡ÎÄ¼şÃèÊö·ûºóÇ¿ÖÆĞ´Ó²ÅÌ
         fclose(fp);
     }
 }
@@ -213,8 +213,8 @@ void tree::writeToFileALL(stuNode *root1) {
     FILE *fp;
     fp = fopen("student.txt", "w");
     fflush(fp);
-    fsync(fileno(fp));
-//    _commit(_fileno(fp));//è·å–æ–‡ä»¶æè¿°ç¬¦åå¼ºåˆ¶å†™ç¡¬ç›˜
+//    fsync(fileno(fp));
+    _commit(_fileno(fp));//»ñÈ¡ÎÄ¼şÃèÊö·ûºóÇ¿ÖÆĞ´Ó²ÅÌ
     fclose(fp);
     print(root1, 1);
 }
@@ -225,7 +225,7 @@ void tree::print(stuNode *root1, int writeTo) {
     }
     print(root1->lchild, writeTo);
     if (writeTo == 0) {
-        printf("å­¦å·ï¼š%s,å­¦ç”Ÿå§“åï¼š%s,æ€§åˆ«ï¼š%s,å¹´é¾„ï¼š%dï¼Œåœ°åŒºï¼š%sï¼Œä¸“ä¸šï¼š%s åç§»é‡:%d\n",
+        printf("Ñ§ºÅ£º%s,Ñ§ÉúĞÕÃû£º%s,ĞÔ±ğ£º%s,ÄêÁä£º%d£¬µØÇø£º%s£¬×¨Òµ£º%s Æ«ÒÆÁ¿:%d\n",
                root1->student->sno, root1->student->name, root1->student->sex, root1->student->age,
                root1->student->region, root1->student->pro, root1->student->pos);
     } else {
@@ -234,78 +234,78 @@ void tree::print(stuNode *root1, int writeTo) {
     print(root1->rchild, writeTo);
 }
 
-stuNode *tree::remove(stuNode *root1, char *sno) {//åˆ é™¤å­¦ç”Ÿä¿¡æ¯
+stuNode *tree::remove(stuNode *root1, char *sno) {//É¾³ıÑ§ÉúĞÅÏ¢
     stuNode *tmp;
 
     if (root1 == nullptr) {
         return nullptr;
     }
 
-    int x = strcmp(root1->student->sno, sno);//0 ç›¸ç­‰ å­¦å·å¤§ <0ï¼Œç»“ç‚¹å¤§ >0
+    int x = strcmp(root1->student->sno, sno);//0 ÏàµÈ Ñ§ºÅ´ó <0£¬½áµã´ó >0
     if (x == 0) {
         if (root1->lchild == nullptr && root1->rchild == nullptr) {
             free(root1->student);
             free(root1);
             return nullptr;
-        } else if (root1->lchild != nullptr) {//å¦‚æœæœ‰å·¦å­æ ‘
-            for (tmp = root1->lchild; tmp->rchild != nullptr; tmp = tmp->rchild);//ç”¨tmpæ¥è®°å½•rootçš„å·¦å­æ ‘å½“ä¸­çš„æœ€å³è¾¹çš„èŠ‚ç‚¹ï¼ˆä¹Ÿå°±æ˜¯å·¦æ ‘å½“ä¸­çš„æœ€å¤§å€¼ï¼‰
+        } else if (root1->lchild != nullptr) {//Èç¹ûÓĞ×ó×ÓÊ÷
+            for (tmp = root1->lchild; tmp->rchild != nullptr; tmp = tmp->rchild);//ÓÃtmpÀ´¼ÇÂ¼rootµÄ×ó×ÓÊ÷µ±ÖĞµÄ×îÓÒ±ßµÄ½Úµã£¨Ò²¾ÍÊÇ×óÊ÷µ±ÖĞµÄ×î´óÖµ£©
 //            struct stu *swap =(struct stu *)malloc(sizeof(struct stu));
-//            swap = (struct stu *) memcpy(swap, tmp->student, sizeof(struct stu));//äº¤æ¢ç»“ç‚¹
+//            swap = (struct stu *) memcpy(swap, tmp->student, sizeof(struct stu));//½»»»½áµã
             struct stu *swap = tmp->student;
             tmp->student = root1->student;
             root1->student = swap;
-            root1->lchild = remove(root1->lchild, sno);//é€’å½’çš„åˆ é™¤æ‰é‡å¤å‡ºæ¥çš„è¿™ä¸ªèŠ‚ç‚¹,å°†å·¦å­æ ‘çš„æ•°æ®æ›´æ–°è¿›æ¥
-        } else {//å¦‚æœåªæœ‰å³å­æ ‘
-            for (tmp = root1->rchild; tmp->lchild != nullptr; tmp = tmp->lchild);//ç”¨tmpæ¥è®°å½•rootçš„å³å­æ ‘ä¸­çš„æœ€å·¦è¾¹çš„èŠ‚ç‚¹ï¼ˆä¹Ÿå°±æ˜¯æœ‰æ ‘å½“ä¸­çš„æœ€å°å€¼ï¼‰
+            root1->lchild = remove(root1->lchild, sno);//µİ¹éµÄÉ¾³ıµôÖØ¸´³öÀ´µÄÕâ¸ö½Úµã,½«×ó×ÓÊ÷µÄÊı¾İ¸üĞÂ½øÀ´
+        } else {//Èç¹ûÖ»ÓĞÓÒ×ÓÊ÷
+            for (tmp = root1->rchild; tmp->lchild != nullptr; tmp = tmp->lchild);//ÓÃtmpÀ´¼ÇÂ¼rootµÄÓÒ×ÓÊ÷ÖĞµÄ×î×ó±ßµÄ½Úµã£¨Ò²¾ÍÊÇÓĞÊ÷µ±ÖĞµÄ×îĞ¡Öµ£©
 //            struct stu *swap =(struct stu *)malloc(sizeof(struct stu));
-//            swap = (struct stu *) memcpy(swap, tmp->student, sizeof(struct stu));//äº¤æ¢ç»“ç‚¹
+//            swap = (struct stu *) memcpy(swap, tmp->student, sizeof(struct stu));//½»»»½áµã
             struct stu *swap = tmp->student;
             tmp->student = root1->student;
             root1->student = swap;
-            root1->rchild = remove(root1->lchild, sno);//é€’å½’çš„åˆ é™¤æ‰é‡å¤å‡ºæ¥çš„è¿™ä¸ªèŠ‚ç‚¹,å°†å³å­æ ‘çš„æ•°æ®æ›´æ–°è¿›æ¥
+            root1->rchild = remove(root1->lchild, sno);//µİ¹éµÄÉ¾³ıµôÖØ¸´³öÀ´µÄÕâ¸ö½Úµã,½«ÓÒ×ÓÊ÷µÄÊı¾İ¸üĞÂ½øÀ´
         }
-    } else if (x > 0) {//å¦‚æœåˆ é™¤çš„æ•°æ®æ¯”è¿™ä¸ªèŠ‚ç‚¹è¦å°ï¼Œåˆ™ç»§ç»­å¾€å·¦è¾¹å»åˆ é™¤èŠ‚ç‚¹
+    } else if (x > 0) {//Èç¹ûÉ¾³ıµÄÊı¾İ±ÈÕâ¸ö½ÚµãÒªĞ¡£¬Ôò¼ÌĞøÍù×ó±ßÈ¥É¾³ı½Úµã
         root1->lchild = remove(root1->lchild, sno);
-    } else if (x < 0) {//å¦‚æœåˆ é™¤çš„æ•°æ®æ¯”è¿™ä¸ªèŠ‚ç‚¹è¦å¤§ï¼Œåˆ™ç»§ç»­å¾€å³è¾¹å»åˆ é™¤
+    } else if (x < 0) {//Èç¹ûÉ¾³ıµÄÊı¾İ±ÈÕâ¸ö½ÚµãÒª´ó£¬Ôò¼ÌĞøÍùÓÒ±ßÈ¥É¾³ı
         root1->rchild = remove(root1->rchild, sno);
     }
 
-    //æ’å…¥æ–°èŠ‚ç‚¹ç»“æŸåå†åˆ¤æ–­æ˜¯å¦å‡ºç°ä¸å¹³è¡¡
+    //²åÈëĞÂ½Úµã½áÊøºóÔÙÅĞ¶ÏÊÇ·ñ³öÏÖ²»Æ½ºâ
 
 
     int h = height(root1->lchild) - height(root1->rchild);
     x = strcmp(root1->student->sno, sno);
-    if (h == 2)//å·¦ä¸å¹³è¡¡
+    if (h == 2)//×ó²»Æ½ºâ
     {
-        //å¦‚æœæ’å…¥çš„æ•°æ®æ¯”è·Ÿçš„å·¦æ ‘èŠ‚ç‚¹çš„æ•°æ®è¦å°ï¼Œé‚£ä»–è‚¯å®šæ˜¯æ’å…¥åˆ°root->lchildçš„å·¦è¾¹å»ï¼Œå‡ºç°äº†å·¦å·¦ä¸å¹³è¡¡
+        //Èç¹û²åÈëµÄÊı¾İ±È¸úµÄ×óÊ÷½ÚµãµÄÊı¾İÒªĞ¡£¬ÄÇËû¿Ï¶¨ÊÇ²åÈëµ½root->lchildµÄ×ó±ßÈ¥£¬³öÏÖÁË×ó×ó²»Æ½ºâ
 
-        if (x > 0)//å·¦å·¦ä¸å¹³è¡¡
+        if (x > 0)//×ó×ó²»Æ½ºâ
         {
             root1 = tree_node_LL(root1);
-        } else//å¦åˆ™åˆ™æ˜¯æ’å…¥åˆ°root->lchildçš„å³è¾¹å»ï¼Œå‡ºç°äº†å·¦å³ä¸å¹³è¡¡
+        } else//·ñÔòÔòÊÇ²åÈëµ½root->lchildµÄÓÒ±ßÈ¥£¬³öÏÖÁË×óÓÒ²»Æ½ºâ
         {
             root1 = tree_node_LR(root1);
         }
-    } else if (h == -2)//å³ä¸å¹³è¡¡
+    } else if (h == -2)//ÓÒ²»Æ½ºâ
     {
 
-        if (x <= 0)//å³å³ä¸å¹³è¡¡
+        if (x <= 0)//ÓÒÓÒ²»Æ½ºâ
         {
-            //printf("å‡ºç°å³ä¸å¹³è¡¡\n");
+            //printf("³öÏÖÓÒ²»Æ½ºâ\n");
             root1 = tree_node_RR(root1);
-        } else//å³å·¦ä¸å¹³è¡¡
+        } else//ÓÒ×ó²»Æ½ºâ
         {
             root1 = tree_node_RL(root1);
         }
     }
     root1->height = height(root1);
-    return root1;//å¦‚æœå½“å‰rootè¿™ä¸ªèŠ‚ç‚¹ä¸æ˜¯æˆ‘ä»¬åˆ é™¤çš„èŠ‚ç‚¹ï¼Œæˆ‘ä»¬ä¾¿åŸå°ä¸åŠ¨çš„è¿”å›å‡ºå»
+    return root1;//Èç¹ûµ±Ç°rootÕâ¸ö½Úµã²»ÊÇÎÒÃÇÉ¾³ıµÄ½Úµã£¬ÎÒÃÇ±ãÔ­·â²»¶¯µÄ·µ»Ø³öÈ¥
 }
 
 void tree::update(stuNode *root1, stu *stu, int isUpdate) {
     stuNode *find_node = find(root1, stu->sno);
     if (find_node == nullptr) {
-        printf("æ‚¨æ‰€é€‰æ‹©çš„å­¦ç”Ÿä¿¡æ¯ä¸å­˜åœ¨ï¼");
+        printf("ÄúËùÑ¡ÔñµÄÑ§ÉúĞÅÏ¢²»´æÔÚ£¡");
         return;
     }
 
@@ -321,24 +321,24 @@ void tree::update(stuNode *root1, stu *stu, int isUpdate) {
         frontlen = find_node->student->pos;
         char *front = (char *) malloc(sizeof(char) * frontlen);
         if ((fp = fopen("student.txt", "r")) == nullptr) {
-            printf("æ–‡ä»¶æ“ä½œå¼‚å¸¸ï¼\n");
+            printf("ÎÄ¼ş²Ù×÷Òì³££¡\n");
             return;
         }
-        fseek(fp, 0, SEEK_END); //æ–‡ä»¶ä½ç½®æŒ‡é’ˆç§»åŠ¨åˆ°æ–‡ä»¶ç»“æŸä½ç½®
+        fseek(fp, 0, SEEK_END); //ÎÄ¼şÎ»ÖÃÖ¸ÕëÒÆ¶¯µ½ÎÄ¼ş½áÊøÎ»ÖÃ
         unsigned int backlen = ftell(fp) - frontlen - sizeof(struct stu);
         char *back = (char *) malloc(sizeof(char) * backlen);
         fseek(fp, 0, SEEK_SET);
         fread(front, frontlen, 1, fp);//front buf
-        //è¯»å–åˆ°è¯¥ç»“ç‚¹å¤„
-        fseek(fp, sizeof(struct stu), SEEK_CUR);//åç§»ä¸€ä¸ªå­¦ç”Ÿå¯¹è±¡
-        fread(back, backlen, 1, fp);//è¯»å–è¦æ›´æ–°ç»“ç‚¹çš„åé¢ä¿¡æ¯
+        //¶ÁÈ¡µ½¸Ã½áµã´¦
+        fseek(fp, sizeof(struct stu), SEEK_CUR);//Æ«ÒÆÒ»¸öÑ§Éú¶ÔÏó
+        fread(back, backlen, 1, fp);//¶ÁÈ¡Òª¸üĞÂ½áµãµÄºóÃæĞÅÏ¢
         fflush(fp);
-        fsync(fileno(fp));
-//        _commit(_fileno(fp));//è·å–æ–‡ä»¶æè¿°ç¬¦åå¼ºåˆ¶å†™ç¡¬ç›˜
+//        fsync(fileno(fp));
+        _commit(_fileno(fp));//»ñÈ¡ÎÄ¼şÃèÊö·ûºóÇ¿ÖÆĞ´Ó²ÅÌ
         fclose(fp);
         if (front[0] != 0 or back[0] != 0) {
-            if ((fp = fopen("student.txt", "w")) == nullptr) {//è¦†ç›–æ–‡ä»¶
-                printf("æ–‡ä»¶æ“ä½œå¼‚å¸¸ï¼\n");
+            if ((fp = fopen("student.txt", "w")) == nullptr) {//¸²¸ÇÎÄ¼ş
+                printf("ÎÄ¼ş²Ù×÷Òì³££¡\n");
                 return;
             }
             fseek(fp, 0, SEEK_SET);
@@ -350,8 +350,8 @@ void tree::update(stuNode *root1, stu *stu, int isUpdate) {
             free(front);
             free(back);
             fflush(fp);
-            fsync(fileno(fp));
-//            _commit(_fileno(fp));//è·å–æ–‡ä»¶æè¿°ç¬¦åå¼ºåˆ¶å†™ç¡¬ç›˜
+//            fsync(fileno(fp));
+            _commit(_fileno(fp));//»ñÈ¡ÎÄ¼şÃèÊö·ûºóÇ¿ÖÆĞ´Ó²ÅÌ
             fclose(fp);
         }
         return;

@@ -1,5 +1,5 @@
 //
-// Created by åˆ˜æºå³° on 2021/6/21.
+// Created by ÁõÔ´·å on 2021/6/21.
 //
 
 #ifndef SMS_TREE_STUDENT_H
@@ -8,34 +8,34 @@
 #include <list>
 #include <unistd.h>
 
-struct stu {//student message å­¦å·ï¼Œå§“åï¼Œæ€§åˆ«ï¼Œå¹´é¾„ï¼Œç±è´¯ï¼Œä¸“ä¸š
+struct stu {//student message Ñ§ºÅ£¬ĞÕÃû£¬ĞÔ±ğ£¬ÄêÁä£¬¼®¹á£¬×¨Òµ
     char sno[20];
-    int pos;//åç§»é‡
+    int pos;//Æ«ÒÆÁ¿
     char name[20];
     char sex[4];
     int age;
     char region[20];
     char pro[20];
-    //char addcount;//å¢åŠ çš„å­—æ®µä¸ªæ•°
-    //char *message;//å†…å®¹
+    //char addcount;//Ôö¼ÓµÄ×Ö¶Î¸öÊı
+    //char *message;//ÄÚÈİ
 };
 
 
-typedef struct course {//è¯¾ç¨‹ä¿¡æ¯
+typedef struct course {//¿Î³ÌĞÅÏ¢
     char cno[20];
     char cname[20];
     double credit;
     int time;
 } courseNode;
 
-typedef struct score {//æˆç»©ä¿¡æ¯
+typedef struct score {//³É¼¨ĞÅÏ¢
     char sno[20];
     char cno[20];
     double grade;
 } scoreNode;
 
 
-class findgrade {//STLæŸ¥æ‰¾corseæ˜¯å¦å«æœ‰
+class findgrade {//STL²éÕÒcorseÊÇ·ñº¬ÓĞ
 public:
     findgrade(char *sno, char *cno) {
         this->sno = sno;
@@ -51,7 +51,7 @@ private:
 };
 
 struct comnode_sc {
-    bool operator()(scoreNode &a, scoreNode &b) {//æ¯”è¾ƒå™¨
+    bool operator()(scoreNode &a, scoreNode &b) {//±È½ÏÆ÷
         int ret = strcmp(a.sno, b.sno);
         if (ret == 0) {
             ret = strcmp(a.cno, b.cno);
@@ -62,23 +62,23 @@ struct comnode_sc {
 
 class student {
 public:
-    void insert(scoreNode node);//æ’å…¥sc
+    void insert(scoreNode node);//²åÈësc
 
-    double find(char *sno, char *cno);//æŸ¥æ‰¾
+    double find(char *sno, char *cno);//²éÕÒ
 
-    void delete_sc(char *sno, char *cno);//åˆ é™¤
+    void delete_sc(char *sno, char *cno);//É¾³ı
 
-    void update(char *sno, char *cno, double grade);//æ›´æ–°
+    void update(char *sno, char *cno, double grade);//¸üĞÂ
 
-    void sort_c() {//æ’åº
+    void sort_c() {//ÅÅĞò
         list1.sort(comnode_sc());
     }
 
-    void writetofile();//å†™åˆ°æ–‡ä»¶
+    void writetofile();//Ğ´µ½ÎÄ¼ş
 
-    void readintolist();//å¯¼å…¥åˆ°list
+    void readintolist();//µ¼Èëµ½list
 
-    void print_list();//è¾“å‡ºsc(sno,cno,grade) ä¸å¯ç”¨
+    void print_list();//Êä³ösc(sno,cno,grade) ²»ÆôÓÃ
 
 private:
     std::list<scoreNode> list1;

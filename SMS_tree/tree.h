@@ -1,5 +1,5 @@
 //
-// Created by åˆ˜æºå³° on 2021/6/21.
+// Created by ÁõÔ´·å on 2021/6/21.
 //
 
 #ifndef SMS_TREE_TREE_H
@@ -21,37 +21,37 @@ typedef struct stuNode {//student tree structure
 
 class tree {
 public:
-    int height(stuNode *root1);//æ±‚é«˜åº¦
+    int height(stuNode *root1);//Çó¸ß¶È
 
-    stuNode *tree_node_LL(stuNode *root1);//å·¦å•æ—‹
+    stuNode *tree_node_LL(stuNode *root1);//×óµ¥Ğı
 
-    stuNode *tree_node_RR(stuNode *root1);//å³å•æ—‹
+    stuNode *tree_node_RR(stuNode *root1);//ÓÒµ¥Ğı
 
-    stuNode *tree_node_LR(stuNode *root1);//å·¦å³åŒæ—‹
+    stuNode *tree_node_LR(stuNode *root1);//×óÓÒË«Ğı
 
-    stuNode *tree_node_RL(stuNode *root1);//å³å·¦åŒæ—‹
+    stuNode *tree_node_RL(stuNode *root1);//ÓÒ×óË«Ğı
 
-    stuNode *createStuNode(struct stu *student);//åˆ›å»ºå­¦ç”Ÿä¿¡æ¯ç»“ç‚¹
+    stuNode *createStuNode(struct stu *student);//´´½¨Ñ§ÉúĞÅÏ¢½áµã
 
-    stuNode *insert(stuNode *root1, stuNode *stu);//æ’å…¥
+    stuNode *insert(stuNode *root1, stuNode *stu);//²åÈë
 
     stuNode *insert(stuNode *root1, stuNode *stu, stuNode *e);//override
 
-    stuNode *find(stuNode *root1, char *sno);//æŸ¥æ‰¾
+    stuNode *find(stuNode *root1, char *sno);//²éÕÒ
 
-    stuNode *remove(stuNode *root1, char *sno);//åˆ é™¤ç»“ç‚¹
+    stuNode *remove(stuNode *root1, char *sno);//É¾³ı½áµã
 
-    void update(stuNode *root1, stu *stu, int updateTofile);//æ›´æ–°
+    void update(stuNode *root1, stu *stu, int updateTofile);//¸üĞÂ
 
-    void print(stuNode *root1);//è¾“å‡ºå•ç»“ç‚¹
+    void print(stuNode *root1);//Êä³öµ¥½áµã
 
-    void print(stuNode *root1, int writeTofile);//è¾“å‡ºå¹¶å†™åˆ°æ–‡ä»¶
+    void print(stuNode *root1, int writeTofile);//Êä³ö²¢Ğ´µ½ÎÄ¼ş
 
-    void print_ALL(stuNode *root1, student *sc, courses *c);//è¾“å‡ºæ‰€æœ‰ä¿¡æ¯ï¼ŒåŒ…æ‹¬æˆç»©
+    void print_ALL(stuNode *root1, student *sc, courses *c);//Êä³öËùÓĞĞÅÏ¢£¬°üÀ¨³É¼¨
 
-    void writeToFile(struct stu *stu);//å­¦ç”Ÿä¿¡æ¯å†™åˆ°æ–‡ä»¶
+    void writeToFile(struct stu *stu);//Ñ§ÉúĞÅÏ¢Ğ´µ½ÎÄ¼ş
 
-    void writeToFileALL(stuNode *root1);//å†™å‡ºæ‰€æœ‰ç»“ç‚¹ä¿¡æ¯åˆ°æ–‡ä»¶
+    void writeToFileALL(stuNode *root1);//Ğ´³öËùÓĞ½áµãĞÅÏ¢µ½ÎÄ¼ş
 
 private:
 

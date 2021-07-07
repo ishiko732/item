@@ -15,32 +15,32 @@ int pos_extends = 0;
 
 int input_student(struct stu *stu) {
     int ret = 1;
-    printf("è¯·æ‚¨è¾“å…¥å­¦ç”Ÿä¿¡æ¯ï¼šå­¦å· å§“å æ€§åˆ« å¹´é¾„ ç±è´¯ ä¸“ä¸š(ç”¨ç©ºæ ¼åˆ†å¼€)\n");//å…¶ä¸­å­¦å·ä¸º12ä½ï¼ˆé™å®šï¼‰
+    printf("ÇëÄúÊäÈëÑ§ÉúĞÅÏ¢£ºÑ§ºÅ ĞÕÃû ĞÔ±ğ ÄêÁä ¼®¹á ×¨Òµ(ÓÃ¿Õ¸ñ·Ö¿ª)\n");//ÆäÖĞÑ§ºÅÎª12Î»£¨ÏŞ¶¨£©
     scanf("%s %s %s %d %s %s",
           &stu->sno, &stu->name, &stu->sex, &stu->age, &stu->region, &stu->pro);
 
     int count = 0;
-    for (int i = 0; stu->sno[i] != 0; i++) {//å­¦å·åˆæ³•æ€§ã€‚åˆ¤æ–­æ˜¯å¦ä¸ºæ•°å­—ï¼Œ12ä½ï¼Œå‰4ä½æ˜¯å¦æ­£ç¡®å¹´ä»½
+    for (int i = 0; stu->sno[i] != 0; i++) {//Ñ§ºÅºÏ·¨ĞÔ¡£ÅĞ¶ÏÊÇ·ñÎªÊı×Ö£¬12Î»£¬Ç°4Î»ÊÇ·ñÕıÈ·Äê·İ
         if ((stu->sno[i] >= '0' && stu->sno[i] <= '9')) {
             count += 1;
         }
     }
     if (count == 0) {
-        printf("å­¦å·ä¸èƒ½ä¸ºç©ºï¼\n");
+        printf("Ñ§ºÅ²»ÄÜÎª¿Õ£¡\n");
         ret = 0;
     } else if (count == 12) {
         if (stu->sno[0] > '2' or stu->sno[1] > '0' or stu->sno[2] > '2') {
-            printf("å­¦å·çš„å¹´ä»½å‡ºé”™ï¼\n");
+            printf("Ñ§ºÅµÄÄê·İ³ö´í£¡\n");
             ret = 0;
         }
     }
 
-    if (strcmp(stu->sex, "ç”·") != 0 and strcmp(stu->sex, "å¥³") != 0) {
-        printf("æ€§åˆ«å‡ºé”™ï¼\n");
+    if (strcmp(stu->sex, "ÄĞ") != 0 and strcmp(stu->sex, "Å®") != 0) {
+        printf("ĞÔ±ğ³ö´í£¡\n");
         ret = 0;
     }
     if (stu->age < 0 or stu->age > 100) {
-        printf("å¹´é¾„å‡ºé”™ï¼\n");
+        printf("ÄêÁä³ö´í£¡\n");
         ret = 0;
     }
     pos_extends += sizeof(struct stu);
@@ -51,12 +51,12 @@ int input_student(struct stu *stu) {
 void test_couse() {
     courses *c = new courses();
     c->readintolist();
-//    c->insert();//19221101 é«˜ç­‰æ•°å­¦â…  9.5 152
-//    c->insert();//16522105 C++ç¨‹åºè®¾è®¡ 4 64
-//    printf("%p\n",c->find("é«˜ç­‰æ•°å­¦â… "));
+//    c->insert();//19221101 ¸ßµÈÊıÑ§¢ñ 9.5 152
+//    c->insert();//16522105 C++³ÌĞòÉè¼Æ 4 64
+//    printf("%p\n",c->find("¸ßµÈÊıÑ§¢ñ"));
 //    printf("%p\n",c->find("16221301"));
 //    c->print_list();
-//    c->update("19221101");// é«˜çº§æ•°å­¦ 5 15
+//    c->update("19221101");// ¸ß¼¶ÊıÑ§ 5 15
 //    c->print_list();
 //    c->sort_c();
 //    c->print_list();
@@ -85,7 +85,7 @@ void test_sc() {
     sc->print_list();
 //    sc->writetofile();
 
-//201611701209 é«˜ç­‰æ•°å­¦â… 
+//201611701209 ¸ßµÈÊıÑ§¢ñ
 
 }
 
@@ -94,14 +94,14 @@ void courseMenu(courses *c) {
     char cno[20];
     courseNode *cNode;
     while (1) {
-        printf("****************æ¬¢è¿è¿›å…¥è¯¾ç¨‹ç®¡ç†ç³»ç»Ÿ********************\n");
-        printf("è¯·è¾“å…¥æ•°å­—é€‰æ‹©ç›¸åº”çš„æŒ‡ä»¤\n");
-        printf("1.æ·»åŠ è¯¾ç¨‹ä¿¡æ¯\n");
-        printf("2.æŸ¥æ‰¾è¯¾ç¨‹ä¿¡æ¯\n");
-        printf("3.åˆ é™¤è¯¾ç¨‹ä¿¡æ¯\n");
-        printf("4.æ›´æ–°è¯¾ç¨‹ä¿¡æ¯\n");
-        printf("5.æ‰“å°æ‰€æœ‰è¯¾ç¨‹ä¿¡æ¯\n");
-        printf("6.é€€å‡ºè¯¾ç¨‹ç®¡ç†ç³»ç»Ÿ\n");
+        printf("****************»¶Ó­½øÈë¿Î³Ì¹ÜÀíÏµÍ³********************\n");
+        printf("ÇëÊäÈëÊı×ÖÑ¡ÔñÏàÓ¦µÄÖ¸Áî\n");
+        printf("1.Ìí¼Ó¿Î³ÌĞÅÏ¢\n");
+        printf("2.²éÕÒ¿Î³ÌĞÅÏ¢\n");
+        printf("3.É¾³ı¿Î³ÌĞÅÏ¢\n");
+        printf("4.¸üĞÂ¿Î³ÌĞÅÏ¢\n");
+        printf("5.´òÓ¡ËùÓĞ¿Î³ÌĞÅÏ¢\n");
+        printf("6.ÍË³ö¿Î³Ì¹ÜÀíÏµÍ³\n");
         printf("*****************************************************\n");
         scanf("%d", &choose);
         switch (choose) {
@@ -109,23 +109,23 @@ void courseMenu(courses *c) {
                 c->insert();
                 break;
             case 2:
-                printf("è¯·è¾“å…¥è¯¾ç¨‹å·æˆ–è€…è¯¾ç¨‹åç§°:");
+                printf("ÇëÊäÈë¿Î³ÌºÅ»òÕß¿Î³ÌÃû³Æ:");
                 scanf("%s", cno);
                 cNode = c->find(cno);
                 if (cNode == nullptr) {
-                    printf("æœªæ‰¾åˆ°è¯¥(%s)è¯¾ç¨‹ä¿¡æ¯ï¼\n", cno);
+                    printf("Î´ÕÒµ½¸Ã(%s)¿Î³ÌĞÅÏ¢£¡\n", cno);
                 } else {
                     printf("%s\t%s\t%.1f\t%d\n", cNode->cno, cNode->cname, cNode->credit, cNode->time);
                 }
                 free(cNode);
                 break;
             case 3:
-                printf("è¯·è¾“å…¥è¯¾ç¨‹å·æˆ–è€…è¯¾ç¨‹åç§°:");
+                printf("ÇëÊäÈë¿Î³ÌºÅ»òÕß¿Î³ÌÃû³Æ:");
                 scanf("%s", cno);
                 c->delete_c(cno);
                 break;
             case 4:
-                printf("è¯·è¾“å…¥è¯¾ç¨‹å·æˆ–è€…è¯¾ç¨‹åç§°:");
+                printf("ÇëÊäÈë¿Î³ÌºÅ»òÕß¿Î³ÌÃû³Æ:");
                 scanf("%s", cno);
                 c->update(cno);
                 break;
@@ -146,32 +146,32 @@ void gradeMenu(tree *t, student *sc, courses *c) {
     stuNode *sNode;
     courseNode *cNode;
     while (1) {
-        printf("****************æ¬¢è¿è¿›å…¥æˆç»©ç®¡ç†ç³»ç»Ÿ********************\n");
-        printf("è¯·è¾“å…¥æ•°å­—é€‰æ‹©ç›¸åº”çš„æŒ‡ä»¤\n");
-        printf("1.ç™»è®°æˆç»©\n");
-        printf("2.æŸ¥è¯¢æˆç»©\n");
-        printf("3.ä¿®æ”¹æˆç»©\n");
-        printf("4.åˆ é™¤æˆç»©\n");
-        printf("5.æ‰“å°æ‰€æœ‰å­¦ç”Ÿæˆç»©\n");
-        printf("6.é€€å‡ºè¯¾ç¨‹ç®¡ç†ç³»ç»Ÿ\n");
+        printf("****************»¶Ó­½øÈë³É¼¨¹ÜÀíÏµÍ³********************\n");
+        printf("ÇëÊäÈëÊı×ÖÑ¡ÔñÏàÓ¦µÄÖ¸Áî\n");
+        printf("1.µÇ¼Ç³É¼¨\n");
+        printf("2.²éÑ¯³É¼¨\n");
+        printf("3.ĞŞ¸Ä³É¼¨\n");
+        printf("4.É¾³ı³É¼¨\n");
+        printf("5.´òÓ¡ËùÓĞÑ§Éú³É¼¨\n");
+        printf("6.ÍË³ö¿Î³Ì¹ÜÀíÏµÍ³\n");
         printf("*****************************************************\n");
         scanf("%d", &choose);
         switch (choose) {
             case 1:
-                printf("è¯·è¾“å…¥å­¦å·å’Œè¯¾ç¨‹å·[è¯¾ç¨‹åç§°]ï¼ˆç”¨ç©ºæ ¼åˆ†å‰²ï¼‰:");
+                printf("ÇëÊäÈëÑ§ºÅºÍ¿Î³ÌºÅ[¿Î³ÌÃû³Æ]£¨ÓÃ¿Õ¸ñ·Ö¸î£©:");
                 scanf("%s %s", &scNode.sno, &scNode.cno);
                 sNode = t->find(root, scNode.sno);
                 cNode = c->find(scNode.cno);
                 if (sNode == nullptr or cNode == nullptr) {
-                    printf("è¯¥å­¦ç”Ÿä¸å­˜åœ¨æˆ–è€…è¯¾ç¨‹ä¸å­˜åœ¨!\n");
+                    printf("¸ÃÑ§Éú²»´æÔÚ»òÕß¿Î³Ì²»´æÔÚ!\n");
                     break;
                 }
                 flag = 0;
                 while (flag == 0) {
-                    printf("è¯·è¾“å…¥%så­¦ç”Ÿçš„%sè¯¾ç¨‹çš„è€ƒè¯•æˆç»©ï¼š", sNode->student->name, cNode->cname);
+                    printf("ÇëÊäÈë%sÑ§ÉúµÄ%s¿Î³ÌµÄ¿¼ÊÔ³É¼¨£º", sNode->student->name, cNode->cname);
                     scanf("%lf", &scNode.grade);
                     if (scNode.grade < 0 or scNode.grade > 100) {
-                        printf("æˆç»©è¾“å…¥é”™è¯¯ï¼è¯·é‡æ–°è¾“å…¥ï¼\n");
+                        printf("³É¼¨ÊäÈë´íÎó£¡ÇëÖØĞÂÊäÈë£¡\n");
                     } else {
                         flag = 1;
                     }
@@ -181,42 +181,42 @@ void gradeMenu(tree *t, student *sc, courses *c) {
                 sc->insert(scNode);
                 break;
             case 2:
-                printf("è¯·è¾“å…¥å­¦å·å’Œè¯¾ç¨‹å·[è¯¾ç¨‹åç§°]ï¼ˆç”¨ç©ºæ ¼åˆ†å‰²ï¼‰:");
+                printf("ÇëÊäÈëÑ§ºÅºÍ¿Î³ÌºÅ[¿Î³ÌÃû³Æ]£¨ÓÃ¿Õ¸ñ·Ö¸î£©:");
                 scanf("%s %s", &scNode.sno, &scNode.cno);
 
                 sNode = t->find(root, scNode.sno);
                 cNode = c->find(scNode.cno);
                 if (sNode == nullptr or cNode == nullptr) {
-                    printf("è¯¥å­¦ç”Ÿä¸å­˜åœ¨æˆ–è€…è¯¾ç¨‹ä¸å­˜åœ¨!\n");
+                    printf("¸ÃÑ§Éú²»´æÔÚ»òÕß¿Î³Ì²»´æÔÚ!\n");
                     break;
                 } else {
-                    printf("è¯·è¾“å…¥%så­¦ç”Ÿçš„%sè¯¾ç¨‹çš„è€ƒè¯•æˆç»©:%.1fåˆ†\n", sNode->student->name, cNode->cname,
+                    printf("ÇëÊäÈë%sÑ§ÉúµÄ%s¿Î³ÌµÄ¿¼ÊÔ³É¼¨:%.1f·Ö\n", sNode->student->name, cNode->cname,
                            sc->find(sNode->student->sno, cNode->cno));
                 }
                 break;
             case 3:
-                printf("è¯·è¾“å…¥å­¦å·å’Œè¯¾ç¨‹å·[è¯¾ç¨‹åç§°]ï¼ˆç”¨ç©ºæ ¼åˆ†å‰²ï¼‰:");
+                printf("ÇëÊäÈëÑ§ºÅºÍ¿Î³ÌºÅ[¿Î³ÌÃû³Æ]£¨ÓÃ¿Õ¸ñ·Ö¸î£©:");
                 scanf("%s %s", &scNode.sno, &scNode.cno);
 
                 sNode = t->find(root, scNode.sno);
                 cNode = c->find(scNode.cno);
                 if (sNode == nullptr or cNode == nullptr) {
-                    printf("è¯¥å­¦ç”Ÿä¸å­˜åœ¨æˆ–è€…è¯¾ç¨‹ä¸å­˜åœ¨!\n");
+                    printf("¸ÃÑ§Éú²»´æÔÚ»òÕß¿Î³Ì²»´æÔÚ!\n");
                     break;
                 } else {
-                    printf("è¯·è¾“å…¥%så­¦ç”Ÿçš„%sè¯¾ç¨‹çš„æ–°è€ƒè¯•æˆç»©ï¼š", sNode->student->name, cNode->cname);
+                    printf("ÇëÊäÈë%sÑ§ÉúµÄ%s¿Î³ÌµÄĞÂ¿¼ÊÔ³É¼¨£º", sNode->student->name, cNode->cname);
                     scanf("%lf", &scNode.grade);
                     sc->update(sNode->student->sno, cNode->cno, scNode.grade);
                 }
                 break;
             case 4:
-                printf("è¯·è¾“å…¥å­¦å·å’Œè¯¾ç¨‹å·[è¯¾ç¨‹åç§°]ï¼ˆç”¨ç©ºæ ¼åˆ†å‰²ï¼‰:");
+                printf("ÇëÊäÈëÑ§ºÅºÍ¿Î³ÌºÅ[¿Î³ÌÃû³Æ]£¨ÓÃ¿Õ¸ñ·Ö¸î£©:");
                 scanf("%s %s", &scNode.sno, &scNode.cno);
 
                 sNode = t->find(root, scNode.sno);
                 cNode = c->find(scNode.cno);//201611701209 19221101
                 if (sNode == nullptr or cNode == nullptr) {
-                    printf("è¯¥å­¦ç”Ÿä¸å­˜åœ¨æˆ–è€…è¯¾ç¨‹ä¸å­˜åœ¨!\n");
+                    printf("¸ÃÑ§Éú²»´æÔÚ»òÕß¿Î³Ì²»´æÔÚ!\n");
                     break;
                 } else {
                     sc->delete_sc(sNode->student->sno, cNode->cno);
@@ -240,34 +240,34 @@ int main() {
 //    return 0;
     int choose;
     char sno[20];
-    struct stu stu{};//å®šä¹‰ä¸€ä¸ªå­¦ç”Ÿç»“æ„ä½“ç±»å‹çš„æ•°æ®ç”¨æ¥ç¼“å­˜å­¦ç”Ÿæ•°æ®
+    struct stu stu{};//¶¨ÒåÒ»¸öÑ§Éú½á¹¹ÌåÀàĞÍµÄÊı¾İÓÃÀ´»º´æÑ§ÉúÊı¾İ
     stuNode *find_node, *new_node;
     tree *t = new tree();
     courses *c = new courses();
     student *sc = new student();
     auto *fs = new files_student(root, &pos_extends);
 
-    root = fs->readfile(t);//è¯»å–å­¦ç”Ÿä¿¡æ¯æ–‡ä»¶åˆ°æ ‘
-    c->readintolist();//è¯¾ç¨‹ä¿¡æ¯
-    sc->readintolist();//æˆç»©ä¿¡æ¯
+    root = fs->readfile(t);//¶ÁÈ¡Ñ§ÉúĞÅÏ¢ÎÄ¼şµ½Ê÷
+    c->readintolist();//¿Î³ÌĞÅÏ¢
+    sc->readintolist();//³É¼¨ĞÅÏ¢
     while (1) {
-        printf("****************æ¬¢è¿æ¥åˆ°å­¦ç”Ÿæˆç»©ç®¡ç†ç³»ç»Ÿ************\n");
-        printf("è¯·è¾“å…¥æ•°å­—é€‰æ‹©ç›¸åº”çš„æŒ‡ä»¤\n");
-        printf("1ã€å¢åŠ æ’å…¥å­¦ç”Ÿçš„ä¿¡æ¯\n");
-        printf("2ã€æœç´¢å­¦ç”Ÿä¿¡æ¯\n");
-        printf("3ã€æ¨¡ç³ŠæŸ¥æ‰¾å­¦ç”Ÿ\n");
-        printf("4ã€æ‰“å°æ‰€æœ‰å­¦ç”Ÿçš„ä¿¡æ¯\n");
-        printf("5ã€åˆ é™¤å­¦ç”Ÿçš„ä¿¡æ¯\n");
-        printf("6ã€æ›´æ–°å­¦ç”Ÿçš„ä¿¡æ¯\n");
-        printf("7ã€ç¼–è¾‘è¯¾è¡¨ä¿¡æ¯\n");
-        printf("8ã€ç¼–è¾‘æˆç»©ä¿¡æ¯\n");
-        printf("9ã€é€€å‡ºå­¦ç”Ÿä¿¡æ¯ç®¡ç†ç³»ç»Ÿ\n");
+        printf("****************»¶Ó­À´µ½Ñ§Éú³É¼¨¹ÜÀíÏµÍ³************\n");
+        printf("ÇëÊäÈëÊı×ÖÑ¡ÔñÏàÓ¦µÄÖ¸Áî\n");
+        printf("1¡¢Ôö¼Ó²åÈëÑ§ÉúµÄĞÅÏ¢\n");
+        printf("2¡¢ËÑË÷Ñ§ÉúĞÅÏ¢\n");
+        printf("3¡¢Ä£ºı²éÕÒÑ§Éú\n");
+        printf("4¡¢´òÓ¡ËùÓĞÑ§ÉúµÄĞÅÏ¢\n");
+        printf("5¡¢É¾³ıÑ§ÉúµÄĞÅÏ¢\n");
+        printf("6¡¢¸üĞÂÑ§ÉúµÄĞÅÏ¢\n");
+        printf("7¡¢±à¼­¿Î±íĞÅÏ¢\n");
+        printf("8¡¢±à¼­³É¼¨ĞÅÏ¢\n");
+        printf("9¡¢ÍË³öÑ§ÉúĞÅÏ¢¹ÜÀíÏµÍ³\n");
         printf("*****************************************************\n");
 
         scanf("%d", &choose);
         switch (choose) {
             case 1:
-                if (input_student(&stu)) {//è·å–ä¸€ä¸ªå­¦ç”Ÿä¿¡æ¯
+                if (input_student(&stu)) {//»ñÈ¡Ò»¸öÑ§ÉúĞÅÏ¢
                     new_node = t->createStuNode(&stu);
                     if ((find_node = t->find(root, stu.sno)) == nullptr) {
                         t->writeToFile(&stu);
@@ -276,40 +276,40 @@ int main() {
                 }
                 break;
             case 2:
-                printf("è¯·è¾“å…¥å­¦ç”Ÿçš„å­¦å·æ¥æŸ¥æ‰¾å­¦ç”Ÿä¿¡æ¯\n");
+                printf("ÇëÊäÈëÑ§ÉúµÄÑ§ºÅÀ´²éÕÒÑ§ÉúĞÅÏ¢\n");
                 scanf("%s", &sno);
 
                 find_node = t->find(root, sno);
 
                 if (find_node == nullptr) {
-                    printf("æ‰¾ä¸åˆ°è¯¥å­¦ç”Ÿçš„ä¿¡æ¯\n");
+                    printf("ÕÒ²»µ½¸ÃÑ§ÉúµÄĞÅÏ¢\n");
                     break;
                 } else {
-                    printf("å­¦å·ï¼š%s å­¦ç”Ÿå§“åï¼š%s æ€§åˆ«ï¼š%s å¹´é¾„ï¼š%d åœ°åŒºï¼š%s ä¸“ä¸šï¼š%s\n",
+                    printf("Ñ§ºÅ£º%s Ñ§ÉúĞÕÃû£º%s ĞÔ±ğ£º%s ÄêÁä£º%d µØÇø£º%s ×¨Òµ£º%s\n",
                            find_node->student->sno, find_node->student->name, find_node->student->sex,
                            find_node->student->age, find_node->student->region,
                            find_node->student->pro);
                 }
                 break;
             case 3:
-                printf("è¯·è¾“å…¥ä¿¡æ¯ï¼š\n");
+                printf("ÇëÊäÈëĞÅÏ¢£º\n");
                 char s[1024];
                 scanf("%s", &s);
                 fs->findfromfile(0, s);
                 break;
             case 4:
-                printf("æ‰€æœ‰çš„å­¦ç”Ÿçš„ä¿¡æ¯ä¸º\n");
+                printf("ËùÓĞµÄÑ§ÉúµÄĞÅÏ¢Îª\n");
                 t->print(root);
                 break;
             case 5:
-                printf("è¯·è¾“å…¥å­¦ç”Ÿçš„å­¦å·æ¥åˆ é™¤å­¦ç”Ÿä¿¡æ¯\n");
+                printf("ÇëÊäÈëÑ§ÉúµÄÑ§ºÅÀ´É¾³ıÑ§ÉúĞÅÏ¢\n");
                 scanf("%s", &sno);
                 if (fs->deletetofile(t, sno, root)) {
                     root = t->remove(root, sno);
                 }
                 break;
             case 6:
-                printf("è¯·è¾“å…¥æ›´æ–°åçš„å­¦ç”Ÿä¿¡æ¯ï¼ˆä»¥å­¦å·ä½œä¸ºå…³é”®ï¼‰\nå­¦å· å§“å æ€§åˆ« å¹´é¾„ ç±è´¯ ä¸“ä¸š\n");
+                printf("ÇëÊäÈë¸üĞÂºóµÄÑ§ÉúĞÅÏ¢£¨ÒÔÑ§ºÅ×÷Îª¹Ø¼ü£©\nÑ§ºÅ ĞÕÃû ĞÔ±ğ ÄêÁä ¼®¹á ×¨Òµ\n");
                 scanf("%s %s %s %d %s %s",
                       &stu.sno, &stu.name, &stu.sex, &stu.age, &stu.region, &stu.pro);
 
