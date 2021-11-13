@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!-- 打开延迟加载的开关 -->
+        <!--        <setting name="lazyLoadingEnabled" value="true" />-->
+        <!--        &lt;!&ndash; 将积极加载改为消息加载即按需加载 &ndash;&gt;-->
+        <!--        <setting name="aggressiveLazyLoading" value="false"/>-->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+    <typeAliases>
+        <package name="bean"/>
+    </typeAliases>
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor"/>
+    </plugins>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/> <!-- mysql 8版本  driver!-->
+                <property name="url" value="jdbc:mysql://localhost:3306/News?characterEncoding=UTF-8&amp;serverTimezone=GMT%2B8"/>
+                <property name="username" value="News"/>
+                <property name="password" value="onlineNew"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper class="mapper.RoleMapper"/>
+        <mapper class="mapper.CategoryMapper"/>
+        <mapper class="mapper.UserMapper"/>
+        <mapper class="mapper.ArticleMapper"/>
+    </mappers>
+</configuration>
