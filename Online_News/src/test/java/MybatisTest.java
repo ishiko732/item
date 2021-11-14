@@ -21,17 +21,6 @@ import java.util.List;
 
 
 public class MybatisTest {
-    @Test
-    public void name() throws IOException {
-        String resource = "mybatis-config.xml";
-        InputStream inputStream = Resources.getResourceAsStream(resource);
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-        SqlSession session = sqlSessionFactory.openSession();
-
-
-        session.commit();
-        session.close();
-    }
 
     @Test
     public void roleTest() throws IOException {
@@ -110,7 +99,6 @@ public class MybatisTest {
 
         UserMapper mapper = session.getMapper(UserMapper.class);
 
-        User user = new User();
 
         User user1 = mapper.getId(10);
         System.out.println(user1);
@@ -182,9 +170,9 @@ public class MybatisTest {
         System.out.println(mapper.update(article));
         System.out.println(article);
 
-        System.out.println(mapper.count());
+        System.out.println(mapper.count(null));
 
-        List<Article> articles = mapper.list();
+        List<Article> articles = mapper.list(null);
         for (Article a : articles) {
             System.out.println(a);
         }

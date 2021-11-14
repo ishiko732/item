@@ -32,10 +32,25 @@ public interface ArticleMapper {
             "where id=#{id}")
     int update(Article article);
 
-    @Select("select count(*) from article")
-    int count();
+    @Select({
+            "<script>",
+            "select count(*) from article",
+            "<if test='cid !=null'>",
+            "where category_id=#{cid}",
+            "</if>",
+            "</script>"
+    })
+    int count(Integer cid);
 
-    @Select("select * from article")
+
+    @Select({
+            "<script>",
+            "select * from article",
+            "<if test='cid !=null'>",
+            "where category_id=#{cid}",
+            "</if>",
+            "</script>"
+    })
     @Results({
             @Result(property = "id",column = "id"),
             @Result(property = "time",column = "created_timestamp"),
@@ -44,5 +59,7 @@ public interface ArticleMapper {
             @Result(property = "category",javaType = User.class,column="category_id",
                     one = @One(select="mapper.CategoryMapper.get"))
     })
-    List<Article> list();
+    List<Article> list(Integer cid);
+
+
 }
