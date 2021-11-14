@@ -40,7 +40,7 @@ public interface ArticleMapper {
             "</if>",
             "</script>"
     })
-    int count(Integer cid);
+    int count(Integer aid);
 
 
     @Select({
@@ -59,7 +59,7 @@ public interface ArticleMapper {
             @Result(property = "category",javaType = User.class,column="category_id",
                     one = @One(select="mapper.CategoryMapper.get"))
     })
-    List<Article> list(Integer cid);
+    List<Article> list(Integer aid);
 
 
 }

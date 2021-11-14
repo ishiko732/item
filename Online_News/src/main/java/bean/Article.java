@@ -12,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Article {
-    private int id;
+    private Integer id;
     private User user;
     private String title;
     private String description;

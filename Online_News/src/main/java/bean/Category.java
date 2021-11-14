@@ -8,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Category {
-    private int id;
+    private Integer id;
     private String name;
 }

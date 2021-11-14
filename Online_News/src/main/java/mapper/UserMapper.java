@@ -29,7 +29,7 @@ public interface UserMapper {
             @Result(property = "role",javaType = Role.class,column="role_id",
                     one = @One(select="mapper.RoleMapper.get")),
     })
-    User getName(String name);
+    List<User> getName(String name);
 
 
     @Update("update user set name=#{name},password=#{password},role_id=#{role.id} " +
@@ -40,5 +40,10 @@ public interface UserMapper {
     int count();
 
     @Select("select * from user")
+    @Results({
+            @Result(property = "id",column = "id"),
+            @Result(property = "role",javaType = Role.class,column="role_id",
+                    one = @One(select="mapper.RoleMapper.get")),
+    })
     List<User> list();
 }
