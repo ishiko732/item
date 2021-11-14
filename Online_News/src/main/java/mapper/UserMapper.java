@@ -46,4 +46,8 @@ public interface UserMapper {
                     one = @One(select="mapper.RoleMapper.get")),
     })
     List<User> list();
+
+    @Update("update user set icon=#{imagePath} " +
+            "where id=#{id}")
+    int setImage(@Param("id")int id,@Param("imagePath")String imagePath);
 }

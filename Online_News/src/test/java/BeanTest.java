@@ -1,3 +1,4 @@
+import bean.MimeTypeEnum;
 import bean.Role;
 import bean.User;
 import org.junit.Test;
@@ -26,3 +27,5 @@ public class BeanTest {
 
     }
 }
+
+

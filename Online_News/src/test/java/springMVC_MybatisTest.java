@@ -33,6 +33,4 @@ public class springMVC_MybatisTest {
         }
 
     }
-
-
 }

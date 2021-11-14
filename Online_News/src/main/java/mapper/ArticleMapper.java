@@ -2,6 +2,7 @@ package mapper;
 
 
 import bean.Article;
+import bean.ArticleFile;
 import bean.User;
 import org.apache.ibatis.annotations.*;
 
@@ -61,5 +62,12 @@ public interface ArticleMapper {
     })
     List<Article> list(Integer aid);
 
+    @Options(useGeneratedKeys = true,keyProperty = "id",keyColumn = "id")
+    @Insert("insert into file(uid, aid, dir, file,time) \n" +
+            "values (#{uid},#{aid},#{dir},#{filename},#{time})")
+    int uploadFile(ArticleFile af);
 
+    @Select("select * from file where id=#{id}")
+    @Result(property = "filename",column = "file")
+    ArticleFile getFile(int id);
 }

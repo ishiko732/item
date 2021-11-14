@@ -36,7 +36,7 @@ public class UserController {
         int rid = Integer.parseInt(request.getParameter("role"));
         Role role = roleMapper.get(rid);
         System.out.println(role);
-        User user = new User(null, name, role, password);
+        User user = new User(null, name, role, password,null);
 
         String ret = userMapper.add(user) == 1 ? "success" : "failed";
 
