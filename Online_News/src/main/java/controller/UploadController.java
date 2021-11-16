@@ -1,13 +1,15 @@
 package controller;
 
-import bean.*;
+import bean.ArticleFile;
+import bean.UploadFile;
 import mapper.ArticleMapper;
 import mapper.UserMapper;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -62,7 +64,7 @@ public class UploadController {
         File newFile=new File(request.getServletContext().getRealPath(path),newFileName);
         newFile.getParentFile().mkdirs();
         file.getFile().transferTo(newFile);
-        Timestamp timestamp = Article.currentTime();
+        Timestamp timestamp = ArticleController.currentTime();
         ArticleFile articleFile = new ArticleFile(null, uid, aid, path, newFileName, timestamp);
         String status = articleMapper.uploadFile(articleFile)== 1 ? "success" : "failed";
         Map<String,String> ret=new HashMap<>();

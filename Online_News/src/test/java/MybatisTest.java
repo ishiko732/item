@@ -2,6 +2,7 @@ import bean.Article;
 import bean.Category;
 import bean.Role;
 import bean.User;
+import controller.ArticleController;
 import mapper.ArticleMapper;
 import mapper.CategoryMapper;
 import mapper.RoleMapper;
@@ -166,7 +167,7 @@ public class MybatisTest {
 
         Article article = mapper.get(1);
         System.out.println(article);
-        article.setTime(Article.currentTime());
+        article.setTime(ArticleController.currentTime());
         System.out.println(mapper.update(article));
         System.out.println(article);
 
