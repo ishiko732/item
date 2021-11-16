@@ -22,9 +22,9 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-beans:5.3.11" />
           <element id="library" level="project" name="Maven: org.springframework:spring-expression:5.3.11" />
           <element id="library" level="project" name="Maven: org.springframework:spring-aspects:5.3.11" />
+          <element id="library" level="project" name="Maven: org.springframework:spring-web:5.3.12" />
           <element id="library" level="project" name="Maven: org.springframework:spring-core:5.3.12" />
           <element id="library" level="project" name="Maven: org.springframework:spring-jcl:5.3.12" />
-          <element id="library" level="project" name="Maven: org.springframework:spring-web:5.3.12" />
           <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:5.3.12" />
           <element id="library" level="project" name="Maven: org.aspectj:aspectjweaver:1.9.8.M1" />
           <element id="library" level="project" name="Maven: org.mybatis:mybatis:3.5.7" />
@@ -59,6 +59,7 @@
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.3" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.3" />
           <element id="library" level="project" name="Maven: com.alibaba:fastjson:1.2.7" />
+          <element id="library" level="project" name="Maven: com.auth0:java-jwt:3.18.2" />
         </element>
       </element>
       <element id="directory" name="META-INF">

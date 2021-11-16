@@ -1,0 +1,81 @@
+package controller;
+
+import bean.User;
+import mapper.UserMapper;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import utils.Cookies;
+import utils.JwtUtil;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+@RestController
+public class AuthController {
+    private final UserMapper userMapper;
+
+    public AuthController(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
+    @RequestMapping("/login")
+    public @ResponseBody  Map<String,Object> login(HttpServletRequest request, HttpServletResponse response){
+        String name = request.getParameter("name");
+        String password=request.getParameter("password");
+        List<User> users = userMapper.getName(name);
+        Map<String, Object> status = new HashMap<>();
+        if(users.size()!=1){
+            status.put("status", "false");
+            status.put("info","系统错误-用户名重复");
+            status.put("name",name);
+            return status;
+        }
+        User user = users.get(0);
+
+        if (user.getName().equals(name) && user.getPassword().equals(UserController.password_md5(password))) {
+            String token = JwtUtil.sign(user);
+            if(!Objects.isNull(token)){
+                Cookie cookie=new Cookie("Authorization",token);
+                cookie.setMaxAge(3600);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+            }
+            status.put("status", "true");
+            status.put("token",token);
+            status.put("uid",String.valueOf(user.getId()));
+            status.put("name",name);
+            status.put("ico",user.getIcon());
+            status.put("role",user.getRole());
+            return status;
+
+        }
+        status.put("status", "true");
+        status.put("info","账号或密码错误");
+        return status;
+    }
+    @RequestMapping("/logout")
+    public @ResponseBody  Map<String,String> logout(HttpSession session,HttpServletResponse response) {
+        // 退出登录就是将用户信息删除
+        Cookie cookie=new Cookie("Authorization","");
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        Map<String, String> status = new HashMap<>();
+        status.put("status", "true");
+        return status;
+    }
+
+    @RequestMapping("/api")
+    public String api(HttpServletRequest request) {
+        Cookie cookie= Cookies.getCookieByName(request,"Authorization");
+        return "login:"+JwtUtil.getUsername(Objects.requireNonNull(cookie).getValue());
+    }
+
+}

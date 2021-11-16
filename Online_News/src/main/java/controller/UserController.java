@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import utils.Cookies;
+import utils.JwtUtil;
 
-
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.MessageDigest;
@@ -28,26 +32,7 @@ public class UserController {
         this.roleMapper = roleMapper;
     }
 
-    @RequestMapping(path = "/register", method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String, String> register(HttpServletRequest request, HttpServletResponse response)  {
-        String name = request.getParameter("name");
-        String password = password_md5(request.getParameter("password"));
-        int rid = Integer.parseInt(request.getParameter("role"));
-        Role role = roleMapper.get(rid);
-        System.out.println(role);
-        User user = new User(null, name, role, password,null);
-
-        String ret = userMapper.add(user) == 1 ? "success" : "failed";
-
-        Map<String, String> status = new HashMap<>();
-        status.put("status", ret);
-        status.put("uid", String.valueOf(user.getId()));
-        return status;
-    }
-
-
-    public String password_md5(String origin) {
+    public static String password_md5(String origin) {
         try {
             MessageDigest md = MessageDigest.getInstance("md5");
             byte[] bytes = md.digest(origin.getBytes());
@@ -56,6 +41,12 @@ public class UserController {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static Integer tokenGetUserId(){
+        HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
+        Cookie cookie= Cookies.getCookieByName(request,"Authorization");
+        return JwtUtil.getUserId(Objects.requireNonNull(cookie).getValue());
     }
 
     @RequestMapping(path = "/get", method = RequestMethod.POST)
@@ -75,13 +66,43 @@ public class UserController {
         return "";
     }
 
+    @RequestMapping(path = "/register", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, String> register(HttpServletRequest request, HttpServletResponse response)  {
+        String name = request.getParameter("name");
+        String password = password_md5(request.getParameter("password"));
+        int rid = Integer.parseInt(request.getParameter("role"));
+        Role role = roleMapper.get(rid);
+        System.out.println(role);
+        User user = new User(null, name, role, password,null);
 
+        String ret ="failed(已经存在该用户名)";
+        List<User> users = userMapper.getName(name);
+        if (users.size()==0){
+            ret = userMapper.add(user) == 1 ? "success" : "failed";
+        }
+        Map<String, String> status = new HashMap<>();
+        status.put("status", ret);
+        status.put("uid", String.valueOf(user.getId()));
+        return status;
+    }
+
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    public  @ResponseBody List<User> list() {
+        return userMapper.list();
+    }
+
+    @RequestMapping(value = "/count", method = RequestMethod.GET)
+    public  @ResponseBody int count() {
+        return userMapper.count();
+    }
 
     @RequestMapping(path = "/update", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, String> update(HttpServletRequest request, HttpServletResponse response)  {
-        String id = request.getParameter("id");
-        User user = userMapper.getId(Integer.parseInt(id));
+//        String id = request.getParameter("id");
+        Integer id = UserController.tokenGetUserId();
+        User user = userMapper.getId(id);
 
         String name = request.getParameter("name");
         String password = request.getParameter("password");
@@ -104,16 +125,6 @@ public class UserController {
         status.put("uid", String.valueOf(user.getId()));
         return status;
 
-    }
-
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public  @ResponseBody List<User> list() {
-        return userMapper.list();
-    }
-
-    @RequestMapping(value = "/count", method = RequestMethod.GET)
-    public  @ResponseBody int count() {
-        return userMapper.count();
     }
 
 
