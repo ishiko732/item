@@ -74,12 +74,18 @@ public class UserController {
         String name = request.getParameter("name");
         String password = password_md5(request.getParameter("password"));
         int rid = Integer.parseInt(request.getParameter("role"));
+        String phone=request.getParameter("phone");
         String token =request.getParameter("token");
+        final String token_postman="03AGdBq24ES5YrIs6S10esymEhIIeK6DkpdupRuwZAEFdLI-WevxvNYGtDzhdd1MTrEeeFRpK8e148IBK_X13ABxQUhcarGaUhOmFKiIhyC4BmAsnTVa9eU7";//权限码
 
         String ret;
-        User user = new User(null, name, null, password,null);
+        User user = new User(null, name, null, password,null,phone);
         Boolean captcha = captchaController.captcha(token);
         Map<String, String> status = new HashMap<>();
+        if(rid==1 && !token.equals(token_postman)){ //判断是否越权注册
+            status.put("status", "faile(越权注册)");
+            return status;
+        }
         if(captcha){
             Role role = roleMapper.get(rid);
             user.setRole(role);

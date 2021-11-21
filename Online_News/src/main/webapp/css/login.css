@@ -1,0 +1,69 @@
+body{
+    background-image: url(../image/site/bg-01.jpg);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height:500px;
+    text-align: center;
+}
+
+#form{
+    width: 500px;
+    height: 350px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    padding-top: 20px;
+    text-align: center;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow:  0 10px 20px rgba(27, 27, 50, 0.1),
+                0 -5px 20px rgba(27, 27, 50, 0.1);   
+}
+h2{
+    margin-bottom: 10px;
+    background: linear-gradient(to right,rgb(57, 123, 255), rgb(144, 94, 240));
+    -webkit-background-clip: text;
+    color: transparent;
+}
+input{
+    max-width: 300px;
+    text-align: center;
+    margin-left:auto;margin-right:auto;
+}
+#captcha{
+    max-width: 300px;
+    margin: auto;
+    padding-top: 10px;
+    padding-bottom: 15px;
+}
+
+.hide_captcha_submit{
+    padding-top: 30px;
+}
+.line{
+    display: flex;
+    justify-content: space-evenly;
+    padding: 10px;
+}
+div a,label{
+    padding-top: 6px;
+}
+label{
+    width: 63px;
+}
+
+img{
+    width: 25px;
+    height: 25px;
+}
+
+#returnPage{
+    margin-left: -450px;
+    margin-top: -10px;
+
+}

@@ -9,7 +9,7 @@ import java.util.List;
 public interface UserMapper {
 
     @Options(useGeneratedKeys = true,keyProperty = "id",keyColumn = "id")
-    @Insert("insert into user(id,name, password,role_id) values(null,#{name},#{password},#{role.id})")
+    @Insert("insert into user(id,name, password,role_id,phone) values(null,#{name},#{password},#{role.id},#{phone})")
     int add(User user);
 
 

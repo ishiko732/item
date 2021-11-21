@@ -47,8 +47,7 @@ public class AuthController {
             status.put("info","验证码异常");
             return status;
         }
-
-        if(!Objects.isNull(Cookies.getCookieByName(request, "Authorization").getValue())){//已经登录
+        if(!Objects.isNull(Cookies.getCookieByName(request, "Authorization"))){//已经登录
             status.put("status", false);
             status.put("info","已经登录");
             return status;
