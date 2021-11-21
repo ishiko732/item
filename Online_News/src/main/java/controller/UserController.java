@@ -26,10 +26,12 @@ import java.util.*;
 public class UserController {
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
+    private final CaptchaController captchaController;
 
-    public UserController(UserMapper userMapper, RoleMapper roleMapper) {
+    public UserController(UserMapper userMapper, RoleMapper roleMapper, CaptchaController captchaController) {
         this.userMapper = userMapper;
         this.roleMapper = roleMapper;
+        this.captchaController = captchaController;
     }
 
     public static String password_md5(String origin) {
@@ -72,18 +74,26 @@ public class UserController {
         String name = request.getParameter("name");
         String password = password_md5(request.getParameter("password"));
         int rid = Integer.parseInt(request.getParameter("role"));
-        Role role = roleMapper.get(rid);
-        System.out.println(role);
-        User user = new User(null, name, role, password,null);
+        String token =request.getParameter("token");
 
-        String ret ="failed(已经存在该用户名)";
-        List<User> users = userMapper.getName(name);
-        if (users.size()==0){
-            ret = userMapper.add(user) == 1 ? "success" : "failed";
-        }
+        String ret;
+        User user = new User(null, name, null, password,null);
+        Boolean captcha = captchaController.captcha(token);
         Map<String, String> status = new HashMap<>();
-        status.put("status", ret);
-        status.put("uid", String.valueOf(user.getId()));
+        if(captcha){
+            Role role = roleMapper.get(rid);
+            user.setRole(role);
+            List<User> users = userMapper.getName(name);
+            if (users.size()==0){
+                ret = userMapper.add(user) == 1 ? "success" : "failed";
+                status.put("uid", String.valueOf(user.getId()));
+            }else{
+                ret ="failed(已经存在该用户名)";
+            }
+            status.put("status", ret);
+        }else{
+            status.put("status", "验证码异常");
+        }
         return status;
     }
 

@@ -20,9 +20,11 @@ import java.util.Objects;
 @RestController
 public class AuthController {
     private final UserMapper userMapper;
+    private final CaptchaController captchaController;
 
-    public AuthController(UserMapper userMapper) {
+    public AuthController(UserMapper userMapper, CaptchaController captchaController) {
         this.userMapper = userMapper;
+        this.captchaController = captchaController;
     }
 
     @RequestMapping("/login")
@@ -37,8 +39,22 @@ public class AuthController {
             status.put("name",name);
             return status;
         }
-        User user = users.get(0);
 
+        String tokenCaptcha =request.getParameter("token");
+        Boolean captcha = captchaController.captcha(tokenCaptcha);
+        if(!captcha){
+            status.put("status", false);
+            status.put("info","验证码异常");
+            return status;
+        }
+
+        if(!Objects.isNull(Cookies.getCookieByName(request, "Authorization").getValue())){//已经登录
+            status.put("status", false);
+            status.put("info","已经登录");
+            return status;
+        }
+
+        User user = users.get(0);
         if (user.getName().equals(name) && user.getPassword().equals(UserController.password_md5(password))) {
             String token = JwtUtil.sign(user);
             if(!Objects.isNull(token)){
