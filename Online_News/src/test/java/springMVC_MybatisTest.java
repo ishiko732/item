@@ -30,6 +30,7 @@ public class springMVC_MybatisTest {
 //            System.out.println(u);
 //        }
         System.out.println(UserController.password_md5("online"));
+        System.out.println(UserController.password_md5("abc123"));
 
     }
 }

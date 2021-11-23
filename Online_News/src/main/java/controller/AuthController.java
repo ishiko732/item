@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -31,29 +30,31 @@ public class AuthController {
     public @ResponseBody  Map<String,Object> login(HttpServletRequest request, HttpServletResponse response){
         String name = request.getParameter("name");
         String password=request.getParameter("password");
-        List<User> users = userMapper.getName(name);
+        User user = userMapper.getUser(null,name);
         Map<String, Object> status = new HashMap<>();
-        if(users.size()!=1){
-            status.put("status", "false");
-            status.put("info","系统错误-用户名重复");
-            status.put("name",name);
-            return status;
-        }
+//        if(users.size()!=1){
+//            status.put("status", false);
+//            status.put("info","系统错误-用户名重复或用户不存在");
+//            status.put("name",name);
+//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
+//            return status;
+//        }
 
         String tokenCaptcha =request.getParameter("token");
         Boolean captcha = captchaController.captcha(tokenCaptcha);
         if(!captcha){
             status.put("status", false);
             status.put("info","验证码异常");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
             return status;
         }
         if(!Objects.isNull(Cookies.getCookieByName(request, "Authorization"))){//已经登录
             status.put("status", false);
             status.put("info","已经登录");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
             return status;
         }
 
-        User user = users.get(0);
         if (user.getName().equals(name) && user.getPassword().equals(UserController.password_md5(password))) {
             String token = JwtUtil.sign(user);
             if(!Objects.isNull(token)){
@@ -62,7 +63,7 @@ public class AuthController {
                 cookie.setPath("/");
                 response.addCookie(cookie);
             }
-            status.put("status", "true");
+            status.put("status", true);
             status.put("token",token);
             status.put("uid",String.valueOf(user.getId()));
             status.put("name",name);
@@ -71,19 +72,20 @@ public class AuthController {
             return status;
 
         }
-        status.put("status", "true");
+        status.put("status", true);
         status.put("info","账号或密码错误");
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
         return status;
     }
     @RequestMapping("/logout")
-    public @ResponseBody  Map<String,String> logout(HttpSession session,HttpServletResponse response) {
+    public @ResponseBody  Map<String,Object> logout(HttpSession session,HttpServletResponse response) {
         // 退出登录就是将用户信息删除
         Cookie cookie=new Cookie("Authorization","");
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
-        Map<String, String> status = new HashMap<>();
-        status.put("status", "true");
+        Map<String, Object> status = new HashMap<>();
+        status.put("status", true);
         return status;
     }
 

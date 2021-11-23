@@ -2,7 +2,6 @@ package controller;
 
 import bean.Role;
 import bean.User;
-import com.google.gson.Gson;
 import mapper.RoleMapper;
 import mapper.UserMapper;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,24 +52,16 @@ public class UserController {
 
     @RequestMapping(path = "/get", method = RequestMethod.POST)
     public @ResponseBody
-    String get(HttpServletRequest request, HttpServletResponse response)  {
+    User get(HttpServletRequest request, HttpServletResponse response)  {
         String id = request.getParameter("id");
         String name = request.getParameter("name");
-        Gson gson = new Gson();
-        if (!Objects.isNull(id)) {
-            User user = userMapper.getId(Integer.parseInt(id));
-            return gson.toJson(user);
-
-        }else if (!Objects.isNull(name)) {
-            List<User> users =userMapper.getName(name);
-            return gson.toJson(users);
-        }
-        return "";
+        User user = userMapper.abstractGet(id, name);
+        return user;
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     public @ResponseBody
-    Map<String, String> register(HttpServletRequest request, HttpServletResponse response)  {
+    Map<String, Object> register(HttpServletRequest request, HttpServletResponse response)  {
         String name = request.getParameter("name");
         String password = password_md5(request.getParameter("password"));
         int rid = Integer.parseInt(request.getParameter("role"));
@@ -78,34 +69,45 @@ public class UserController {
         String token =request.getParameter("token");
         final String token_postman="03AGdBq24ES5YrIs6S10esymEhIIeK6DkpdupRuwZAEFdLI-WevxvNYGtDzhdd1MTrEeeFRpK8e148IBK_X13ABxQUhcarGaUhOmFKiIhyC4BmAsnTVa9eU7";//权限码
 
-        String ret;
         User user = new User(null, name, null, password,null,phone);
         Boolean captcha = captchaController.captcha(token);
-        Map<String, String> status = new HashMap<>();
+        Map<String, Object> status = new HashMap<>();
         if(rid==1 && !token.equals(token_postman)){ //判断是否越权注册
-            status.put("status", "faile(越权注册)");
+            status.put("status", false);
+            status.put("info", "越权注册");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
             return status;
         }
         if(captcha){
             Role role = roleMapper.get(rid);
             user.setRole(role);
-            List<User> users = userMapper.getName(name);
-            if (users.size()==0){
-                ret = userMapper.add(user) == 1 ? "success" : "failed";
-                status.put("uid", String.valueOf(user.getId()));
+            User o_user = userMapper.getUser(null,name);;
+            if (!Objects.isNull(o_user)){
+                status.put("status", userMapper.add(user) == 1);
+                status.put("info", String.valueOf(user.getId()));
             }else{
-                ret ="failed(已经存在该用户名)";
+                status.put("status", false);
+                status.put("info", "已存在该用户名");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
             }
-            status.put("status", ret);
         }else{
-            status.put("status", "验证码异常");
+            status.put("status", false);
+            status.put("info", "验证码异常");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
         }
         return status;
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public  @ResponseBody List<User> list() {
-        return userMapper.list();
+        Integer id = UserController.tokenGetUserId();
+        User user = userMapper.getUser(id,null);
+        if (user.getRole().getName().equals("admin")){
+            return userMapper.list();
+        }else{
+            System.out.printf("普通用户（%d）想查询list(user)！%n", user.getId());
+        }
+        return null;
     }
 
     @RequestMapping(value = "/count", method = RequestMethod.GET)
@@ -115,30 +117,41 @@ public class UserController {
 
     @RequestMapping(path = "/update", method = RequestMethod.POST)
     public @ResponseBody
-    Map<String, String> update(HttpServletRequest request, HttpServletResponse response)  {
+    Map<String, Object> update(HttpServletRequest request, HttpServletResponse response)  {
 //        String id = request.getParameter("id");
         Integer id = UserController.tokenGetUserId();
-        User user = userMapper.getId(id);
+        User user = userMapper.getUser(id,null);
 
         String name = request.getParameter("name");
         String password = request.getParameter("password");
+        String origin=request.getParameter("origin");
         String rid = request.getParameter("role");
+        String phone=request.getParameter("phone");
+        System.out.println(password);
+        Map<String, Object> status = new HashMap<>();
+        if (user.getPassword().equals(password_md5(origin))){
+            if(!Objects.isNull(name)){
+                user.setName(name);
+            }
+            if(!Objects.isNull(password)){
+                user.setPassword(password_md5(password));
+            }
+            if(!Objects.isNull(rid)){
+                Role role = roleMapper.get(Integer.parseInt(rid));
+                user.setRole(role);
+            }
+            if(!Objects.isNull(phone)){
+                user.setPhone(phone);
+            }
 
-        if(!Objects.isNull(name)){
-            user.setName(name);
+            boolean ret = userMapper.update(user)== 1 ;
+            status.put("status", ret);
+            status.put("info", String.valueOf(user.getId()));
+        }else{
+            status.put("status", false);
+            status.put("info", "密码验证失败");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
         }
-        if(!Objects.isNull(password)){
-            user.setPassword(password_md5(password));
-        }
-        if(!Objects.isNull(rid)){
-            Role role = roleMapper.get(Integer.parseInt(rid));
-            user.setRole(role);
-        }
-
-        String ret = userMapper.update(user)== 1 ? "success" : "failed";
-        Map<String, String> status = new HashMap<>();
-        status.put("status", ret);
-        status.put("uid", String.valueOf(user.getId()));
         return status;
 
     }

@@ -11,6 +11,7 @@
 
     <!--    注释方式-->
     <context:component-scan base-package="controller"/>
+    <context:component-scan base-package="utils"/>
 <!--    <context:component-scan base-package="interceptor"/>-->
 
     <context:annotation-config />

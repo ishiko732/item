@@ -13,7 +13,6 @@ import java.util.Objects;
 
 @RestController
 public class CaptchaController {
-    private final String token_postman="03AGdBq24ES5YrIs6S10esymEhIIeK6DkpdupRuwZAEFdLI-WevxvNYGtDzhdd1MTrEeeFRpK8e148IBK_X13ABxQUhcarGaUhOmFKiIhyC4BmAsnTVa9eU7";//测试验证码信息
 
     @RequestMapping(value = "/v2captcha",method = RequestMethod.POST)
     public Object captchaPost(@RequestParam String token){
@@ -22,7 +21,7 @@ public class CaptchaController {
         MultiValueMap<String,String> map= new LinkedMultiValueMap<>();
         map.add("secret",secret);
         map.add("response",token);
-        System.out.println(map);
+//        System.out.println(map);
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.postForObject(url, map, Map.class);
     }
@@ -30,6 +29,8 @@ public class CaptchaController {
     public  Boolean captcha(String token){
         boolean ret=false;
         if (!Objects.isNull(token) ){
+            //测试验证码信息
+            String token_postman = "03AGdBq24ES5YrIs6S10esymEhIIeK6DkpdupRuwZAEFdLI-WevxvNYGtDzhdd1MTrEeeFRpK8e148IBK_X13ABxQUhcarGaUhOmFKiIhyC4BmAsnTVa9eU7";
             if(!token_postman.equals(token)){
                 Map tokenMap=(Map)captchaPost(token);
                 if((Boolean) Objects.requireNonNull(tokenMap).get("success")){

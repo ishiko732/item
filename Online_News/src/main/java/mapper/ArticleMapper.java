@@ -23,7 +23,7 @@ public interface ArticleMapper {
             @Result(property = "id",column = "id"),
             @Result(property = "time",column = "created_timestamp"),
             @Result(property = "user",javaType = User.class,column="uid",
-                    one = @One(select="mapper.UserMapper.getId")),
+                    one = @One(select="mapper.UserMapper.abstractGetById")),
             @Result(property = "category",javaType = User.class,column="category_id",
                     one = @One(select="mapper.CategoryMapper.get"))
     })
@@ -56,7 +56,7 @@ public interface ArticleMapper {
             @Result(property = "id",column = "id"),
             @Result(property = "time",column = "created_timestamp"),
             @Result(property = "user",javaType = User.class,column="uid",
-                    one = @One(select="mapper.UserMapper.getId")),
+                    one = @One(select="mapper.UserMapper.abstractGetById")),
             @Result(property = "category",javaType = User.class,column="category_id",
                     one = @One(select="mapper.CategoryMapper.get"))
     })
@@ -70,4 +70,22 @@ public interface ArticleMapper {
     @Select("select * from file where id=#{id}")
     @Result(property = "filename",column = "file")
     ArticleFile getFile(int id);
+
+    @Select({
+            "<script>",
+            "select id,title,uid,category_id,created_timestamp from article",
+            "<if test='cid !=null'>",
+            "where category_id=#{cid}",
+            "</if>",
+            "</script>"
+    })
+    @Results({
+            @Result(property = "id",column = "id"),
+            @Result(property = "time",column = "created_timestamp"),
+            @Result(property = "user",javaType = User.class,column="uid",
+                    one = @One(select="mapper.UserMapper.abstractGetById")),
+            @Result(property = "category",javaType = User.class,column="category_id",
+                    one = @One(select="mapper.CategoryMapper.get"))
+    })
+    List<Article> abstractList(Integer aid);
 }

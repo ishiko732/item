@@ -101,11 +101,11 @@ public class MybatisTest {
         UserMapper mapper = session.getMapper(UserMapper.class);
 
 
-        User user1 = mapper.getId(10);
-        System.out.println(user1);
+//        User user1 = mapper.getUser(10);
+//        System.out.println(user1);
 
-        List<User> admin = mapper.getName("admin");
-        System.out.println(admin);
+//        List<User> admin = mapper.getName("admin");
+//        System.out.println(admin);
 
 //        admin.setPassword("77777777778");
 //        System.out.println(mapper.update(admin));
@@ -133,7 +133,7 @@ public class MybatisTest {
         CategoryMapper categoryMapper = session.getMapper(CategoryMapper.class);
         UserMapper userMapper = session.getMapper(UserMapper.class);
         Article article = new Article();
-        article.setUser(userMapper.getId(10));
+//        article.setUser(userMapper.getId(10));
         article.setTitle("Your most unhappy customers are your greatest source of learning.");
         article.setDescription("Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.");
         article.setContent("test3");

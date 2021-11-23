@@ -4,7 +4,6 @@ import bean.ArticleFile;
 import bean.UploadFile;
 import mapper.ArticleMapper;
 import mapper.UserMapper;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +16,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 public class UploadController {
@@ -28,22 +28,27 @@ public class UploadController {
         this.articleMapper = articleMapper;
     }
 
-    @RequestMapping(value = "/uploadImage",method = RequestMethod.POST)
-    public @ResponseBody
-    Map<String,String> upload(HttpServletRequest request, UploadFile file, int uid) throws IllegalStateException, IOException {
-        String path="/image/user/";
-
-        String name= RandomStringUtils.randomAlphanumeric(10);//随机十六进制（10）
+    private String upload(HttpServletRequest request, UploadFile file, String path) throws IOException {
         String originalFilename = file.getFile().getOriginalFilename();
+        String uuid= UUID.randomUUID().toString().replace("-","");
+
         String suffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);//后缀名
-        String newFileName= String.format("%s.%s", name,suffix);
+        String newFileName= String.format("%s.%s", uuid,suffix);
         File newFile=new File(request.getServletContext().getRealPath(path),newFileName);
         newFile.getParentFile().mkdirs();
         file.getFile().transferTo(newFile);
+        return newFileName;
+    }
 
-        String status = userMapper.setImage(uid,path+newFileName)== 1 ? "success" : "failed";
+    @RequestMapping(value = "/uploadImage",method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String,Object> upload(HttpServletRequest request, UploadFile file, int uid) throws IllegalStateException, IOException {
+        String path="/image/user/";
+        String newFileName = upload(request, file, path);
 
-        Map<String,String> ret=new HashMap<>();
+        boolean status = userMapper.setImage(uid,path+newFileName)== 1;
+
+        Map<String,Object> ret=new HashMap<>();
         ret.put("name",newFileName);
         ret.put("path",path+newFileName);
         ret.put("uid",String.valueOf(uid));
@@ -54,20 +59,15 @@ public class UploadController {
 
     @RequestMapping(value = "/uploadArticle",method = RequestMethod.POST)
     public @ResponseBody
-    Map<String,String> uploadArticle(HttpServletRequest request, UploadFile file, int uid,int aid) throws IllegalStateException, IOException {
+    Map<String,Object> uploadArticle(HttpServletRequest request, UploadFile file, int uid,int aid) throws IllegalStateException, IOException {
         String path="/image/article/";
 
-        String name= RandomStringUtils.randomAlphanumeric(20);//随机十六进制（20）
-        String originalFilename = file.getFile().getOriginalFilename();
-        String suffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);//后缀名
-        String newFileName= String.format("%s.%s", name,suffix);
-        File newFile=new File(request.getServletContext().getRealPath(path),newFileName);
-        newFile.getParentFile().mkdirs();
-        file.getFile().transferTo(newFile);
+        String newFileName = upload(request, file, path);
+
         Timestamp timestamp = ArticleController.currentTime();
         ArticleFile articleFile = new ArticleFile(null, uid, aid, path, newFileName, timestamp);
-        String status = articleMapper.uploadFile(articleFile)== 1 ? "success" : "failed";
-        Map<String,String> ret=new HashMap<>();
+        boolean status = articleMapper.uploadFile(articleFile)== 1 ;
+        Map<String,Object> ret=new HashMap<>();
         ret.put("name",newFileName);
         ret.put("path",path+newFileName);
         ret.put("uid",String.valueOf(uid));

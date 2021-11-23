@@ -36,10 +36,10 @@ public class ArticleController {
 
     @RequestMapping(path = "/delete", method = RequestMethod.DELETE)
     public @ResponseBody
-    Map<String, String> delete(HttpServletRequest request, HttpServletResponse response)  {
+    Map<String, Object> delete(HttpServletRequest request, HttpServletResponse response)  {
         int aid = Integer.parseInt(request.getParameter("id"));
-        String ret = articleMapper.delete(aid)==1? "success" : "failed";
-        Map<String, String> status = new HashMap<>();
+        boolean ret = articleMapper.delete(aid)==1;
+        Map<String, Object> status = new HashMap<>();
         status.put("status", ret);
         return status;
     }
@@ -54,7 +54,7 @@ public class ArticleController {
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public @ResponseBody
-    Map<String, String> add(HttpServletRequest request, HttpServletResponse response)  {
+    Map<String, Object> add(HttpServletRequest request, HttpServletResponse response)  {
         Integer uid = UserController.tokenGetUserId();
         String title= request.getParameter("title");
         String description= request.getParameter("description");
@@ -68,9 +68,9 @@ public class ArticleController {
         category.setId(cid);
         Article article = new Article(null,user,title,description,content,category,time);
 
-        String ret = articleMapper.add(article)==1? "success" : "failed";
+        boolean ret = articleMapper.add(article)==1;
 
-        Map<String, String> status = new HashMap<>();
+        Map<String, Object> status = new HashMap<>();
         status.put("status", ret);
         status.put("uid", String.valueOf(uid));
         status.put("aid", String.valueOf(article.getId()));
@@ -82,9 +82,13 @@ public class ArticleController {
     public  @ResponseBody
     List<Article> list(Integer aid) {
         List<Article> articles = articleMapper.list(aid);
-        for (Article article : articles) {
-            article.getUser().setPassword(null);
-        }
+        return articles;
+    }
+
+    @RequestMapping(value = "/abstractList", method = RequestMethod.GET)
+    public  @ResponseBody
+    List<Article> abstractList(Integer aid) {
+        List<Article> articles = articleMapper.abstractList(aid);
         return articles;
     }
 
@@ -95,7 +99,7 @@ public class ArticleController {
 
     @RequestMapping(path = "/update", method = RequestMethod.PUT)
     public @ResponseBody
-    Map<String, String> update(HttpServletRequest request, HttpServletResponse response) {
+    Map<String, Object> update(HttpServletRequest request, HttpServletResponse response) {
         String id = request.getParameter("id");
         Integer uid = UserController.tokenGetUserId();//可被管理员更改
         String title= request.getParameter("title");
@@ -106,32 +110,34 @@ public class ArticleController {
 
         Article article = articleMapper.get(Integer.parseInt(id));
 
-        if(!Objects.isNull(uid)){
-            User user = userMapper.getId(uid);
-            if (user.getRole().getName().equals("admin")){
-                article.setUser(user);
+        Map<String, Object> status = new HashMap<>();
+        if(!Objects.isNull(uid)){ //判断是否为空
+            User user =userMapper.getUser(uid,null);
+            if (user.getRole().getName().equals("admin")){//判断是管理员
+                article.setUser(user);//允许设置
+            }
+            if(Objects.equals(uid, article.getUser().getId())){//用户=发表用户
+                if(!Objects.isNull(title)){
+                    article.setTitle(title);
+                }
+                if(!Objects.isNull(description)){
+                    article.setDescription(description);
+                }
+                if(!Objects.isNull(content)){
+                    article.setContent(content);
+                }
+                if(!Objects.isNull(cid)){
+                    Category category = categoryMapper.get(Integer.parseInt(cid));
+                    article.setCategory(category);
+                }
+                article.setTime(time);
+                status.put("status", articleMapper.update(article)== 1);
+            }else{
+                status.put("status", false);
+                status.put("info", "越权行为");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
             }
         }
-        String ret ="越权行为！";
-        if(Objects.equals(uid, article.getUser().getId())){
-            if(!Objects.isNull(title)){
-                article.setTitle(title);
-            }
-            if(!Objects.isNull(description)){
-                article.setDescription(description);
-            }
-            if(!Objects.isNull(content)){
-                article.setContent(content);
-            }
-            if(!Objects.isNull(cid)){
-                Category category = categoryMapper.get(Integer.parseInt(cid));
-                article.setCategory(category);
-            }
-            article.setTime(time);
-            ret = articleMapper.update(article)== 1 ? "success" : "failed";
-        }
-        Map<String, String> status = new HashMap<>();
-        status.put("status", ret);
         return status;
     }
 
