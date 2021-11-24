@@ -9,7 +9,7 @@ var onloadCallback = function() {
                     token=response;
                     },
             });
-        $("#password").off("click");
+        $("#password").off("focus");
     }),
     $('#submit').click(function () {
         var json = {
@@ -32,8 +32,13 @@ var onloadCallback = function() {
                     alert("注册成功");
                     window.location.href = "/login.html"
                 } else {
-                    alert("登录失败"+msg.info);
+                    alert("注册失败："+msg.info);
                 }
+            },
+            error:function(data){
+                msg=$.parseJSON(data.responseText);
+                console.log(msg);
+                alert("注册失败："+msg.info);
             }
         })
     });

@@ -47,16 +47,43 @@ public class UserController {
     public static Integer tokenGetUserId(){
         HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
         Cookie cookie= Cookies.getCookieByName(request,"Authorization");
+        if(Objects.isNull(cookie)){
+            return null;
+        }
         return JwtUtil.getUserId(Objects.requireNonNull(cookie).getValue());
+    }
+    public static String tokenGetUserName(){
+        HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
+        Cookie cookie= Cookies.getCookieByName(request,"Authorization");
+        if(Objects.isNull(cookie)){
+            return null;
+        }
+        return JwtUtil.getUsername(Objects.requireNonNull(cookie).getValue());
+    }
+
+    public static User tokenGetUser(UserMapper userMapper){
+        HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
+        Cookie cookie= Cookies.getCookieByName(request,"Authorization");
+        if(Objects.isNull(cookie)){
+            return null;
+        }
+        Integer id = JwtUtil.getUserId(Objects.requireNonNull(cookie).getValue());
+        String name = JwtUtil.getUsername(Objects.requireNonNull(cookie).getValue());
+        return userMapper.abstractGet(String.valueOf(id), name);
     }
 
     @RequestMapping(path = "/get", method = RequestMethod.POST)
     public @ResponseBody
-    User get(HttpServletRequest request, HttpServletResponse response)  {
-        String id = request.getParameter("id");
-        String name = request.getParameter("name");
-        User user = userMapper.abstractGet(id, name);
-        return user;
+    Map<String,Object> get(HttpServletRequest request, HttpServletResponse response)  {
+        Map<String,Object> map=new HashMap<>();
+        User user = tokenGetUser(userMapper);
+        if(Objects.isNull(user)){
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }else{
+            map.put("user", user);
+            map.put("time",ArticleController.currentTime());
+        }
+        return map;
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
@@ -69,7 +96,6 @@ public class UserController {
         String token =request.getParameter("token");
         final String token_postman="03AGdBq24ES5YrIs6S10esymEhIIeK6DkpdupRuwZAEFdLI-WevxvNYGtDzhdd1MTrEeeFRpK8e148IBK_X13ABxQUhcarGaUhOmFKiIhyC4BmAsnTVa9eU7";//权限码
 
-        User user = new User(null, name, null, password,null,phone);
         Boolean captcha = captchaController.captcha(token);
         Map<String, Object> status = new HashMap<>();
         if(rid==1 && !token.equals(token_postman)){ //判断是否越权注册
@@ -80,9 +106,9 @@ public class UserController {
         }
         if(captcha){
             Role role = roleMapper.get(rid);
-            user.setRole(role);
+            User user = new User(null, name, role, password,null,phone);
             User o_user = userMapper.getUser(null,name);;
-            if (!Objects.isNull(o_user)){
+            if (Objects.isNull(o_user)){
                 status.put("status", userMapper.add(user) == 1);
                 status.put("info", String.valueOf(user.getId()));
             }else{
@@ -100,8 +126,7 @@ public class UserController {
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public  @ResponseBody List<User> list() {
-        Integer id = UserController.tokenGetUserId();
-        User user = userMapper.getUser(id,null);
+        User user =  tokenGetUser(userMapper);
         if (user.getRole().getName().equals("admin")){
             return userMapper.list();
         }else{
@@ -119,8 +144,8 @@ public class UserController {
     public @ResponseBody
     Map<String, Object> update(HttpServletRequest request, HttpServletResponse response)  {
 //        String id = request.getParameter("id");
-        Integer id = UserController.tokenGetUserId();
-        User user = userMapper.getUser(id,null);
+//        Integer id = UserController.tokenGetUserId();
+        User user =  tokenGetUser(userMapper);
 
         String name = request.getParameter("name");
         String password = request.getParameter("password");
@@ -157,4 +182,34 @@ public class UserController {
     }
 
 
+    @RequestMapping(path = "/resetPassword", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, Object> resetPassword(HttpServletRequest request, HttpServletResponse response)  {
+
+        String name = request.getParameter("name");
+        String password = request.getParameter("password");
+        String phone=request.getParameter("phone");
+        String token=request.getParameter("token");
+        User user = userMapper.getUser(null,name);;
+        Boolean captcha = captchaController.captcha(token);
+        Map<String, Object> status = new HashMap<>();
+        if(captcha){
+            if (user.getPhone().equals(phone)){
+                user.setPassword(password_md5(password));
+                user.setPhone(phone);
+                boolean ret = userMapper.update(user)== 1 ;
+                status.put("status", ret);
+                status.put("info", String.valueOf(user.getId()));
+            }else{
+                status.put("status", false);
+                status.put("info", "验证失败");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
+            }
+        }else{
+            status.put("status", false);
+            status.put("info", "验证码异常");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
+        }
+        return status;
+    }
 }

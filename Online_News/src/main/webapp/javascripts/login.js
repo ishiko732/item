@@ -9,7 +9,7 @@ var onloadCallback = function() {
                     token=response;
                     },
             });
-        $("#password").off("click");
+        $(this).off("focus");
     }),
     $('#submit').click(function () {
         var json = {
@@ -26,13 +26,20 @@ var onloadCallback = function() {
             withCredentials:true,
             success: function (data) {
                 msg=$.parseJSON(data);
-                if (msg.status=="true") {
-                    // alert("登录成功");
+                console.log(msg);
+                if (msg.status==true) {
+                    console.log(docCookies.getItem('Authorization'));
+                    alert("登录成功");
                     window.location.href = "/index.html"
                     //写cookite 
                 } else {
-                    alert("登录失败"+msg.info);
+                    alert("登录失败:"+msg.info);
                 }
+            },
+            error:function(data){
+                msg=$.parseJSON(data.responseText);
+                console.log(msg);
+                alert("登录失败："+msg.info);
             }
         })
     });

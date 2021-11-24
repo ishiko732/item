@@ -38,9 +38,21 @@ public class ArticleController {
     public @ResponseBody
     Map<String, Object> delete(HttpServletRequest request, HttpServletResponse response)  {
         int aid = Integer.parseInt(request.getParameter("id"));
-        boolean ret = articleMapper.delete(aid)==1;
+        User user = UserController.tokenGetUser(userMapper);
+        Article article = articleMapper.get(aid);
+
         Map<String, Object> status = new HashMap<>();
-        status.put("status", ret);
+        if(Objects.isNull(user)){
+            status.put("status", false);
+            status.put("info","用户异常");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
+        } else if(user.getRole().getName().equals("admin")|| Objects.equals(user.getId(), article.getUser().getId())){
+            status.put("status", articleMapper.delete(aid)==1);
+        }else{
+            status.put("status", false);
+            status.put("info","权限不够");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);//设置状态码 400
+        }
         return status;
     }
 
@@ -48,7 +60,6 @@ public class ArticleController {
     public @ResponseBody
     Article get(@PathVariable int aid) {
         Article article = articleMapper.get(aid);
-        article.getUser().setPassword(null);//不应该传输密码
         return article;
     }
 
