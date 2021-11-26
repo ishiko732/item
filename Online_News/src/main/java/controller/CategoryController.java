@@ -1,9 +1,11 @@
 package controller;
 
 import bean.Category;
-import bean.Role;
 import mapper.CategoryMapper;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class CategoryController {
         return mapper.get(id);
     }
     
-    @RequestMapping(value = "/list",method = RequestMethod.POST)
+    @RequestMapping(value = "/categoryList",method = RequestMethod.POST)
     public List<Category> list(){
         return mapper.list();
     }

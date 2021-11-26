@@ -13,6 +13,7 @@
     <!--    注释方式-->
     <context:component-scan base-package="controller"/>
     <context:component-scan base-package="utils"/>
+    <context:component-scan base-package="interceptor"/>
 <!--    <context:component-scan base-package="interceptor"/>-->
 
     <context:annotation-config />
@@ -53,19 +54,21 @@
         <property name="maxUploadSize" value="104857600"/>
     </bean>
 
+    <!--                     allowed-origins="http://localhost:5500"-->
     <mvc:cors>
         <mvc:mapping path="/**"
-                     allowed-origins="http://localhost:8081,http://localhost:5500,http://localhost,http://mipro.local:5500"
+                     allowed-origins="http://localhost:5500"
                      allowed-methods="GET,POST,PUT,POST,DELETE"
+                     allow-credentials="true"
                      max-age="3600" />
     </mvc:cors>
-<!--    <mvc:interceptors>-->
-<!--        <mvc:interceptor>-->
-<!--            <mvc:mapping path="/*"/>-->
-<!--            &lt;!&ndash; 定义在mvc:interceptor下面的表示是对特定的请求才进行拦截的 &ndash;&gt;-->
-<!--            <bean class="interceptor.TokenInterceptor"/>-->
-<!--        </mvc:interceptor>-->
-<!--        &lt;!&ndash; 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法 &ndash;&gt;-->
-<!--    </mvc:interceptors>-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <!-- 定义在mvc:interceptor下面的表示是对特定的请求才进行拦截的 -->
+            <bean class="interceptor.AuthInterceptor"/>
+        </mvc:interceptor>
+        <!-- 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法 -->
+    </mvc:interceptors>
 
 </beans>

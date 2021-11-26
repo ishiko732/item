@@ -51,35 +51,6 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
-<!--    &lt;!&ndash; 跨域配置&ndash;&gt;-->
-<!--    <filter>-->
-<!--        <filter-name>CORS</filter-name>-->
-<!--        <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>-->
-<!--        <init-param>-->
-<!--            <param-name>cors.allowOrigin</param-name>-->
-<!--            <param-value>*</param-value>-->
-<!--        </init-param>-->
-<!--        <init-param>-->
-<!--            <param-name>cors.supportedMethods</param-name>-->
-<!--            <param-value>GET, POST, HEAD, PUT, DELETE</param-value>-->
-<!--        </init-param>-->
-<!--        <init-param>-->
-<!--            <param-name>cors.supportedHeaders</param-name>-->
-<!--            <param-value>Accept, Origin, X-Requested-With, Content-Type, Last-Modified</param-value>-->
-<!--        </init-param>-->
-<!--        <init-param>-->
-<!--            <param-name>cors.exposedHeaders</param-name>-->
-<!--            <param-value>Set-Cookie</param-value>-->
-<!--        </init-param>-->
-<!--        <init-param>-->
-<!--            <param-name>cors.supportsCredentials</param-name>-->
-<!--            <param-value>true</param-value>-->
-<!--        </init-param>-->
-<!--    </filter>-->
-<!--    <filter-mapping>-->
-<!--        <filter-name>CORS</filter-name>-->
-<!--        <url-pattern>/*</url-pattern>-->
-<!--    </filter-mapping>-->
     <filter>
         <filter-name>CharacterEncodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -97,14 +68,14 @@
         <filter-name>CharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    <filter>
-        <filter-name>AuthFilter</filter-name>
-        <filter-class>filter.AuthFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>AuthFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+<!--    <filter>-->
+<!--        <filter-name>AuthFilter</filter-name>-->
+<!--        <filter-class>filter.AuthFilter</filter-class>-->
+<!--    </filter>-->
+<!--    <filter-mapping>-->
+<!--        <filter-name>AuthFilter</filter-name>-->
+<!--        <url-pattern>/*</url-pattern>-->
+<!--    </filter-mapping>-->
     <!--
     < url-pattern>/</url-pattern>  会匹配到/login这样的路径型url，不会匹配到模式为*.jsp这样的后缀型url
     < url-pattern>/*</url-pattern> 会匹配所有url：路径型的和后缀型的url(包括/login,*.jsp,*.js和*.html等)
