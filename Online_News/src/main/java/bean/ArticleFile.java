@@ -13,8 +13,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class ArticleFile {
     Integer id;
-    int uid;
-    int aid;
+    Integer uid;
+    Integer aid;
     String dir;
     String filename;
     Timestamp time;

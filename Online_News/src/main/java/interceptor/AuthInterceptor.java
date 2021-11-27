@@ -22,11 +22,14 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         List<String> userController = Arrays.asList("UserController.register", "UserController.resetPassword");
         List<String> articleController = Arrays.asList("ArticleController.abstractList");
         List<String> categoryController = Arrays.asList("CategoryController.list");
+        List<String> uploadController = Arrays.asList("UploadController.getFile","UploadController.get","UploadController.uploadArticle");
+
         List<String> across = new ArrayList<>();
         across.addAll(authController);
         across.addAll(userController);
         across.addAll(articleController);
         across.addAll(categoryController);
+        across.addAll(uploadController);
         String method;
         if(handler instanceof HandlerMethod) {
             HandlerMethod h = (HandlerMethod)handler;

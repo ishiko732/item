@@ -83,9 +83,9 @@ public class ArticleController {
 
         Map<String, Object> status = new HashMap<>();
         status.put("status", ret);
-        status.put("uid", String.valueOf(uid));
-        status.put("aid", String.valueOf(article.getId()));
-        status.put("cid", String.valueOf(cid));
+        status.put("uid", uid);
+        status.put("aid",article.getId());
+        status.put("cid", cid);
         return status;
     }
 
