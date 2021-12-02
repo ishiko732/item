@@ -53,7 +53,7 @@
                 <div  id="div_article" v-for="(article,index) in articles">
                     <p class="text-secondary">{{article.time}}</p>
                     <h3 >
-                        <a class="btn" target="_blank" v-bind:href="['/read.html?id='+article.id]">{{article.title}}</a>
+                        <a class="btn" target="_blank" v-bind:href="['/article/read.html?id='+article.id]">{{article.title}}</a>
                     </h3>
                     <p >{{article.description}}</p>
                     <hr>

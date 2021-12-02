@@ -32,7 +32,7 @@ var onloadCallback = function() {
                 msg=$.parseJSON(data);
                 if (msg.status=="success") {
                     alert("注册成功");
-                    window.location.href = "/login.html"
+                    window.location.href = "/auth/login.html"
                 } else {
                     alert("注册失败："+msg.info);
                     grecaptcha.reset();

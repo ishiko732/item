@@ -184,7 +184,7 @@ $(function(){
                 window.open("/edit/edit.html")
             },
             login(){
-                window.location.href="/login.html"
+                window.location.href="/auth/login.html"
             },
             logout(){
                 var that=this;

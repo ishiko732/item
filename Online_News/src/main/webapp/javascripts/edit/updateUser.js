@@ -39,7 +39,7 @@ $(function(){
                     },
                     error:function(jqXHR){
                         alert("请先登录！");
-                        window.location.href="/login.html";
+                        window.location.href="/auth/login.html";
                        console.log(jqXHR.responseText); 
                     }
                 });

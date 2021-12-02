@@ -32,7 +32,7 @@ var onloadCallback = function() {
                     msg=$.parseJSON(data);
                     if (msg.status==true) {
                         alert("重置成功");
-                        window.location.href = "/login.html"
+                        window.location.href = "/auth/login.html"
                     } else {
                         alert("重置失败"+msg.info);
                         grecaptcha.reset();
