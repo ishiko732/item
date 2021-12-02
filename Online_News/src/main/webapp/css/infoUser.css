@@ -6,11 +6,11 @@ html {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-}
+  }
 
-#form,#register{
+#form{
     width: 500px;
-    height: 350px;
+    height: 500px;
     position: absolute;
     left: 0;
     right: 0;
@@ -31,9 +31,7 @@ h2{
     -webkit-background-clip: text;
     color: transparent;
 }
-#register{
-    height: 420px;
-}
+
 input{
     max-width: 300px;
     text-align: center;
@@ -47,7 +45,7 @@ input{
 }
 
 .hide_captcha_submit{
-    padding-top: 30px;
+    padding-top: 40px;
 }
 .line{
     display: flex;
@@ -58,11 +56,10 @@ a,label{
     padding-top: 6px;
 }
 label{
-    width: 63px;
+    width: 100px;
+    text-align: right;
 }
-.registerLabel{
-    width: 50px;
-}
+
 
 div>a>img{
     width: 25px;

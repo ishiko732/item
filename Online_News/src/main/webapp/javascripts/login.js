@@ -1,6 +1,10 @@
 host="http://localhost:8081";
 var token;
 var onloadCallback = function() {
+    if(docCookies.getItem('Authorization')!=null){
+        alert("您已经登录了！");
+        window.location.href = "/index.html"
+    }
     $("#password").on("focus",function(){
         $(".hide_captcha_submit").removeClass("hide_captcha_submit")
         grecaptcha.render('captcha', {
@@ -23,23 +27,27 @@ var onloadCallback = function() {
             url: host+'/login',
             cache: false,
             dataType: 'text',
-            withCredentials:true,
+            xhrFields:{
+                withCredentials:true
+            },
+            async:true,
             success: function (data) {
                 msg=$.parseJSON(data);
                 console.log(msg);
                 if (msg.status==true) {
-                    console.log(docCookies.getItem('Authorization'));
                     alert("登录成功");
                     window.location.href = "/index.html"
                     //写cookite 
                 } else {
                     alert("登录失败:"+msg.info);
+                    grecaptcha.reset();
                 }
             },
             error:function(data){
                 msg=$.parseJSON(data.responseText);
                 console.log(msg);
                 alert("登录失败："+msg.info);
+                grecaptcha.reset();
             }
         })
     });

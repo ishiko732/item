@@ -25,7 +25,9 @@ var onloadCallback = function() {
             url: host+'/user/register',
             cache: false,
             dataType: 'text',
-            withCredentials:true,
+            xhrFields:{
+                withCredentials:true
+            },
             success: function (data) {
                 msg=$.parseJSON(data);
                 if (msg.status=="success") {
@@ -33,12 +35,14 @@ var onloadCallback = function() {
                     window.location.href = "/login.html"
                 } else {
                     alert("注册失败："+msg.info);
+                    grecaptcha.reset();
                 }
             },
             error:function(data){
                 msg=$.parseJSON(data.responseText);
                 console.log(msg);
                 alert("注册失败："+msg.info);
+                grecaptcha.reset();
             }
         })
     });

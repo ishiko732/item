@@ -1,0 +1,10 @@
+.CodeMirror, .CodeMirror-scroll {
+    min-height: 300px; 
+}
+
+
+#showHTML{
+    max-width: 550px;
+    margin:0 auto 50px auto;
+    background-color: blanchedalmond;
+  }

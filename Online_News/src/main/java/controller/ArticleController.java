@@ -58,8 +58,9 @@ public class ArticleController {
 
     @RequestMapping(path = "/{aid}", method = RequestMethod.GET)
     public @ResponseBody
-    Article get(@PathVariable int aid) {
+    Article get(@PathVariable int aid,HttpServletRequest request) {
         Article article = articleMapper.get(aid);
+        article.getUser().setIcon("http://" + request.getServerName() + ":" + request.getServerPort() + article.getUser().getIcon());
         return article;
     }
 
@@ -78,7 +79,6 @@ public class ArticleController {
         user.setId(uid);
         category.setId(cid);
         Article article = new Article(null,user,title,description,content,category,time);
-
         boolean ret = articleMapper.add(article)==1;
 
         Map<String, Object> status = new HashMap<>();

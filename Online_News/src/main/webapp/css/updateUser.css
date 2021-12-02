@@ -8,9 +8,9 @@ html {
     background-size: cover;
 }
 
-#form,#register{
+#app{
     width: 500px;
-    height: 350px;
+    height: 450px;
     position: absolute;
     left: 0;
     right: 0;
@@ -31,9 +31,7 @@ h2{
     -webkit-background-clip: text;
     color: transparent;
 }
-#register{
-    height: 420px;
-}
+
 input{
     max-width: 300px;
     text-align: center;
@@ -71,7 +69,6 @@ div>a>img{
 #returnPage{
     margin-left: -450px;
     margin-top: -10px;
-
 }
 
 input::-webkit-outer-spin-button,
