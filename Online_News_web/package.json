@@ -1,0 +1,11 @@
+{
+  "name": "online_news_web",
+  "version": "1.0.0",
+  "description": "onlineNews",
+  "scripts": {
+    "dev": "node build.js"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}
