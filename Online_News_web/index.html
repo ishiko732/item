@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页</title>
+    <link rel="stylesheet" href="css/index.css">
+    <script src=javascripts/jquery-3.6.0.min.js ></script>
+    <script src=javascripts/jquery-ui.min.js ></script>
+    <script src="javascripts/cookies.js"></script>
+    <!-- <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" rel="stylesheet"> -->
+    <!-- <script crossorigin="anonymous" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="javascripts/vue.js"></script>
+    <script src="javascripts/action.js"></script>
+    <script src="javascripts/utils.js"></script>
+    <script src="javascripts/index.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="wrapper">
+            <!-- <div ></div> -->
+            <nav class="tabs" >
+              <div class="selector" ></div>
+              <a href="#"  v-for="(category,index) in categories" v-bind:class="[ index === 0 ? 'active' : '' ]"  
+                @click="transfer(index)">{{categories[index].name}}</a>
+            </nav>
+            <figure class="fir-image-figure">
+                <a class="usermsg" rel="noopener" target="_blank" v-bind:href="['/edit/update.html?id='+user.id]">
+                    <img class="fir-author-image fir-clickcircle" v-bind:src="user.icon" v-bind:alt="user.name">
+                </a>
+                <figcaption class="usermsg">
+                    <div >用户:{{user.name}}</div>
+                    <!-- <div >权限:{{role.name}}</div> -->
+                    <div style="text-align:right">{{now}}!!!&nbsp;&nbsp;</div>
+                </figcaption>
+                <a id="edit" class="usermsg info" @click="edit()">
+                    <img src="../image/site/gui_edit_icon_157165.png" alt="user-edit"/>
+                    <figcaption>发表</figcaption>
+                </a>
+                <a id="login" v-on:click="role.id!=null?logout():login()" class="info">
+                    <img src="../image/site/user_84308.png" alt="user-photo"/>
+                    <figcaption v-text="role.id!=null?'注销':'登录'">注</figcaption>
+                </a>
+            </figure>
+        </div> 
+        <div id="content">
+            <div v-for="category in categories" v-bind:id="category.name" class="category">
+                <header v-if="category.id==1">
+                    <div class="header_text">弘扬红色精神</div>
+                </header>
+                <div href="#" class="goTop" style="display: block;" @click="goTop">
+                <img src="image/site/fhtop.png" alt="return" style="padding-top: 5px;">
+                </div>
+                <div  v-for="(article,index) in articles" id="div_article">
+                    <p class="text-secondary">{{article.time}}</p>
+                    <h3 >
+                        <a v-bind:href="['/article/read.html?id='+article.id]" target="_blank" class="btn">{{article.title}}</a>
+                    </h3>
+                    <p >{{article.description}}</p>
+                    <hr>
+                </div>
+            </div>
+            
+            <div class="Null">
+                <h1 style="text-align: center;">没有内容！</h1>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="links">
+                <div class="links-left" style="background-repeat: no-repeat;">友情链接</div>
+                <div class="links-right">
+                    <a data-locations="0" href="http://www.people.com.cn/">人民网</a>
+                    <a data-locations="1" href="http://www.xinhuanet.com/">新华网</a>
+                    <a data-locations="2" href="http://www.china.com.cn/">中国网</a>
+                    <a data-locations="3" href="http://www.cctv.com/">央视网</a>
+                    <a data-locations="4" href="http://www.cri.cn/">国际在线</a>
+                    <a data-locations="5" href="http://cn.chinadaily.com.cn/">中国日报网</a>
+                    <a data-locations="6" href="http://www.youth.cn/">中国青年网</a>
+                    <a data-locations="7" href="http://www.ce.cn/">中国经济网</a>
+                    <a data-locations="8" href="http://www.chinanews.com/">中国新闻网</a>
+                    <a data-locations="9" href="http://www.gmw.cn/">光明网</a>
+                    <a data-locations="10" href="http://www.cnr.cn/">央广网</a>
+                    <a data-locations="11" href="http://www.workercn.cn/">中工网</a>
+                    <a data-locations="12" href="http://www.dangjian.cn/">党建网</a>
+                    <a data-locations="13" href="http://www.cyol.com/">中青在线</a>
+                    <a data-locations="14" href="http://www.81.cn/">中国军网</a>
+                    <a data-locations="15" href="http://www.legaldaily.com.cn/">法制网</a>
+                    <a data-locations="16" href="http://www.qstheory.cn/">求是网</a>
+                    <a data-locations="17" href="http://www.cac.gov.cn/">中国网信网</a>
+                    <a data-locations="18" href="http://www.wenming.cn/">中国文明网</a>
+                    <a data-locations="19" href="http://www.gov.cn/">中国政府网</a>
+                    <a data-locations="20" href="http://www.moe.gov.cn/">教育部网站</a>
+                    <a data-locations="21" href="http://www.mod.gov.cn/">国防部网站</a>
+                    <a data-locations="22" href="http://www.mct.gov.cn/">文化和旅游部网站</a>
+                    <a data-locations="23" href="http://www.scio.gov.cn/index.htm">国新办网站</a>
+                    <a data-locations="24" href="http://www.shdf.gov.cn/">中国扫黄打非网</a>
+                    <a data-locations="25" href="http://www.womenvoice.cn">女性之声</a>
+                    <a data-locations="26" href="http://www.cnpiw.cn/index.html">中国报业</a>
+                    <a data-locations="27" href="http://www.12377.cn/">中央网信办举报中心</a>
+                    <a data-locations="28" href="http://www.qianlong.com/">千龙网</a>
+                    <a data-locations="29" href="http://www.cssn.cn/">中国社会科学网</a>
+                    <a data-locations="30" href="http://www.stdaily.com/">中国科技网</a>
+                    <a data-locations="31" href="http://www.farmer.com.cn/">中国农业新闻网</a>
+                    <a data-locations="32" href="https://www.1958xy.com/">西影网</a>
+                    <a data-locations="33" href="http://www.12348.gov.cn/">中国法律服务网</a>
+                    <a data-locations="34" href="http://www.legalinfo.gov.cn/">中国普法网</a>
+                    <a data-locations="35" href="http://www.tibet.cn/">中国西藏网</a>
+                    <a data-locations="36" href="http://www.cnwomen.com.cn/">中国妇女网</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>图片版权归其他网站所有，本网站只提供web页面服务，并不提供资源存储</p>
+                <p>若本站收录的资源无意侵犯了贵司版权，请给网页底部邮箱地址来信，我们会及时处理和回复，谢谢</p>
+                <p>Copyright© 2021 web开发-红色精神 localhost:5500</p>
+                <p>联系方式：<a href="mailto:liuyuanfeng1@stu.gdou.edu.cn">邮箱</a></p>
+            </div>
+        </footer>
+
+    </div>
+
+
+    
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../javascripts/vue.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css">
+    <script src="../javascripts/jquery-3.6.0.min.js"></script>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../javascripts/edit/tools.js"></script>
+    <script src="../javascripts/edit/edit.js"></script>
+    <link rel="edit" href="../css/edit.css">
+
+    <title>Edit - Article</title>
+</head>
+<body>
+    <h2>Article编辑器</h2>
+    <div id="app">
+        <span id="message">用户名：{{user.name}}  (ID:{{user.id}})&nbsp;&nbsp;</span>
+        <div class="form-inline" >
+            <label for="type" >发布渠道：</label>
+            <div class="col-sm-2">
+                <select name="categories" id="c" class="form-control" @change="switchView($event)">
+                    <option v-bind:value="category.name"  v-for="(category,index) in categories">{{category.name}}</option>
+                </select>
+            <div id="view" class="btn btn-info" @click="view()">预览</div>
+            <div id="submit" class="btn btn-primary" @click="submit">发布</div>
+        </div>
+    </div>
+    <div id="markdown">
+        <div>
+            <input type="text"  id="title" placeholder="请输入标题..." class="form-control">
+            <textarea id="description"  placeholder="请输入简介..." class="form-control"></textarea>
+        </div>
+        <textarea name="markdown" id="demo" cols="30" rows="10"></textarea>
+        <!-- <input style="display:none" accept="image/gif,image/jpeg,image/jpg,image/png" type="file" id="upInput" ref="upInput"> -->
+    </div>
+    <div id="showHTML"></div>
+    
+</body>
+</html>

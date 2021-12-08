@@ -1,0 +1,54 @@
+/* Clear out these styles to start fresh or use this as a base! */
+
+@import url(https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap);
+
+body { 
+  /* background-color: blanchedalmond; */
+  /* background:url(../image/site/download-2.jpg); */
+  background-repeat:repeat;
+  /* background-position: center; */
+  color: #333;
+  font:  'IBM Plex Sans', sans-serif;
+  display: flex; 
+  margin: auto; 
+}
+.splitting .char {
+  animation: slide-in .6s cubic-bezier(.5, 0, .5, 1) both;
+  animation-delay: calc(3ms * var(--char-index) + 1000ms );
+}
+
+
+@keyframes slide-in {
+  from {
+    transform: translateY(1.5em);
+    opacity: 0;
+  }
+}
+
+.p_img{
+  max-width: 50%;
+  max-height: 50%;
+  display: flex;
+  justify-content: center; 
+  margin:0 auto 0px auto; 
+}
+.p_img:hover{
+  opacity: 0.8;
+}
+.usermsg{
+  width: 20px;
+  height: 20px;
+  border-radius:50px;
+  margin-top: -2px;
+}
+
+#app{
+  max-width: 1000px;
+  margin:0 auto 50px auto;
+  /* background-color: blanchedalmond; */
+  /* background:url(../image/site/download-2.jpg);; */
+}
+
+header h2,h1,address{
+  text-align: center;
+}
