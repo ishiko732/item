@@ -3,7 +3,6 @@ package com.hr_java.controller;
 
 import com.hr_java.config.Result;
 import com.hr_java.service.RoleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author liuyuanfeng
- * @since 2021-12-12
+ * @since 2021-12-17
  */
 @RestController
 @RequestMapping("/role")

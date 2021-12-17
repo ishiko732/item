@@ -68,8 +68,8 @@ public class User implements Serializable {
     private String post;
 
     @ApiModelProperty("出生地")
-    @TableField("native")
-    private String _native;
+    @TableField("native_")
+    private String native_;
 
     @TableField("birth")
     private LocalDateTime birth;
@@ -116,6 +116,9 @@ public class User implements Serializable {
 
     @TableField("registrantTime")
     private LocalDateTime registrantTime;
+
+    @TableField(exist = false)
+    private String status;
 
 
 }

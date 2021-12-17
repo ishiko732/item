@@ -6,6 +6,9 @@ import com.hr_java.service.DepartmentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 机构 服务实现类
@@ -16,5 +19,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements DepartmentService {
+public List<Department> selectByDepAll(){//获取部门列表
+    return getBaseMapper().selectByDepAll();
+}
 
+    @Override
+    public Department reSelectByDep(Integer id) {
+
+        return getBaseMapper().reselectById(id);
+    }
 }

@@ -1,8 +1,14 @@
 package com.hr_java.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.hr_java.entity.Department;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.*;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -14,5 +20,39 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface DepartmentMapper extends BaseMapper<Department> {
+
+    @Select("select * from department where parentId is null")
+    @Results({
+        @Result(property = "deptID",column = "deptID"),
+        @Result(property = "departments",javaType = List.class,column="deptID",
+                many = @Many(select="com.hr_java.mapper.DepartmentMapper.selectByDeptOfParent"))
+    })
+    List<Department> selectByDepAll();
+
+    @Select("select * from department where parentId = #{pid}")
+    @Results({
+            @Result(property = "deptID",column = "deptID"),
+            @Result(property = "departments",javaType = List.class,column="deptID",
+                    many = @Many(select="com.hr_java.mapper.DepartmentMapper.selectByDeptOfParent"))
+    })
+    List<Department> selectByDeptOfParent(@Param("pid")Integer pid);
+
+    @Select("select * from department where deptID = #{pid} ")
+    @Results({
+            @Result(property = "deptID",column = "deptID"),
+            @Result(property = "parentId",column = "parentId"),
+            @Result(property = "departments",javaType = List.class,column="parentId",
+                    many = @Many(select="com.hr_java.mapper.DepartmentMapper.selectByParentOfDep"))
+    })
+    Department reselectById(@Param("pid")Integer pid);
+    @Select("select * from department where deptID = #{pid} ")
+    @Results({
+            @Result(property = "deptID",column = "deptID"),
+            @Result(property = "parentId",column = "parentId"),
+            @Result(property = "departments",javaType = List.class,column="parentId",
+                    one = @One(select="com.hr_java.mapper.DepartmentMapper.selectByParentOfDep"))
+    })
+   Department selectByParentOfDep(@Param("pid")Integer pid);//反向找
+
 
 }

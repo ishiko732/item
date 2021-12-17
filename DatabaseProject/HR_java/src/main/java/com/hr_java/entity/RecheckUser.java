@@ -6,10 +6,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * <p>
@@ -19,8 +20,9 @@ import lombok.Setter;
  * @author liuyuanfeng
  * @since 2021-12-12
  */
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("recheckUser")
 @ApiModel(value = "RecheckUser对象", description = "复核用户")
 public class RecheckUser implements Serializable {
@@ -39,5 +41,7 @@ public class RecheckUser implements Serializable {
     @TableField("recheckTime")
     private LocalDateTime recheckTime;
 
+    @TableField(exist = false)
+    private User user;
 
 }
