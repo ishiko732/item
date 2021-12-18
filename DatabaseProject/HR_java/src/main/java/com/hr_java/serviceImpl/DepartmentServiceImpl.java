@@ -19,9 +19,10 @@ import java.util.Map;
  */
 @Service
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements DepartmentService {
-public List<Department> selectByDepAll(){//获取部门列表
-    return getBaseMapper().selectByDepAll();
-}
+    @Override
+    public List<Department> selectByDepAll() {//获取部门列表
+        return getBaseMapper().selectByDepAll();
+    }
 
     @Override
     public Department reSelectByDep(Integer id) {

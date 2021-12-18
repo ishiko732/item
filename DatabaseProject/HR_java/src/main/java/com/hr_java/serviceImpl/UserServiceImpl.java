@@ -9,6 +9,7 @@ import com.hr_java.mapper.UserMapper;
 import com.hr_java.service.DepartmentService;
 import com.hr_java.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hr_java.utils.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public Boolean register(User user) {
         user.setUid(createUID(user));
         System.out.println(user);
+        user.setPassword(MD5.md5(user.getPassword()));//设置MD5密码
         int insertUser = getBaseMapper().insert(user);
         if (insertUser == 1) {
             RecheckUser recheckUser = new RecheckUser(null, 0, user.getUid(),  null,null);

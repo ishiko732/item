@@ -15,13 +15,12 @@ import java.util.Objects;
 //人力资源管理 前端控制器
 @RestController
 @RequestMapping("/record")
-public class recordController {
+public class RecordController {
     @Autowired
     DepartmentService departmentService;
     @Autowired
     UserService userService;
-    @Autowired
-    RecheckUserService recheckUserService;
+
 
     @GetMapping(value = "/department")//获取部门列表
     public Result getDepartment() {
@@ -51,41 +50,7 @@ public class recordController {
         return Result.fail("更新失败");
     }
 
-    @GetMapping(value = "/checkUser")
-    public Result checkUserALL(Integer id){
-        List<RecheckUser> recheckUsers = recheckUserService.list();
-        if(!Objects.isNull(id)){ //非空，排除其他状态
-            for (int i = recheckUsers.size()-1; i>=0; i--) {
-               if(!Objects.equals(recheckUsers.get(i).getStatusID(), id)){
-                   recheckUsers.remove(i);
-               }
-            }
-        }
-        for (RecheckUser recheckUser : recheckUsers) {
-            User user = userService.getById(recheckUser.getUid());
-            user.setPassword(null);
-            recheckUser.setUser(user);
-        }
-        return Result.succ(recheckUsers);
-    }
 
-    @GetMapping(value = "/checkUser/{id}")
-    public Result checkUser(Integer id){
-        List<RecheckUser> recheckUsers = recheckUserService.list();
-        if(!Objects.isNull(id)){ //非空，排除其他状态
-            for (int i = recheckUsers.size()-1; i>=0; i--) {
-                if(!Objects.equals(recheckUsers.get(i).getStatusID(), id)){
-                    recheckUsers.remove(i);
-                }
-            }
-        }
-        for (RecheckUser recheckUser : recheckUsers) {
-            User user = userService.getById(recheckUser.getUid());
-            user.setPassword(null);
-            recheckUser.setUser(user);
-        }
-        return Result.succ(recheckUsers);
-    }
 
 
 }
