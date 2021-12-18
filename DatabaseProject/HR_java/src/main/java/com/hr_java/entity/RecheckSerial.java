@@ -3,8 +3,10 @@ package com.hr_java.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -41,5 +43,6 @@ public class RecheckSerial implements Serializable {
     @TableField("message")
     private String message;
 
-
+    @TableField("checkUserName")
+    private String checkUserName;
 }

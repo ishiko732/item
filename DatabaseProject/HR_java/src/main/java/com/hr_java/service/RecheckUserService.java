@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-12-12
  */
 public interface RecheckUserService extends IService<RecheckUser> {
-
+    boolean updateByRID(RecheckUser recheckUser);
 }

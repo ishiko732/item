@@ -42,5 +42,6 @@ public class ReCheckSalary implements Serializable {
     @TableField("recheckTime")
     private LocalDateTime recheckTime;
 
-
+    @TableField("checkUserName")
+    private String checkUserName;
 }

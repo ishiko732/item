@@ -39,7 +39,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setPassword(MD5.md5(user.getPassword()));//设置MD5密码
         int insertUser = getBaseMapper().insert(user);
         if (insertUser == 1) {
-            RecheckUser recheckUser = new RecheckUser(null, 0, user.getUid(),  null,null);
+            RecheckUser recheckUser = new RecheckUser();
+            recheckUser.setStatusID(0);
+            recheckUser.setUid(user.getUid());
             insertUser=recheckUserService.getBaseMapper().insert(recheckUser);
         }
         return insertUser==1;

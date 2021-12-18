@@ -7,10 +7,7 @@ import com.hr_java.entity.User;
 import com.hr_java.service.RecheckUserService;
 import com.hr_java.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +44,27 @@ public class RecheckController {
             recheckUser.setUser(user);
         }
         return Result.succ(recheckUsers);
+    }
+
+    @GetMapping(value = "/checkUser/{id}")
+    public Result getUserById(@PathVariable Integer id){//获取资料
+        RecheckUser recheckUser = recheckUserService.getById(id);
+        if(Objects.isNull(recheckUser)){
+            return Result.fail("不存在！");
+        }
+        User user = userService.getById(recheckUser.getUid());
+        recheckUser.setUser(user);
+        return Result.succ(recheckUser);
+    }
+
+    @PostMapping(value = "/checkUser/{id}")
+    public Result checkUserById(RecheckUser recheckUser,User user){//更新资料
+        recheckUserService.updateByRID(recheckUser);
+        if(!Objects.isNull(user.getUid())){
+            userService.updateByUID(user);
+            //TODO 这里允许薪酬标准更新
+        }
+        return Result.succ(recheckUser);
     }
 
 }

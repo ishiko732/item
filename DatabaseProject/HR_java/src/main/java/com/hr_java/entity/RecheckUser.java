@@ -41,6 +41,9 @@ public class RecheckUser implements Serializable {
     @TableField("recheckTime")
     private LocalDateTime recheckTime;
 
+    @TableField("checkUserName")
+    private String checkUserName;
+
     @TableField(exist = false)
     private User user;
 
