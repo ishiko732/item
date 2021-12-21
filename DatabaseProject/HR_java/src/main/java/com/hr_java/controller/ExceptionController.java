@@ -4,6 +4,7 @@ import com.hr_java.utils.HttpCodeEnum;
 import com.hr_java.Model.VO.Result;
 import com.hr_java.utils.UnauthorizedException;
 
+import org.apache.shiro.ShiroException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -15,8 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class ExceptionController {
-
-
+    // 捕捉shiro的异常
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(ShiroException.class)
+    public Result handle401(ShiroException e) {
+        return Result.fail(HttpCodeEnum.UNAUTHORIZED, null);
+    }
     // 捕捉UnauthorizedException
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedException.class)

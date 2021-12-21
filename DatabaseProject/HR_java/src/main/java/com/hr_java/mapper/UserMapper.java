@@ -1,10 +1,11 @@
 package com.hr_java.mapper;
 
+import com.hr_java.Model.entity.Role;
 import com.hr_java.Model.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -21,6 +22,11 @@ public interface UserMapper extends BaseMapper<User> {
     Long userEndID(@Param("id1")String id1,@Param("id2")String id);
 
     @Select("select* from user where name=#{name}")
+    @Results({
+            @Result(property = "uid",column = "uid"),
+            @Result(property = "role",javaType = Role.class,column="rid",
+                    one = @One(select="com.hr_java.mapper.RoleMapper.getById"))
+    })
     User getUserByName(@Param("name")String name);
 
 }

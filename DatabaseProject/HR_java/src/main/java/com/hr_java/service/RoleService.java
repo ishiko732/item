@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-12-17
  */
 public interface RoleService extends IService<Role> {
-
+    Role getById(Integer id);
 }

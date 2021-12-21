@@ -27,7 +27,7 @@ public class RoleController {
     }
 
     @RequestMapping("/{id}")
-    public Result get(@PathVariable("id") Long id) {
+    public Result get(@PathVariable("id") Integer id) {
         return Result.succ(roleService.getById(id));
     }
 }

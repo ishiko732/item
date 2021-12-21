@@ -43,5 +43,8 @@ public class Permission implements Serializable {
     @TableField("time")
     private LocalDateTime time;
 
-
+    @Override
+    public String toString() {
+        return name;
+    }
 }

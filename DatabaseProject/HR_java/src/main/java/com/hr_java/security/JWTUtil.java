@@ -49,23 +49,32 @@ public class JWTUtil {
     }
 
     /**
+     * 获得token中的信息无需secret解密也能获得
+     * @return token中包含的用户名
+     */
+    public static Long getUID(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getClaim("uid").asLong();
+        } catch (JWTDecodeException e) {
+            return null;
+        }
+    }
+
+    /**
      * 生成签名,5min后过期
      * @param user User JWT
      * @param secret 用户的密码
      * @return 加密的token
      */
     public static String sign(UserJWT user, String secret) {
-        try {
-            Date date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            // 附带username信息
-            return JWT.create()
-                    .withClaim("username", user.getName())
-                    .withClaim("uid",user.getUid())
-                    .withExpiresAt(date)
-                    .sign(algorithm);
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
+        Date date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        // 附带username信息
+        return JWT.create()
+                .withClaim("username", user.getName())
+                .withClaim("uid",user.getUid())
+                .withExpiresAt(date)
+                .sign(algorithm);
     }
 }

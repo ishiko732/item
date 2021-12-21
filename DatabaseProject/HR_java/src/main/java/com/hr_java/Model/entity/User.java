@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -120,5 +122,7 @@ public class User implements Serializable {
     @TableField(exist = false)
     private String status;
 
+    @TableField(exist = false)
+    private Role role;
 
 }

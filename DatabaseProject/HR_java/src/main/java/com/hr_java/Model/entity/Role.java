@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -33,6 +36,9 @@ public class Role implements Serializable {
 
     @TableField("author")
     private Integer author;
+
+    @TableField(exist = false)
+    private Set<String> permissions;
 
 
 }
