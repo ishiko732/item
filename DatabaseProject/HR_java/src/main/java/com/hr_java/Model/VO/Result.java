@@ -1,9 +1,12 @@
 package com.hr_java.Model.VO;
 
+import com.google.gson.Gson;
 import com.hr_java.utils.HttpCodeEnum;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class Result implements Serializable {
@@ -45,5 +48,14 @@ public class Result implements Serializable {
         m.setMsg(mess);
         m.setData(null);
         return m;
+    }
+
+    @Override
+    public String toString() {
+        Map<String,Object> map=new HashMap<>();
+        map.put("code",code);
+        map.put("msg",msg);
+        map.put("data",data);
+        return new Gson().toJson(map);
     }
 }

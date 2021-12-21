@@ -21,12 +21,20 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select count(*) from user where uid>#{id1} and uid<#{id2}")
     Long userEndID(@Param("id1")String id1,@Param("id2")String id);
 
-    @Select("select* from user where name=#{name}")
+    @Select("select * from user where name=#{name}")
     @Results({
             @Result(property = "uid",column = "uid"),
             @Result(property = "role",javaType = Role.class,column="rid",
                     one = @One(select="com.hr_java.mapper.RoleMapper.getById"))
     })
     User getUserByName(@Param("name")String name);
+
+    @Select("select * from user where uid=#{id}")
+    @Results({
+            @Result(property = "uid",column = "uid"),
+            @Result(property = "role",javaType = Role.class,column="rid",
+                    one = @One(select="com.hr_java.mapper.RoleMapper.getById"))
+    })
+    User getById(@Param("id")Long id);
 
 }

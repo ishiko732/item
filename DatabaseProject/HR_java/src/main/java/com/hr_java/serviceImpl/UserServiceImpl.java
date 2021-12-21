@@ -50,6 +50,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public User getById(Long id) {
+        return getBaseMapper().getById(id);
+    }
+
+    @Override
     public Boolean updateByUID(User user) {
         //对人资档案数据进行更新，包括薪酬标准的调整。所属机构和职位不能修改，需要在调动管理模块中进行
         //可修改除档案编号、所属机构和职位外的员工信息。
