@@ -1,16 +1,11 @@
 package com.hr_java.controller;
 
-import com.hr_java.config.Result;
-import com.hr_java.entity.RecheckUser;
+import com.hr_java.utils.Result;
 import com.hr_java.entity.User;
 import com.hr_java.service.DepartmentService;
-import com.hr_java.service.RecheckUserService;
 import com.hr_java.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Objects;
 
 //人力资源管理 前端控制器
 @RestController

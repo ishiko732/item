@@ -1,7 +1,7 @@
 package com.hr_java.controller;
 
 
-import com.hr_java.config.Result;
+import com.hr_java.utils.Result;
 import com.hr_java.entity.RecheckUser;
 import com.hr_java.entity.User;
 import com.hr_java.service.RecheckUserService;
@@ -57,7 +57,7 @@ public class RecheckController {
         return Result.succ(recheckUser);
     }
 
-    @PostMapping(value = "/checkUser/{id}")
+    @PutMapping(value = "/checkUser/{id}")
     public Result checkUserById(RecheckUser recheckUser,User user){//更新资料
         recheckUserService.updateByRID(recheckUser);
         if(!Objects.isNull(user.getUid())){
