@@ -19,7 +19,7 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(ShiroException.class)
     public Result handle401(ShiroException e) {
-        return Result.fail(HttpCodeEnum.UNAUTHORIZED, null);
+        return Result.fail(HttpCodeEnum.UNAUTHORIZED, e.getMessage());
     }
     // 捕捉UnauthorizedException
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

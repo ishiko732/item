@@ -2,6 +2,7 @@ package com.hr_java.security;
 
 import com.hr_java.Model.VO.Result;
 import com.hr_java.utils.HttpCodeEnum;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,13 +74,17 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      *
      */
     @Override
-    protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
+    protected boolean executeLogin(ServletRequest request, ServletResponse response) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String authorization = httpServletRequest.getHeader("Authorization");
 
         JWTToken token = new JWTToken(authorization);
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
-        getSubject(request, response).login(token);
+        try{
+            getSubject(request, response).login(token);
+        }catch (AuthenticationException|IllegalStateException e){
+            System.err.println("验证失败:"+e.getMessage());
+        }
         // 如果没有抛出异常则代表登入成功，返回true
         return true;
     }
