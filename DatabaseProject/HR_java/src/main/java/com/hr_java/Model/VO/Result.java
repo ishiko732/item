@@ -1,5 +1,6 @@
-package com.hr_java.utils;
+package com.hr_java.Model.VO;
 
+import com.hr_java.utils.HttpCodeEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -38,5 +39,11 @@ public class Result implements Serializable {
         m.setData(data);
         return m;
     }
-
+    public static Result fail(Integer code,String mess) {
+        Result m = new Result();
+        m.setCode(code);
+        m.setMsg(mess);
+        m.setData(null);
+        return m;
+    }
 }

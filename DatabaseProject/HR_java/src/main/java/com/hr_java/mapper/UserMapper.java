@@ -1,6 +1,6 @@
 package com.hr_java.mapper;
 
-import com.hr_java.entity.User;
+import com.hr_java.Model.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,5 +19,8 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("select count(*) from user where uid>#{id1} and uid<#{id2}")
     Long userEndID(@Param("id1")String id1,@Param("id2")String id);
+
+    @Select("select* from user where name=#{name}")
+    User getUserByName(@Param("name")String name);
 
 }

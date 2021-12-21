@@ -1,44 +1,35 @@
-package com.hr_java.entity;
+package com.hr_java.Model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.util.List;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * <p>
- * 机构
+ * 职位类别
  * </p>
  *
  * @author liuyuanfeng
  * @since 2021-12-12
  */
-@Data
-@TableName("department")
-@ApiModel(value = "Department对象", description = "机构")
-public class Department implements Serializable {
+@Getter
+@Setter
+@TableName("PositionClassification")
+@ApiModel(value = "PositionClassification对象", description = "职位类别")
+public class PositionClassification implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "deptID", type = IdType.AUTO)
-    private Integer deptID;
+    @TableId("pcId")
+    private Integer pcId;
 
     @TableField("name")
     private String name;
-
-    @TableField("parentId")
-    private Integer parentId;
-
-    @TableField(exist = false)
-    private List<Department> departments;
 
 
 }

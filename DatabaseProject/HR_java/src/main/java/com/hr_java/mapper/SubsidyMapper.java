@@ -1,6 +1,6 @@
 package com.hr_java.mapper;
 
-import com.hr_java.entity.Subsidy;
+import com.hr_java.Model.entity.Subsidy;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

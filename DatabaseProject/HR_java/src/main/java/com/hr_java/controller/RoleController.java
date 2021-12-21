@@ -1,7 +1,7 @@
 package com.hr_java.controller;
 
 
-import com.hr_java.utils.Result;
+import com.hr_java.Model.VO.Result;
 import com.hr_java.service.RoleService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,6 +1,6 @@
 package com.hr_java.serviceImpl;
 
-import com.hr_java.entity.ReCheckSalary;
+import com.hr_java.Model.entity.ReCheckSalary;
 import com.hr_java.mapper.ReCheckSalaryMapper;
 import com.hr_java.service.ReCheckSalaryService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

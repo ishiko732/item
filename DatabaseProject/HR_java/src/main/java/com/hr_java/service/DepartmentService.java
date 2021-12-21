@@ -1,10 +1,9 @@
 package com.hr_java.service;
 
-import com.hr_java.entity.Department;
+import com.hr_java.Model.entity.Department;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>

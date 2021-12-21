@@ -9,6 +9,7 @@ public enum HttpCodeEnum {
     CREATEOK(201,"CREATEOK"),
     REDIRECT(301,"REDIRECT"),
     PARAM_ERROR(400,"PARAM_ERROR"),
+    UNAUTHORIZED(401,"UNAUTHORIZED"),
     NOT_FOUND(404,"NOT_FOUND"),
     SERVER_ERROR(500,"SERVER_ERROR");
     private Integer httpCode;

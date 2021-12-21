@@ -1,6 +1,6 @@
 package com.hr_java.serviceImpl;
 
-import com.hr_java.entity.Permission;
+import com.hr_java.Model.entity.Permission;
 import com.hr_java.mapper.PermissionMapper;
 import com.hr_java.service.PermissionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

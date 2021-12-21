@@ -1,6 +1,6 @@
 package com.hr_java.serviceImpl;
 
-import com.hr_java.entity.Subsidy;
+import com.hr_java.Model.entity.Subsidy;
 import com.hr_java.mapper.SubsidyMapper;
 import com.hr_java.service.SubsidyService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

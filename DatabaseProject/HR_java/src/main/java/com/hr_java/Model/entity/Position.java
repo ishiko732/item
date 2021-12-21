@@ -1,4 +1,4 @@
-package com.hr_java.entity;
+package com.hr_java.Model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;

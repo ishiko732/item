@@ -1,6 +1,6 @@
 package com.hr_java.service;
 
-import com.hr_java.entity.User;
+import com.hr_java.Model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -15,5 +15,7 @@ public interface UserService extends IService<User> {
     Boolean register(User user);
 
     Boolean updateByUID(User user);
+
+    User getUserByName(String name);
 
 }

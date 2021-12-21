@@ -1,10 +1,8 @@
 package com.hr_java.serviceImpl;
 
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.hr_java.entity.Department;
-import com.hr_java.entity.RecheckUser;
-import com.hr_java.entity.User;
+import com.hr_java.Model.entity.Department;
+import com.hr_java.Model.entity.RecheckUser;
+import com.hr_java.Model.entity.User;
 import com.hr_java.mapper.UserMapper;
 import com.hr_java.service.DepartmentService;
 import com.hr_java.service.UserService;
@@ -13,7 +11,6 @@ import com.hr_java.utils.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -45,6 +42,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             insertUser=recheckUserService.getBaseMapper().insert(recheckUser);
         }
         return insertUser==1;
+    }
+
+    @Override
+    public User getUserByName(String name) {
+        return getBaseMapper().getUserByName(name);
     }
 
     @Override

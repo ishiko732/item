@@ -1,13 +1,12 @@
 package com.hr_java.serviceImpl;
 
-import com.hr_java.entity.Department;
+import com.hr_java.Model.entity.Department;
 import com.hr_java.mapper.DepartmentMapper;
 import com.hr_java.service.DepartmentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>

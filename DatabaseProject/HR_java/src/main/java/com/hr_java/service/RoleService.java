@@ -1,6 +1,6 @@
 package com.hr_java.service;
 
-import com.hr_java.entity.Role;
+import com.hr_java.Model.entity.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

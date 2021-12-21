@@ -1,6 +1,6 @@
 package com.hr_java.service;
 
-import com.hr_java.entity.Salary;
+import com.hr_java.Model.entity.Salary;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

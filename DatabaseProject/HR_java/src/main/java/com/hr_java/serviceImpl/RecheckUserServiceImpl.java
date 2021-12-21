@@ -1,6 +1,6 @@
 package com.hr_java.serviceImpl;
 
-import com.hr_java.entity.RecheckUser;
+import com.hr_java.Model.entity.RecheckUser;
 import com.hr_java.mapper.RecheckUserMapper;
 import com.hr_java.service.RecheckUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

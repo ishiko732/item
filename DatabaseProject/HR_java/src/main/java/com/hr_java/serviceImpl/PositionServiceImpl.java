@@ -1,6 +1,6 @@
 package com.hr_java.serviceImpl;
 
-import com.hr_java.entity.Position;
+import com.hr_java.Model.entity.Position;
 import com.hr_java.mapper.PositionMapper;
 import com.hr_java.service.PositionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

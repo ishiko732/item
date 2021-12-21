@@ -1,6 +1,6 @@
 package com.hr_java.serviceImpl;
 
-import com.hr_java.entity.Status;
+import com.hr_java.Model.entity.Status;
 import com.hr_java.mapper.StatusMapper;
 import com.hr_java.service.StatusService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

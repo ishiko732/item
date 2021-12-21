@@ -1,6 +1,6 @@
 package com.hr_java.serviceImpl;
 
-import com.hr_java.entity.RecheckSerial;
+import com.hr_java.Model.entity.RecheckSerial;
 import com.hr_java.mapper.RecheckSerialMapper;
 import com.hr_java.service.RecheckSerialService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

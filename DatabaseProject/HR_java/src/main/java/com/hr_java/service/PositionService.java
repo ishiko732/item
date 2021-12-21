@@ -1,6 +1,6 @@
 package com.hr_java.service;
 
-import com.hr_java.entity.Position;
+import com.hr_java.Model.entity.Position;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

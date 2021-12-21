@@ -1,5 +1,6 @@
-package com.hr_java.entity;
+package com.hr_java.Model.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -12,27 +13,33 @@ import lombok.Setter;
 
 /**
  * <p>
- * 状态表
+ * 权限表
  * </p>
  *
  * @author liuyuanfeng
- * @since 2021-12-12
+ * @since 2021-12-17
  */
 @Getter
 @Setter
-@TableName("status")
-@ApiModel(value = "Status对象", description = "状态表")
-public class Status implements Serializable {
+@TableName("permission")
+@ApiModel(value = "Permission对象", description = "权限表")
+public class Permission implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("statusID")
-    private Integer statusID;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
-    @TableField("msg")
-    private String msg;
+    @ApiModelProperty("权限名称")
+    @TableField("name")
+    private String name;
 
-    @ApiModelProperty("默认当前系统时间")
+    @TableField("pid")
+    private Integer pid;
+
+    @TableField("role")
+    private String role;
+
     @TableField("time")
     private LocalDateTime time;
 

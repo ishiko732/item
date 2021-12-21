@@ -1,5 +1,6 @@
-package com.hr_java.entity;
+package com.hr_java.Model.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -11,7 +12,7 @@ import lombok.Setter;
 
 /**
  * <p>
- * 职位类别
+ * 职称
  * </p>
  *
  * @author liuyuanfeng
@@ -19,14 +20,14 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("PositionClassification")
-@ApiModel(value = "PositionClassification对象", description = "职位类别")
-public class PositionClassification implements Serializable {
+@TableName("jobTitles")
+@ApiModel(value = "JobTitles对象", description = "职称")
+public class JobTitles implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("pcId")
-    private Integer pcId;
+    @TableId(value = "jtId", type = IdType.AUTO)
+    private Integer jtId;
 
     @TableField("name")
     private String name;

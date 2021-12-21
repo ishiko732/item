@@ -1,7 +1,7 @@
 package com.hr_java.controller;
 
-import com.hr_java.utils.Result;
-import com.hr_java.entity.User;
+import com.hr_java.Model.VO.Result;
+import com.hr_java.Model.entity.User;
 import com.hr_java.service.DepartmentService;
 import com.hr_java.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
