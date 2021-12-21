@@ -25,7 +25,9 @@ public interface UserMapper extends BaseMapper<User> {
     @Results({
             @Result(property = "uid",column = "uid"),
             @Result(property = "role",javaType = Role.class,column="rid",
-                    one = @One(select="com.hr_java.mapper.RoleMapper.getById"))
+                    one = @One(select="com.hr_java.mapper.RoleMapper.getById")),
+            @Result(property = "status",javaType = String.class,column = "uid",
+                    one=@One(select ="com.hr_java.mapper.UserMapper.getStatusById"))
     })
     User getUserByName(@Param("name")String name);
 
@@ -33,8 +35,17 @@ public interface UserMapper extends BaseMapper<User> {
     @Results({
             @Result(property = "uid",column = "uid"),
             @Result(property = "role",javaType = Role.class,column="rid",
-                    one = @One(select="com.hr_java.mapper.RoleMapper.getById"))
+                    one = @One(select="com.hr_java.mapper.RoleMapper.getById")),
+            @Result(property = "status",javaType = String.class,column = "uid",
+                    one=@One(select ="com.hr_java.mapper.UserMapper.getStatusById"))
     })
     User getById(@Param("id")Long id);
+
+
+    @Select("select msg\n" +
+            "from recheckUser\n" +
+            "join status s on s.statusID = recheckUser.statusID\n" +
+            "where uid=#{uid}")
+    String getStatusById(@Param("uid")Long uid);
 
 }

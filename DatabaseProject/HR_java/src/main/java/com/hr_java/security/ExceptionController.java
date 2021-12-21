@@ -1,8 +1,7 @@
-package com.hr_java.controller;
+package com.hr_java.security;
 
 import com.hr_java.utils.HttpCodeEnum;
 import com.hr_java.Model.VO.Result;
-import com.hr_java.utils.UnauthorizedException;
 
 import org.apache.shiro.ShiroException;
 import org.springframework.http.HttpStatus;

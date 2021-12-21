@@ -3,7 +3,7 @@ package com.hr_java.controller;
 import com.hr_java.Model.VO.Result;
 import com.hr_java.service.UserService;
 import com.hr_java.utils.HttpCodeEnum;
-import com.hr_java.utils.UnauthorizedException;
+import com.hr_java.security.UnauthorizedException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;

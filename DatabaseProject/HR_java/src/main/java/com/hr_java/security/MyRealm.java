@@ -2,7 +2,6 @@ package com.hr_java.security;
 
 
 import com.hr_java.Model.VO.UserJWT;
-import com.hr_java.Model.entity.Permission;
 import com.hr_java.Model.entity.User;
 import com.hr_java.service.UserService;
 import org.apache.logging.log4j.LogManager;
@@ -74,6 +73,9 @@ public class MyRealm extends AuthorizingRealm {
 
         if (! JWTUtil.verify(token, new UserJWT(user.getUid(),user.getName()), user.getPassword())) {
             throw new AuthenticationException("Username or password error");
+        }
+        if(!"正常".equals(user.getStatus())){
+            throw new AuthenticationException("当前用户状态不可用："+user.getStatus());
         }
 
         return new SimpleAuthenticationInfo(token, token, "my_realm");

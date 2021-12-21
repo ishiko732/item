@@ -10,7 +10,7 @@ import com.hr_java.security.JWTUtil;
 import com.hr_java.service.DepartmentService;
 import com.hr_java.service.UserService;
 import com.hr_java.utils.MD5;
-import com.hr_java.utils.UnauthorizedException;
+import com.hr_java.security.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
