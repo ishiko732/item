@@ -1,14 +1,9 @@
 package com.hr_java.controller;
 
-import com.hr_java.Model.entity.User;
-import com.hr_java.Model.VO.UserJWT;
-import com.hr_java.security.JWTUtil;
+import com.hr_java.Model.VO.Result;
 import com.hr_java.service.UserService;
 import com.hr_java.utils.HttpCodeEnum;
-import com.hr_java.utils.MD5;
-import com.hr_java.Model.VO.Result;
 import com.hr_java.utils.UnauthorizedException;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -18,11 +13,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 @RestController
@@ -38,22 +29,19 @@ public class AuthController {
 
     @PostMapping("/login")
     public Result login(@RequestParam("name") String username,
-                              @RequestParam("password") String password) {
-        User user = userService.getUserByName(username);
-        if(Objects.isNull(user.getUid())){
+                        @RequestParam("password") String password) {
+        String token = userService.login(username, password);
+        if (Objects.isNull(token)) {
             throw new UnauthorizedException();
         }
-        if (user.getPassword().equals(MD5.md5(password))) {
-            UserJWT userJWT = new UserJWT(user.getUid(), user.getName());
-            String token = JWTUtil.sign(userJWT, user.getPassword());
-            HttpServletResponse response = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();
-            if(!Objects.isNull(response)){
-                response.setHeader("Authorization", token);
-            }
-            return Result.succ(token);
-        } else {
-            throw new UnauthorizedException();
-        }
+        return Result.succ(token);
+    }
+
+    @DeleteMapping("/login")
+    @RequiresAuthentication //需要登录才能操作
+    public Result logout() {
+        userService.logout();
+        return Result.succ("成功登出");
     }
 
     @GetMapping("/article")
@@ -87,7 +75,7 @@ public class AuthController {
     @RequestMapping(path = "/401")
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Result unauthorized() {
-        return Result.fail(HttpCodeEnum.UNAUTHORIZED,null);
+        return Result.fail(HttpCodeEnum.UNAUTHORIZED, null);
     }
 
 }

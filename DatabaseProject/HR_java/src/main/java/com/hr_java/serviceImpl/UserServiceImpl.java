@@ -1,16 +1,22 @@
 package com.hr_java.serviceImpl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hr_java.Model.VO.UserJWT;
 import com.hr_java.Model.entity.Department;
 import com.hr_java.Model.entity.RecheckUser;
 import com.hr_java.Model.entity.User;
 import com.hr_java.mapper.UserMapper;
+import com.hr_java.security.JWTUtil;
 import com.hr_java.service.DepartmentService;
 import com.hr_java.service.UserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hr_java.utils.MD5;
+import com.hr_java.utils.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -42,6 +48,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             insertUser=recheckUserService.getBaseMapper().insert(recheckUser);
         }
         return insertUser==1;
+    }
+
+    @Override
+    public String login(String username, String password) {
+        User user = getUserByName(username);
+        if(Objects.isNull(user.getUid())){
+            throw new UnauthorizedException();
+        }
+        if (user.getPassword().equals(MD5.md5(password))) {
+            UserJWT userJWT = new UserJWT(user.getUid(), user.getName());
+            String token = JWTUtil.sign(userJWT, user.getPassword());
+            HttpServletResponse response = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();
+            if(!Objects.isNull(response)){
+                response.setHeader("Authorization", token);
+            }
+            return token;
+        } else {
+            throw new UnauthorizedException();
+        }
+    }
+
+    @Override
+    public void logout() {
+        HttpServletResponse response = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();
+        if(!Objects.isNull(response)){
+            response.reset();//有效地删除了所有标头和任何缓冲数据
+        }
     }
 
     @Override

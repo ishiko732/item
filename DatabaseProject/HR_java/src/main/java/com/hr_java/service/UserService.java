@@ -1,7 +1,7 @@
 package com.hr_java.service;
 
-import com.hr_java.Model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.hr_java.Model.entity.User;
 
 /**
  * <p>
@@ -13,6 +13,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface UserService extends IService<User> {
     Boolean register(User user);
+    String login(String username, String password);
+    void logout();
 
     Boolean updateByUID(User user);
 
