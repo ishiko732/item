@@ -16,5 +16,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ReCheckSalaryServiceImpl extends ServiceImpl<ReCheckSalaryMapper, ReCheckSalary> implements ReCheckSalaryService {
-
+    @Override
+    public boolean deleteBySalaryId(Long salaryId) {
+        return getBaseMapper().deleteUserBySalaryId(salaryId);
+    }
 }

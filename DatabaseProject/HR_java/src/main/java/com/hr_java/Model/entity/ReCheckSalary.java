@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,8 +20,7 @@ import lombok.Setter;
  * @author liuyuanfeng
  * @since 2021-12-12
  */
-@Getter
-@Setter
+@Data
 @TableName("reCheckSalary")
 @ApiModel(value = "ReCheckSalary对象", description = "复核薪水标准")
 public class ReCheckSalary implements Serializable {
@@ -44,4 +44,7 @@ public class ReCheckSalary implements Serializable {
 
     @TableField("checkUserName")
     private String checkUserName;
+
+    @TableField(exist = false)
+    private Salary salary;
 }

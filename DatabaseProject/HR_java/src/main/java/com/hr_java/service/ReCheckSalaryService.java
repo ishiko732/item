@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-12-12
  */
 public interface ReCheckSalaryService extends IService<ReCheckSalary> {
-
+    boolean deleteBySalaryId(Long salaryId);
 }
