@@ -18,6 +18,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -51,19 +53,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public String login(String username, String password) {
+    public Map<String,String> login(String username, String password) {
         User user = getUserByName(username);
         if(Objects.isNull(user.getUid())){
             throw new UnauthorizedException();
         }
         if (user.getPassword().equals(MD5.md5(password))) {
             UserJWT userJWT = new UserJWT(user.getUid(), user.getName());
-            String token = JWTUtil.sign(userJWT, user.getPassword());
+            String token = JWTUtil.sign(userJWT, user.getPassword());//临时token
+            String refreshToken = JWTUtil.sign_refreshToken(user.getUid());//长期token
             HttpServletResponse response = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();
             if(!Objects.isNull(response)){
                 response.setHeader("Authorization", token);
+                response.setHeader("refreshToken",refreshToken);//2天token
             }
-            return token;
+            Map<String,String> ret=new HashMap<>();
+            ret.put("Authorization",token);
+            ret.put("refreshToken",refreshToken);
+            return ret;
         } else {
             throw new UnauthorizedException();
         }

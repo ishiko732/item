@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -31,8 +32,8 @@ public class AuthController {
     @PostMapping("/login")
     public Result login(@RequestParam("name") String username,
                         @RequestParam("password") String password) {
-        String token = userService.login(username, password);
-        if (Objects.isNull(token)) {
+        Map<String,String> token = userService.login(username, password);
+        if (Objects.isNull(token.get("Authorization"))) {
             throw new UnauthorizedException();
         }
         return Result.succ(token);

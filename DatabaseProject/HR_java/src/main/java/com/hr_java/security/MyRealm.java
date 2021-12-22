@@ -16,7 +16,11 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 import java.util.Set;
 
@@ -70,9 +74,24 @@ public class MyRealm extends AuthorizingRealm {
         if (Objects.isNull(user)) {
             throw new AuthenticationException("User didn't existed!");
         }
-
-        if (! JWTUtil.verify(token, new UserJWT(user.getUid(),user.getName()), user.getPassword())) {
-            throw new AuthenticationException("Username or password error");
+        UserJWT userJWT = new UserJWT(user.getUid(),user.getName());
+        if (! JWTUtil.verify(token, userJWT, user.getPassword())) {
+            //这里要么是密钥（密码不正确），要么就是账号错误,要么过期了
+            if(Boolean.TRUE.equals(JWTUtil.getExp(token))){//已过期
+                HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
+                HttpServletResponse response = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();
+                String refreshToken = request.getHeader("refreshToken");
+                if(!Objects.isNull(refreshToken)){
+                    if(Boolean.FALSE.equals(JWTUtil.getExp(refreshToken))){//说明长期token未过期
+                        String newToken = JWTUtil.sign(userJWT, user.getPassword());
+                        System.err.println("临时token过期：置换新token完毕"+newToken);
+                        assert response != null;
+                        response.setHeader("Authorization", newToken);
+                    }
+                }
+            }else{
+                throw new AuthenticationException("JWT验证失败");
+            }
         }
         if(!"正常".equals(user.getStatus())){
             throw new AuthenticationException("当前用户状态不可用："+user.getStatus());

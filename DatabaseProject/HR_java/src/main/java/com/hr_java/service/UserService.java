@@ -3,6 +3,8 @@ package com.hr_java.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hr_java.Model.entity.User;
 
+import java.util.Map;
+
 /**
  * <p>
  * 用户表 服务类
@@ -13,7 +15,7 @@ import com.hr_java.Model.entity.User;
  */
 public interface UserService extends IService<User> {
     Boolean register(User user);
-    String login(String username, String password);
+    Map<String,String> login(String username, String password);
     void logout();
 
     Boolean updateByUID(User user);
