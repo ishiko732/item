@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface RecheckUserService extends IService<RecheckUser> {
     boolean updateByRID(RecheckUser recheckUser);
+    boolean deleteByUID(Long uid);
 }

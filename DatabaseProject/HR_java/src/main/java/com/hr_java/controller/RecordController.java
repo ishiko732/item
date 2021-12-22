@@ -4,6 +4,8 @@ import com.hr_java.Model.VO.Result;
 import com.hr_java.Model.entity.User;
 import com.hr_java.service.DepartmentService;
 import com.hr_java.service.UserService;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +30,7 @@ public class RecordController {
     }
 
     @PostMapping(value="/register")
+    @RequiresPermissions(logical = Logical.AND, value = {"档案登记"}) //需要包含权限值那些
     public Result register(User user){
         Boolean register = userService.register(user);
         if(register){
@@ -37,6 +40,7 @@ public class RecordController {
     }
 
     @PostMapping(value="/updateUID")
+    @RequiresPermissions(logical = Logical.AND, value = {"档案变更"}) //需要包含权限值那些
     public Result updateUID(User user){
         Boolean register = userService.updateByUID(user);
         if(register){

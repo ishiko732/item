@@ -31,4 +31,9 @@ public class RecheckUserServiceImpl extends ServiceImpl<RecheckUserMapper, Reche
         recheckUser.setUid(recheckUser1.getUid());
         return ret;
     }
+
+    @Override
+    public boolean deleteByUID(Long uid) {
+        return getBaseMapper().deleteUserByUid(uid);
+    }
 }
