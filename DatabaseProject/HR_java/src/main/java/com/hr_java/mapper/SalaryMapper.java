@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hr_java.Model.entity.Subsidy;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -60,4 +61,42 @@ public interface SalaryMapper extends BaseMapper<Salary> {
     @Select("select count(*)+1 from salary")
     Long getSalaryEndId();
 
+    @Select({
+            "<script>",
+            "select salary_view.*,checkUserName,recheckTime from salary_view join reCheckSalary rCS on salary_view.salaryId = rCS.salaryId",
+            "<where>" ,
+            "<if test='#{salaryId} !=null'>",
+            "or CAST(salary_view.salaryId as char )  like concat('%',#{salaryId},'%')",
+            "</if>",
+            "<if test='#{salaryName} !=null'>",
+            "or salary_view.salaryName like concat('%',#{salaryName},'%')",
+            "</if>",
+            "<if test='#{MRUName} !=null'>",
+            "or salary_view.MRUName like concat('%',#{MRUName},'%')",
+            "</if>",
+            "<if test='#{registerName} !=null'>",
+            "or salary_view.registerName like concat('%',#{registerName},'%')",
+            "</if>",
+            "<if test='#{checkUserName} !=null'>",
+            "or checkUserName like concat('%',#{checkUserName},'%')",
+            "</if>",
+            "<if test='#{recheckTime1} !=null and #{recheckTime2} !=null '>",
+            "or (#{recheckTime1} >= registerTime and registerTime>= #{recheckTime2} )",
+            "</if>",
+            "</where>",
+            "</script>"
+    })
+    @Results({
+            @Result(property = "id",column = "id"),
+            @Result(property = "role",javaType = Role.class,column="role_id",
+                    one = @One(select="mapper.RoleMapper.get")),
+    })
+    Set<Salary> selectSalaryList(@Param("salaryId")String salaryId,
+                                 @Param("salaryName")String salaryName,
+                                 @Param("MRUName")String MRUName,
+                                 @Param("registerName")String registerName,
+                                 @Param("checkUserName")String checkUserName,
+                                 @Param("recheckTime1") LocalDateTime time1,
+                                 @Param("recheckTime2") LocalDateTime time2
+                                 );
 }

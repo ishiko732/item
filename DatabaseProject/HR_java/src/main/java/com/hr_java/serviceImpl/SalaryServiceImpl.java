@@ -13,6 +13,7 @@ import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -57,5 +58,10 @@ public class SalaryServiceImpl extends ServiceImpl<SalaryMapper, Salary> impleme
             ret = reCheckSalaryService.getBaseMapper().insert(reCheckSalary)==1;
         }
         return b&&s&&ret;
+    }
+
+    @Override
+    public Set<Salary> selectSalaryList(String salaryId, String salaryName, String MRUName, String registerName, String checkUserName, LocalDateTime time1, LocalDateTime time2) {
+        return getBaseMapper().selectSalaryList(salaryId, salaryName, MRUName, registerName, checkUserName, time1, time2);
     }
 }

@@ -10,6 +10,7 @@ import java.util.Set;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,8 +22,7 @@ import lombok.Setter;
  * @author liuyuanfeng
  * @since 2021-12-12
  */
-@Getter
-@Setter
+@Data
 @TableName("salary")
 @ApiModel(value = "Salary对象", description = "薪酬标准")
 public class Salary implements Serializable {
@@ -75,4 +75,8 @@ public class Salary implements Serializable {
     @ApiModelProperty("薪酬总额")
     @TableField(value = "total_Salary",exist = false)
     private double total_Salary;
+
+    @ApiModelProperty("复核人")
+    @TableField(value = "checkUserName",exist = false)
+    private String checkUserName;
 }

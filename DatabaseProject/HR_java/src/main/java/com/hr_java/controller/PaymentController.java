@@ -13,6 +13,10 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
@@ -52,6 +56,21 @@ public class PaymentController {
             ret=Result.fail("登记失败");
         }
         return ret;
+    }
+
+    @GetMapping("/selectSalary")
+    @RequiresPermissions(logical = Logical.AND, value = {"薪酬标准查询"}) //需要包含权限值那些
+    public Result selectSalary(String salaryId, String salaryName, String MRUName, String registerName, String checkUserName, String time1, String time2) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime localDateTime1 = LocalDateTime.parse(time1, fmt);
+        LocalDateTime localDateTime2 = LocalDateTime.parse(time2, fmt);
+        if(localDateTime1.compareTo(localDateTime2)<0){
+            LocalDateTime temp=localDateTime1;
+            localDateTime1=localDateTime2;
+            localDateTime2=temp;
+        }
+        Set<Salary> salaries = salaryService.selectSalaryList(salaryId, salaryName, MRUName, registerName, checkUserName, localDateTime1, localDateTime2);
+        return Result.succ(salaries);
     }
 
 
