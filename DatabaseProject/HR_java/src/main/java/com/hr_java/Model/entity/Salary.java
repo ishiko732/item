@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -47,5 +49,26 @@ public class Salary implements Serializable {
     @TableField("basePay")
     private BigDecimal basePay;
 
+    @TableField(exist = false)
+    private Set<Subsidy> subsidies;
 
+    @ApiModelProperty("养老保险")
+    @TableField(value = "pi",exist = false)
+    private double pi;
+
+    @ApiModelProperty("医疗保险")
+    @TableField(value = "mi",exist = false)
+    private double mi;
+
+    @ApiModelProperty("失业保险")
+    @TableField(value = "ui",exist = false)
+    private double ui;
+
+    @ApiModelProperty("住房公积金")
+    @TableField(value = "housingFund",exist = false)
+    private double housingFund;
+
+    @ApiModelProperty("薪酬总额")
+    @TableField(value = "total_Salary",exist = false)
+    private double total_Salary;
 }

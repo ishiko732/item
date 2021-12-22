@@ -2,8 +2,10 @@ package com.hr_java.controller;
 
 
 import com.hr_java.Model.VO.Result;
+import com.hr_java.Model.entity.ReCheckSalary;
 import com.hr_java.Model.entity.RecheckUser;
 import com.hr_java.Model.entity.User;
+import com.hr_java.service.ReCheckSalaryService;
 import com.hr_java.service.RecheckUserService;
 import com.hr_java.service.UserService;
 import org.apache.ibatis.annotations.Delete;
@@ -30,7 +32,10 @@ public class RecheckController {
     UserService userService;
     @Autowired
     RecheckUserService recheckUserService;
+    @Autowired
+    ReCheckSalaryService reCheckSalaryService;
 
+    //复核用户
     @GetMapping(value = "/checkUser")
     @RequiresPermissions(logical = Logical.AND, value = {"档案复核"}) //需要包含权限值那些
     public Result checkUserALL(Integer id){
@@ -85,5 +90,9 @@ public class RecheckController {
         }
         return succ;
     }
+
+
+    //复核薪酬标准
+
 
 }

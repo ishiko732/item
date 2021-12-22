@@ -1,6 +1,7 @@
 package com.hr_java.controller;
 
 import com.hr_java.Model.VO.Result;
+import com.hr_java.security.JWTUtil;
 import com.hr_java.service.UserService;
 import com.hr_java.utils.HttpCodeEnum;
 import com.hr_java.security.UnauthorizedException;
@@ -57,7 +58,9 @@ public class AuthController {
     @GetMapping("/require_auth")
     @RequiresAuthentication //需要登录才能操作
     public Result requireAuth() {
-        return Result.succ(HttpCodeEnum.OK, "You are authenticated");
+        String token = (String) SecurityUtils.getSubject().getPrincipal();
+        String name = JWTUtil.getUsername(token);//操作员的姓名
+        return Result.succ(HttpCodeEnum.OK, "You are authenticated："+name);
     }
 
     @GetMapping("/require_role")
