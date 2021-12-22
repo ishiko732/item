@@ -33,6 +33,10 @@ public class Salary implements Serializable {
     @TableId("salaryId")
     private Long salaryId;
 
+    @ApiModelProperty("薪酬标准名称")
+    @TableField("salaryName")
+    private String salaryName;
+
     @ApiModelProperty("登记人")
     @TableField("registerName")
     private String registerName;

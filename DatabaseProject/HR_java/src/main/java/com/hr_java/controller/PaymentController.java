@@ -43,7 +43,7 @@ public class PaymentController {
     public Result insertSalary(@RequestBody Salary salary) {
         String token = (String) SecurityUtils.getSubject().getPrincipal();
         String name = JWTUtil.getUsername(token);//操作员的姓名
-        salary.setMRUName(name);
+        salary.setRegisterName(name);
         boolean b = salaryService.insertSalary(salary);//同时插入subsidyName
         Result ret=null;
         if(b){
