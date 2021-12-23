@@ -24,6 +24,10 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select * from user where name=#{name}")
     @Results({
             @Result(property = "uid",column = "uid"),
+            @Result(property = "rid",column = "rid"),
+            @Result(property = "pid",column = "pid"),
+            @Result(property = "fid",javaType = Integer.class,column = "pid",
+                    one=@One(select ="com.hr_java.mapper.PositionMapper.getFidByPid")),
             @Result(property = "role",javaType = Role.class,column="rid",
                     one = @One(select="com.hr_java.mapper.RoleMapper.getById")),
             @Result(property = "status",javaType = String.class,column = "uid",
@@ -34,6 +38,10 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("select * from user where uid=#{id}")
     @Results({
             @Result(property = "uid",column = "uid"),
+            @Result(property = "rid",column = "rid"),
+            @Result(property = "pid",column = "pid"),
+            @Result(property = "fid",javaType = Integer.class,column = "pid",
+                    one=@One(select ="com.hr_java.mapper.PositionMapper.getFidByPid")),
             @Result(property = "role",javaType = Role.class,column="rid",
                     one = @One(select="com.hr_java.mapper.RoleMapper.getById")),
             @Result(property = "status",javaType = String.class,column = "uid",

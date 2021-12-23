@@ -73,5 +73,6 @@ public class PaymentController {
         return Result.succ(salaries);
     }
 
+    //设置员工薪酬标准
 
 }

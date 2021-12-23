@@ -98,9 +98,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public Boolean updateByUID(User user) {
         //对人资档案数据进行更新，包括薪酬标准的调整。所属机构和职位不能修改，需要在调动管理模块中进行
         //可修改除档案编号、所属机构和职位外的员工信息。
-        user.setFid(null);
+//        user.setFid(null);
         user.setRid(null);
-        user.setPid(null);
+        user.setPid(null);//所在部门在职称那里
 
         return  getBaseMapper().updateById(user)==1;
     }

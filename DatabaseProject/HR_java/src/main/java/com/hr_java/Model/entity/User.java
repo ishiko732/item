@@ -34,8 +34,8 @@ public class User implements Serializable {
     @TableField("rid")
     private Integer rid;
 
-    @TableField("fid")
-    private Integer fid;
+    @TableField(value = "fid",exist = false)
+    private Integer fid;//需要通过职称id查找部门id
 
     @TableField("pid")
     private Integer pid;
