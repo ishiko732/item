@@ -113,6 +113,24 @@ public class JWTUtil {
                 .withExpiresAt(date)
                 .sign(algorithm);
     }
+    /**
+     * 校验token是否正确
+     * @param token 密钥
+     * @param uid
+     * @return 是否正确
+     */
+    public static boolean verify_refreshToken(String token,Long uid) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(key);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withClaim("uid",uid)
+                    .build();
+            DecodedJWT jwt = verifier.verify(token);
+            return true;
+        } catch (Exception exception) {
+            return false;
+        }
+    }
 
     public static String getKey(){
         return key;

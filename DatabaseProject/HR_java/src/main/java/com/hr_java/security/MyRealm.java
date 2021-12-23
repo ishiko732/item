@@ -78,16 +78,17 @@ public class MyRealm extends AuthorizingRealm {
         if (! JWTUtil.verify(token, userJWT, user.getPassword())) {
             //这里要么是密钥（密码不正确），要么就是账号错误,要么过期了
             if(Boolean.TRUE.equals(JWTUtil.getExp(token))){//已过期
-                HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
-                HttpServletResponse response = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();
+                ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes());
+                HttpServletRequest request = servletRequestAttributes.getRequest();
+                HttpServletResponse response = servletRequestAttributes.getResponse();
                 String refreshToken = request.getHeader("refreshToken");
-                if(!Objects.isNull(refreshToken)){
-                    if(Boolean.FALSE.equals(JWTUtil.getExp(refreshToken))){//说明长期token未过期
-                        String newToken = JWTUtil.sign(userJWT, user.getPassword());
-                        System.err.println("临时token过期：置换新token完毕"+newToken);
-                        assert response != null;
-                        response.setHeader("Authorization", newToken);
-                    }
+                if(!Objects.isNull(refreshToken) &&!JWTUtil.verify_refreshToken(refreshToken,JWTUtil.getUID(token))){//验证长期token
+                    String newToken = JWTUtil.sign(userJWT, user.getPassword());
+                    System.err.println("临时token过期：置换新token完毕"+newToken);
+                    assert response != null;
+                    response.setHeader("Authorization", newToken);
+                }else{
+                    throw new AuthenticationException("JWT验证失败");
                 }
             }else{
                 throw new AuthenticationException("JWT验证失败");
