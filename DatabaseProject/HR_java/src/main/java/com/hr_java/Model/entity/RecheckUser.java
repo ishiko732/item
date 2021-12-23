@@ -1,9 +1,7 @@
 package com.hr_java.Model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -35,6 +33,9 @@ public class RecheckUser implements Serializable {
 
     @TableField("uid")
     private Long uid;
+
+    @TableField(value = "tid",updateStrategy = FieldStrategy.IGNORED)//设置：允许为null
+    private Integer tid;
 
     @TableField("recheckTime")
     private LocalDateTime recheckTime;

@@ -2,6 +2,7 @@ package com.hr_java.service;
 
 import com.hr_java.Model.entity.RecheckUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -14,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface RecheckUserService extends IService<RecheckUser> {
     boolean updateByRID(RecheckUser recheckUser);
     boolean deleteByUID(Long uid);
+    Integer getRUidByUid(Long uid);
 }

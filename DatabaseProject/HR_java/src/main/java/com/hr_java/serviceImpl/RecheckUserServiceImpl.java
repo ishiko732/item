@@ -1,12 +1,21 @@
 package com.hr_java.serviceImpl;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.hr_java.Model.entity.RecheckUser;
+import com.hr_java.Model.entity.Transfer;
+import com.hr_java.Model.entity.User;
 import com.hr_java.mapper.RecheckUserMapper;
+import com.hr_java.security.JWTUtil;
 import com.hr_java.service.RecheckUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hr_java.service.TransferService;
+import com.hr_java.service.UserService;
+import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * <p>
@@ -18,16 +27,28 @@ import java.time.LocalDateTime;
  */
 @Service
 public class RecheckUserServiceImpl extends ServiceImpl<RecheckUserMapper, RecheckUser> implements RecheckUserService {
+
+    @Autowired
+    TransferService transferService;
     @Override
     public boolean updateByRID(RecheckUser recheckUser) {
         //复核过程中，档案编号、该员工所属机构和职位不能修改，其他信息均可修改。复核通过后该员工档案生效。
         RecheckUser recheckUser1 = getById(recheckUser.getRUserId());
-        recheckUser.setUid(null);
-        LocalDateTime now = LocalDateTime.now();
-        recheckUser.setRecheckTime(now);
-        //TODO 添加登录权限以后设置
-//        recheckUser.setCheckUserName();
-        boolean ret = getBaseMapper().updateById(recheckUser) == 1;
+        Integer tid = recheckUser.getTid();
+        User user =null;
+        if(!Objects.isNull(tid)){//调动情况不为空
+            user = recheckUser.getUser();
+            recheckUser.setTid(null);
+        }
+        recheckUser.setUid(null);//防止uid被修改
+        recheckUser.setRecheckTime(LocalDateTime.now());
+        String token = (String) SecurityUtils.getSubject().getPrincipal();
+        String name = JWTUtil.getUsername(token);//操作员的姓名
+        recheckUser.setCheckUserName(name);
+        boolean ret = this.getBaseMapper().updateById(recheckUser) == 1;
+        if(!Objects.isNull(user)){//通过调动查询到用户，并修改rid，pid
+            ret=transferService.transferUserByUID(user.getUid(),user.getRid(),user.getPid());
+        }
         recheckUser.setUid(recheckUser1.getUid());
         return ret;
     }
@@ -35,5 +56,10 @@ public class RecheckUserServiceImpl extends ServiceImpl<RecheckUserMapper, Reche
     @Override
     public boolean deleteByUID(Long uid) {
         return getBaseMapper().deleteUserByUid(uid);
+    }
+
+    @Override
+    public Integer getRUidByUid(Long uid) {
+        return getBaseMapper().getRUidByUid(uid);
     }
 }

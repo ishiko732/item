@@ -22,5 +22,8 @@ public interface RecheckUserMapper extends BaseMapper<RecheckUser> {
             "where uid=#{uid}")
     Boolean deleteUserByUid(@Param("uid")Long id);
 
+    @Select("select rUserId from recheckUser where uid=#{uid}")
+    Integer getRUidByUid(@Param("uid")Long uid);
+
 }
 

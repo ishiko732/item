@@ -2,15 +2,9 @@ package com.hr_java.controller;
 
 
 import com.hr_java.Model.VO.Result;
-import com.hr_java.Model.entity.ReCheckSalary;
-import com.hr_java.Model.entity.RecheckUser;
-import com.hr_java.Model.entity.Salary;
-import com.hr_java.Model.entity.User;
+import com.hr_java.Model.entity.*;
 import com.hr_java.security.JWTUtil;
-import com.hr_java.service.ReCheckSalaryService;
-import com.hr_java.service.RecheckUserService;
-import com.hr_java.service.SalaryService;
-import com.hr_java.service.UserService;
+import com.hr_java.service.*;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
@@ -42,7 +36,10 @@ public class RecheckController {
     RecheckUserService recheckUserService;
     @Autowired
     ReCheckSalaryService reCheckSalaryService;
-
+    @Autowired
+    TransferService transferService;
+    @Autowired
+    RoleService roleService;
     //复核用户
     @GetMapping(value = "/checkUser")
     @RequiresPermissions(logical = Logical.AND, value = {"档案复核"}) //需要包含权限值那些
@@ -56,7 +53,7 @@ public class RecheckController {
             }
         }
         for (RecheckUser recheckUser : recheckUsers) {
-            User user = userService.getById(recheckUser.getUid());
+            User user=isTransferUser(recheckUser);
             user.setPassword(null);
             recheckUser.setUser(user);
         }
@@ -70,22 +67,29 @@ public class RecheckController {
         if(Objects.isNull(recheckUser)){
             return Result.fail("不存在！");
         }
-        User user = userService.getById(recheckUser.getUid());
+        User user=isTransferUser(recheckUser);
         recheckUser.setUser(user);
         return Result.succ(recheckUser);
     }
 
-    @PutMapping(value = "/checkUser/{id}")
+    private User isTransferUser(RecheckUser recheckUser) {
+        User user = userService.getById(recheckUser.getUid());
+        if(!Objects.isNull(recheckUser.getTid())){
+            Transfer transfer = transferService.getById(recheckUser.getTid());
+            user.setRid(transfer.getRid());
+            user.setPid(transfer.getPid());
+            user.setRole(roleService.getById(transfer.getRid()));
+        }
+        return user;
+    }
+
+    @PutMapping(value = "/checkUser/{rid}")
     @RequiresPermissions(logical = Logical.AND, value = {"档案复核","档案查询","档案变更"}) //需要包含权限值那些
-    public Result checkUserById(RecheckUser recheckUser,User user){//更新资料
-        String token = (String) SecurityUtils.getSubject().getPrincipal();
-        String name = JWTUtil.getUsername(token);//操作员的姓名
-        recheckUser.setRecheckTime(LocalDateTime.now());
-        recheckUser.setCheckUserName(name);
+    public Result checkUserById(@PathVariable("rid")Integer id,RecheckUser recheckUser,User user){//更新资料
+        recheckUser.setRUserId(id);//防止修改RID
         recheckUserService.updateByRID(recheckUser);
         if(!Objects.isNull(user.getUid())){
             userService.updateByUID(user);
-            //TODO 这里允许薪酬标准更新
         }
         return Result.succ(recheckUser);
     }
@@ -134,13 +138,14 @@ public class RecheckController {
         reCheckSalary.setSalary(salary);
         return Result.succ(reCheckSalary);
     }
-    @PutMapping(value = "/checkSalary/{id}")
+    @PutMapping(value = "/checkSalary/{rid}")
     @RequiresPermissions(logical = Logical.AND, value = {"薪酬标准复核","薪酬标准查询","薪酬标准变更"}) //需要包含权限值那些
-    public Result checkSalaryById(ReCheckSalary reCheckSalary,Salary salary){//更新资料
+    public Result checkSalaryById(@PathVariable("rid")Integer id,ReCheckSalary reCheckSalary,Salary salary){//更新资料
         Result succ;
         String token = (String) SecurityUtils.getSubject().getPrincipal();
         String name = JWTUtil.getUsername(token);//操作员的姓名
         reCheckSalary.setCheckUserName(name);
+        reCheckSalary.setRSalaryId(id);
         if(Objects.isNull(reCheckSalary.getMessage())){
             reCheckSalary.setMessage("无意见");
         }

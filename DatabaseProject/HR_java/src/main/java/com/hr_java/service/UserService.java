@@ -2,6 +2,7 @@ package com.hr_java.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hr_java.Model.entity.User;
+import org.springframework.lang.Nullable;
 
 import java.util.Map;
 
@@ -19,6 +20,7 @@ public interface UserService extends IService<User> {
     void logout();
 
     Boolean updateByUID(User user);
+    Boolean updateByUID_transfer(User user);
 
     User getUserByName(String name);
 

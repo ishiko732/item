@@ -3,7 +3,6 @@ package com.hr_java.controller;
 import com.hr_java.Model.VO.Result;
 import com.hr_java.Model.entity.Salary;
 import com.hr_java.security.JWTUtil;
-import com.hr_java.security.UnauthorizedException;
 import com.hr_java.service.SalaryService;
 import com.hr_java.service.UserService;
 import org.apache.shiro.SecurityUtils;
@@ -13,10 +12,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
@@ -31,13 +28,13 @@ public class PaymentController {
     @GetMapping("/getSalary")
     @RequiresAuthentication //需要登录才能操作
     public Result getSalary(Long salaryId) {
-        Result ret=null;
-        if(Objects.isNull(salaryId)){
+        Result ret = null;
+        if (Objects.isNull(salaryId)) {
             Set<Salary> salaryList = salaryService.getSalaryList();
-            ret=Result.succ(salaryList);
-        }else{
-            Salary salary =salaryService.getSalaryById(salaryId);
-            ret=Result.succ(salary);
+            ret = Result.succ(salaryList);
+        } else {
+            Salary salary = salaryService.getSalaryById(salaryId);
+            ret = Result.succ(salary);
         }
         return ret;
     }
@@ -49,11 +46,11 @@ public class PaymentController {
         String name = JWTUtil.getUsername(token);//操作员的姓名
         salary.setRegisterName(name);
         boolean b = salaryService.insertSalary(salary);//同时插入subsidyName
-        Result ret=null;
-        if(b){
-            ret=Result.succ("登记成功");
-        }else{
-            ret=Result.fail("登记失败");
+        Result ret = null;
+        if (b) {
+            ret = Result.succ("登记成功");
+        } else {
+            ret = Result.fail("登记失败");
         }
         return ret;
     }
@@ -64,15 +61,13 @@ public class PaymentController {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime localDateTime1 = LocalDateTime.parse(time1, fmt);
         LocalDateTime localDateTime2 = LocalDateTime.parse(time2, fmt);
-        if(localDateTime1.compareTo(localDateTime2)<0){
-            LocalDateTime temp=localDateTime1;
-            localDateTime1=localDateTime2;
-            localDateTime2=temp;
+        if (localDateTime1.compareTo(localDateTime2) < 0) {
+            LocalDateTime temp = localDateTime1;
+            localDateTime1 = localDateTime2;
+            localDateTime2 = temp;
         }
         Set<Salary> salaries = salaryService.selectSalaryList(salaryId, salaryName, MRUName, registerName, checkUserName, localDateTime1, localDateTime2);
         return Result.succ(salaries);
     }
-
-    //设置员工薪酬标准
 
 }
