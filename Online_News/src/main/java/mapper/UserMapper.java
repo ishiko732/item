@@ -12,9 +12,6 @@ public interface UserMapper {
     @Insert("insert into user(id,name, password,role_id,phone) values(null,#{name},#{password},#{role.id},#{phone})")
     int add(User user);
 
-
-//    public void delete(int id);
-
     @Select({
             "<script>",
             "select * from user",
@@ -34,6 +31,9 @@ public interface UserMapper {
                     one = @One(select="mapper.RoleMapper.get")),
     })
     User getUser(@Param("id")Integer id,@Param("name")String name);
+//    public void delete(int id);
+
+
 
 
 

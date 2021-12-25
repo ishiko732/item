@@ -33,23 +33,21 @@ public class RecheckUserServiceImpl extends ServiceImpl<RecheckUserMapper, Reche
     @Override
     public boolean updateByRID(RecheckUser recheckUser) {
         //复核过程中，档案编号、该员工所属机构和职位不能修改，其他信息均可修改。复核通过后该员工档案生效。
-        RecheckUser recheckUser1 = getById(recheckUser.getRUserId());
-        Integer tid = recheckUser.getTid();
-        User user =null;
+        RecheckUser recheckUserBySql = getBaseMapper().getById(recheckUser.getRUserId());
+        Integer tid = recheckUserBySql.getTid();
         if(!Objects.isNull(tid)){//调动情况不为空
-            user = recheckUser.getUser();
+            transferService.transferUserByUID(tid);//通过tid调动查询到用户，并修改rid，pid
             recheckUser.setTid(null);
         }
+//        System.err.println(recheckUserBySql);
         recheckUser.setUid(null);//防止uid被修改
         recheckUser.setRecheckTime(LocalDateTime.now());
         String token = (String) SecurityUtils.getSubject().getPrincipal();
         String name = JWTUtil.getUsername(token);//操作员的姓名
         recheckUser.setCheckUserName(name);
         boolean ret = this.getBaseMapper().updateById(recheckUser) == 1;
-        if(!Objects.isNull(user)){//通过调动查询到用户，并修改rid，pid
-            ret=transferService.transferUserByUID(user.getUid(),user.getRid(),user.getPid());
-        }
-        recheckUser.setUid(recheckUser1.getUid());
+        recheckUser.setUid(recheckUserBySql.getUid());
+        recheckUser.setTid(tid);
         return ret;
     }
 

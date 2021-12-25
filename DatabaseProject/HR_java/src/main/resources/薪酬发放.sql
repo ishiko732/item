@@ -23,4 +23,13 @@ group by temp.d3ID;
 
 #判断时间是否够31天
 select registrantTime,DATEDIFF(current_time,registrantTime)>31
+from user;
+
+
+
+#依据user查找部门
+select p.fid,count(*) as people
 from user
+left join recheckUser rU on user.uid = rU.uid
+left join position p on user.pid = p.pid
+group by p.pid

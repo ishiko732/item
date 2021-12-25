@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hr_java.Model.entity.User;
 import org.springframework.lang.Nullable;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,5 +26,7 @@ public interface UserService extends IService<User> {
     User getUserByName(String name);
 
     User getById(Long id);
+
+    List<User> getUserList ();
 
 }

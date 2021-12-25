@@ -17,7 +17,7 @@ import org.apache.ibatis.annotations.Update;
  */
 @Mapper
 public interface TransferMapper extends BaseMapper<Transfer> {
-    @Update("update user set rid=#{rid} and pid#{pid} where uid=#{uid}")
+    @Update("update user set rid=#{rid} , pid=#{pid} where uid=#{uid}")
     boolean transferUserByUID(@Param("uid")Long uid,@Param("rid")Integer rid,@Param("pid")Integer pid);
 
 }

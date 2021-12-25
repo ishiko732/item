@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransferServiceImpl extends ServiceImpl<TransferMapper, Transfer> implements TransferService {
     @Override
-    public boolean transferUserByUID(Long uid, Integer rid, Integer pid) {
-        return getBaseMapper().transferUserByUID(uid, rid, pid);
+    public boolean transferUserByUID(Integer tid) {
+        Transfer transfer = getById(tid);
+        System.err.println(transfer);
+        return getBaseMapper().transferUserByUID(transfer.getUid(), transfer.getRid(), transfer.getPid());
     }
 }

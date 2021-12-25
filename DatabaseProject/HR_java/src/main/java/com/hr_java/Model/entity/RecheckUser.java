@@ -45,5 +45,4 @@ public class RecheckUser implements Serializable {
 
     @TableField(exist = false)
     private User user;
-
 }

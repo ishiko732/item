@@ -2,6 +2,8 @@ package com.hr_java.mapper;
 
 import com.hr_java.Model.entity.RecheckUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hr_java.Model.entity.Role;
+import com.hr_java.Model.entity.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.Set;
@@ -25,5 +27,13 @@ public interface RecheckUserMapper extends BaseMapper<RecheckUser> {
     @Select("select rUserId from recheckUser where uid=#{uid}")
     Integer getRUidByUid(@Param("uid")Long uid);
 
+    @Select("select * from recheckUser where rUserId=#{rUserId}")
+    @Results({
+            @Result(property = "rUserId",column = "rUserId"),
+            @Result(property = "uid",column = "uid"),
+            @Result(property = "user",javaType = User.class,column = "uid",
+                    one=@One(select ="com.hr_java.mapper.UserMapper.getById"))
+    })
+    RecheckUser getById(@Param("rUserId")Integer rUserId);
 }
 

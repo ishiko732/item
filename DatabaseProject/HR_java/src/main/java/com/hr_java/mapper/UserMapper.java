@@ -56,4 +56,18 @@ public interface UserMapper extends BaseMapper<User> {
             "where uid=#{uid}")
     String getStatusById(@Param("uid")Long uid);
 
+    @Select("select * from user")
+    @Results({
+            @Result(property = "uid",column = "uid"),
+            @Result(property = "rid",column = "rid"),
+            @Result(property = "pid",column = "pid"),
+            @Result(property = "fid",javaType = Integer.class,column = "pid",
+                    one=@One(select ="com.hr_java.mapper.PositionMapper.getFidByPid")),
+            @Result(property = "role",javaType = Role.class,column="rid",
+                    one = @One(select="com.hr_java.mapper.RoleMapper.getById")),
+            @Result(property = "status",javaType = String.class,column = "uid",
+                    one=@One(select ="com.hr_java.mapper.UserMapper.getStatusById"))
+    })
+    List<User> getUserList ();
+
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,8 +21,7 @@ import lombok.Setter;
  * @author liuyuanfeng
  * @since 2021-12-12
  */
-@Getter
-@Setter
+@Data
 @TableName("user")
 @ApiModel(value = "User对象", description = "用户表")
 public class User implements Serializable {

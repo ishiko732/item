@@ -13,5 +13,5 @@ import org.apache.ibatis.annotations.Param;
  * @since 2021-12-23
  */
 public interface TransferService extends IService<Transfer> {
-    boolean transferUserByUID(Long uid, Integer rid,Integer pid);
+    boolean transferUserByUID(Integer tid);
 }
