@@ -61,7 +61,7 @@ public class SerialServiceImpl extends ServiceImpl<SerialMapper, Serial> impleme
             System.err.println("输入的数值不允许为负数！");
             return false;
         }
-        if(!"正常".equals(getBaseMapper().getStatus(serialID))){ //待审核，驳回状态才能修改内部条目
+        if("待审核".equals(getBaseMapper().getStatus(serialID))||"审核驳回".equals(getBaseMapper().getStatus(serialID))){ //待审核，驳回状态才能修改内部条目
             return getBaseMapper().updateSerialByID(serialID,bounty,penalty);
         }else{
             return false;
@@ -70,7 +70,7 @@ public class SerialServiceImpl extends ServiceImpl<SerialMapper, Serial> impleme
 
     @Override
     public boolean deleteSerialByID(Integer serialID) {
-        if(!"正常".equals(getBaseMapper().getStatus(serialID))){//待审核，驳回状态才能修改内部条目
+        if("待审核".equals(getBaseMapper().getStatus(serialID))||"审核驳回".equals(getBaseMapper().getStatus(serialID))){//待审核，驳回状态才能修改内部条目
             return getBaseMapper().deleteSerialByID(serialID);
         }else{
             return false;

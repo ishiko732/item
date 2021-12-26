@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * <p>
@@ -40,6 +41,8 @@ public class RecheckController {
     TransferService transferService;
     @Autowired
     RoleService roleService;
+    @Autowired
+    RecheckSerialService recheckSerialService;
     //复核用户
     @GetMapping(value = "/checkUser")
     @RequiresPermissions(logical = Logical.AND, value = {"档案复核"}) //需要包含权限值那些
@@ -98,7 +101,7 @@ public class RecheckController {
     @RequiresPermissions(logical = Logical.AND, value = {"档案复核","档案查询","档案变更","档案删除"}) //需要包含权限值那些
     public Result deleteUserById(@PathVariable Long uid){//删除资料
         boolean b = recheckUserService.deleteByUID(uid);
-        Result succ=null;
+        Result succ;
         if(b){
             succ = Result.succ("删除成功！");
         }else{
@@ -166,7 +169,59 @@ public class RecheckController {
     @RequiresPermissions(logical = Logical.AND, value = {"薪酬标准复核","薪酬标准查询","薪酬标准变更","发放复核"}) //需要包含权限值那些
     public Result deleteSalaryById(@PathVariable Long rSalaryId){//更新资料
         boolean b = reCheckSalaryService.deleteBySalaryId(rSalaryId);
-        Result succ=null;
+        Result succ;
+        if(b){
+            succ = Result.succ("删除成功！");
+        }else{
+            succ = Result.fail("删除失败！");
+        }
+        return succ;
+    }
+
+    //复核薪酬发放，只需要审核通过就对接财务处发放工资
+    //复核薪酬发放
+    @GetMapping(value = "/checkSerial")
+    @RequiresPermissions(logical = Logical.AND, value = {"薪酬标准查询"}) //需要包含权限值那些
+    public Result checkSerialByYear_Month(Integer year,Integer month){
+        Set<RecheckSerial> recheckSerials = recheckSerialService.getList();
+        return Result.succ(recheckSerials);
+    }
+
+    @GetMapping(value = "/checkSerial/{id}")
+    @RequiresPermissions(logical = Logical.AND, value = {"薪酬标准复核","薪酬标准查询"}) //需要包含权限值那些
+    public Result getSerialById(@PathVariable Integer id){//获取薪酬标准某个资料
+        RecheckSerial recheckSerialerial = recheckSerialService.getById(id);
+        if(Objects.isNull(recheckSerialerial)){
+            return Result.fail("不存在！");
+        }
+        return Result.succ(recheckSerialerial);
+    }
+    @PutMapping(value = "/checkSerial/{rid}")
+    @RequiresPermissions(logical = Logical.AND, value = {"薪酬标准复核","薪酬标准查询","薪酬标准变更","发放复核",}) //需要包含权限值那些
+    public Result checkSerialById(@PathVariable("rid")Integer id,RecheckSerial recheckSerial){//更新资料
+        Result succ;
+        recheckSerial.setRSerialId(id);
+        if(Objects.isNull(recheckSerial.getMessage())){
+            recheckSerial.setMessage("无意见");
+        }
+        System.out.println(recheckSerial);
+        boolean b = recheckSerialService.updateById(recheckSerial);
+        if(b){
+            succ = Result.succ("复核成功！");
+        }else{
+            succ = Result.fail("复核失败！");
+        }
+        return succ;
+    }
+
+    @DeleteMapping(value = "/checkSerial/{rid}")
+    @RequiresPermissions(logical = Logical.AND, value = {"薪酬标准复核","薪酬标准查询","薪酬标准变更","发放复核"}) //需要包含权限值那些
+    public Result deleteSerialById(@PathVariable("rid") Integer id,String message){//更新资料
+        if(Objects.isNull(message)){
+            message="已删除该条目";
+        }
+        boolean b = recheckSerialService.deleteById(id,message);
+        Result succ;
         if(b){
             succ = Result.succ("删除成功！");
         }else{

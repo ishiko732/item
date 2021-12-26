@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.hr_java.Model.VO.PayrollVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -46,4 +47,7 @@ public class RecheckSerial implements Serializable {
 
     @TableField("checkUserName")
     private String checkUserName;
+
+    @TableField(value = "payroll",exist = false)
+    private PayrollVO payroll;
 }

@@ -53,7 +53,49 @@ public interface SerialMapper extends BaseMapper<Serial> {
     })
     Set<PayrollVO> selectPayrolls ();
 
+    @Select("select serial.payrollID,group_concat(serialID) as serials,d1Name,D2Name,d3Name,count(*) as 'count',sum(total_Salary)+sum(bounty)-sum(penalty) as 'sum',msg as status\n" +
+            "from serial\n" +
+            "         join user u on u.uid = serial.uid\n" +
+            "         join dep3 on d3ID=( select fid from position where pid =u.pid)\n" +
+            "         join salary_view on salaryId in (select salaryId from position where u.pid=position.pid)\n" +
+            "         join recheckSerial rS on serial.payrollID = rS.payrollID\n" +
+            "         join status s on rS.statusID = s.statusID\n" +
+            "where serial.statusId=(select statusId from status where msg='发放') and serial.payrollID=#{payrollID}\n" +
+            "group by payrollID;")
+    @Results({
+            @Result(property = "payrollID",column = "payrollID"),
+            @Result(property = "dep1",column = "d1Name"),
+            @Result(property = "dep2",column = "d2Name"),
+            @Result(property = "dep3",column = "d3Name"),
+            @Result(property = "count",column = "count"),
+            @Result(property = "sum",column = "sum"),
+            @Result(property = "status",column = "status"),
+            @Result(property = "serials",javaType = Set.class,column="payrollID",
+                    many = @Many(select = "com.hr_java.mapper.SerialMapper.selectSerialByPayrollID"))
+    })
+    PayrollVO selectPayrollsById (@Param("payrollID")String payrollID);
 
+    @Select("select serial.payrollID,group_concat(serialID) as serials,d1Name,D2Name,d3Name,count(*) as 'count',sum(total_Salary)+sum(bounty)-sum(penalty) as 'sum',msg as status\n" +
+            "from serial\n" +
+            "         join user u on u.uid = serial.uid\n" +
+            "         join dep3 on d3ID=( select fid from position where pid =u.pid)\n" +
+            "         join salary_view on salaryId in (select salaryId from position where u.pid=position.pid)\n" +
+            "         join recheckSerial rS on serial.payrollID = rS.payrollID\n" +
+            "         join status s on rS.statusID = s.statusID\n" +
+            "where serial.statusId=(select statusId from status where msg='发放')\n" +
+            "group by payrollID;")
+    @Results({
+            @Result(property = "payrollID",column = "payrollID"),
+            @Result(property = "dep1",column = "d1Name"),
+            @Result(property = "dep2",column = "d2Name"),
+            @Result(property = "dep3",column = "d3Name"),
+            @Result(property = "count",column = "count"),
+            @Result(property = "sum",column = "sum"),
+            @Result(property = "status",column = "status"),
+            @Result(property = "serials",javaType = Set.class,column="payrollID",
+                    many = @Many(select = "com.hr_java.mapper.SerialMapper.selectSerialByPayrollID"))
+    })
+    Set<PayrollVO> selectPayrollsList ();
 
     @Select("select payrollID,serialID,u.uid,u.name,basePay, subsidy, pi, mi, ui, housingFund, total_Salary,bounty,penalty,salaryId\n" +
             "from serial\n" +
