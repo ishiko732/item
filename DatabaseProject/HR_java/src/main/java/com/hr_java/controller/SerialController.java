@@ -65,7 +65,14 @@ public class SerialController {
         int month = cal.get(Calendar.MONTH)+1;//2bit
         //fid 2+2+2=6bit ==> 0000departmentId3
         //总计10bit
-        return String.format("SG-%04d%02d%06d",year,month,departmentId3);//SG-202112000008
+        int count=-1;
+        Set<SerialVO> serialVOS;
+        do{
+            count+=1;
+            serialVOS = serialService.selectSerialByPayrollID(String.format("SG-%04d%02d%04d%02d", year, month, count, departmentId3));
+//            System.err.println("i="+count+" "+serialVOS.toString());
+        }while(!serialVOS.isEmpty());
+        return String.format("SG-%04d%02d%04d%02d", year, month, count,departmentId3);//SG-202112000008
     }
 
     //查询薪酬发放内容
