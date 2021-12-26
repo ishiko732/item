@@ -36,4 +36,7 @@ public class PayrollVO implements Serializable {
 
     @TableField(value = "serials",exist = false)
     private Set<SerialVO> serials;
+
+    @TableField(value = "status",exist = false)
+    private String status ;
 }

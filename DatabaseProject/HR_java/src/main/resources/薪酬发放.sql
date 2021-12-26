@@ -37,12 +37,14 @@ group by p.pid;
 #获取薪酬列表
 # noinspection NonAsciiCharacters
 
-select payrollID,group_concat(serialID) as serials,d1Name,D2Name,d3Name,count(*) as 'count',sum(total_Salary)+sum(bounty)-sum(penalty) as 'sum'
+select serial.payrollID,group_concat(serialID) as serials,d1Name,D2Name,d3Name,count(*) as 'count',sum(total_Salary)+sum(bounty)-sum(penalty) as 'sum',msg as status
 from serial
          join user u on u.uid = serial.uid
          join dep3 on d3ID=( select fid from position where pid =u.pid)
          join salary_view on salaryId in (select salaryId from position where u.pid=position.pid)
-where statusId=(select statusId from status where msg='发放')
+         join recheckSerial rS on serial.payrollID = rS.payrollID
+         join status s on rS.statusID = s.statusID
+where serial.statusId=(select statusId from status where msg='发放')
 group by payrollID;
 
 #获取薪酬详细内容
@@ -63,3 +65,10 @@ where serialID=6;
 update serial
 set statusId=(select statusId from status where msg='不发放')
 where serialID=6;
+
+#获取薪酬发放状态
+select msg as status
+from serial
+         join recheckSerial rS on serial.payrollID = rS.payrollID
+         join status s on rS.statusID = s.statusID
+where serial.serialID=6;

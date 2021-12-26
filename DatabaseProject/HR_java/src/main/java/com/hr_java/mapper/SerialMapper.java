@@ -4,6 +4,7 @@ import com.hr_java.Model.VO.PayrollVO;
 import com.hr_java.Model.VO.SerialVO;
 import com.hr_java.Model.entity.Serial;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hr_java.Model.entity.Status;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -32,12 +33,14 @@ public interface SerialMapper extends BaseMapper<Serial> {
     })
     int insertSerials(@Param(value="serial") List<Serial> list);
 
-    @Select("select payrollID,d1Name,D2Name,d3Name,count(*) as 'count',sum(total_Salary)+sum(bounty)-sum(penalty) as 'sum'\n" +
+    @Select("select serial.payrollID,group_concat(serialID) as serials,d1Name,D2Name,d3Name,count(*) as 'count',sum(total_Salary)+sum(bounty)-sum(penalty) as 'sum',msg as status\n" +
             "from serial\n" +
             "         join user u on u.uid = serial.uid\n" +
             "         join dep3 on d3ID=( select fid from position where pid =u.pid)\n" +
             "         join salary_view on salaryId in (select salaryId from position where u.pid=position.pid)\n" +
-            "where statusId=(select statusId from status where msg='发放')\n"+
+            "         join recheckSerial rS on serial.payrollID = rS.payrollID\n" +
+            "         join status s on rS.statusID = s.statusID\n" +
+            "where serial.statusId=(select statusId from status where msg='发放')\n" +
             "group by payrollID;")
     @Results({
             @Result(property = "payrollID",column = "payrollID"),
@@ -46,6 +49,7 @@ public interface SerialMapper extends BaseMapper<Serial> {
             @Result(property = "dep3",column = "d3Name"),
             @Result(property = "count",column = "count"),
             @Result(property = "sum",column = "sum"),
+            @Result(property = "status",column = "status"),
     })
     Set<PayrollVO> selectPayrolls ();
 
@@ -74,5 +78,12 @@ public interface SerialMapper extends BaseMapper<Serial> {
             "set statusId=(select statusId from status where msg='不发放')\n" +
             "where serialID=#{serialID}")
     boolean deleteSerialByID(@Param("serialID")Integer serialID);
+
+    @Select("select msg as status\n" +
+            "from serial\n" +
+            "         join recheckSerial rS on serial.payrollID = rS.payrollID\n" +
+            "         join status s on rS.statusID = s.statusID\n" +
+            "where serial.serialID=#{serialID}")
+    String getStatus(@Param("serialID")Integer serialID);
 
 }
