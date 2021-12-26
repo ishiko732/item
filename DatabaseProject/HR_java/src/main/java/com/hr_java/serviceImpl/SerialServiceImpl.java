@@ -1,5 +1,7 @@
 package com.hr_java.serviceImpl;
 
+import com.hr_java.Model.VO.PayrollVO;
+import com.hr_java.Model.VO.SerialVO;
 import com.hr_java.Model.entity.RecheckSerial;
 import com.hr_java.Model.entity.Serial;
 import com.hr_java.mapper.SerialMapper;
@@ -9,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,5 +36,36 @@ public class SerialServiceImpl extends ServiceImpl<SerialMapper, Serial> impleme
             i=recheckSerialService.insertReSerials(recheckSerials);
         }
         return i;
+    }
+
+    @Override
+    public Set<PayrollVO> selectPayrolls(@Nullable boolean isCascade) {
+        Set<PayrollVO> payrollVOS = getBaseMapper().selectPayrolls();
+        if (isCascade){
+            for (PayrollVO payrollVO : payrollVOS) {
+                Set<SerialVO> serialVOS = getBaseMapper().selectSerialByPayrollID(payrollVO.getPayrollID());
+                payrollVO.setSerials(serialVOS);
+            }
+        }
+        return payrollVOS;
+    }
+
+    @Override
+    public Set<SerialVO> selectSerialByPayrollID(String payrollID) {
+        return  getBaseMapper().selectSerialByPayrollID(payrollID);
+    }
+
+    @Override
+    public Boolean updateSerialByID(Integer serialID, double bounty, double penalty) {
+        if(bounty<0 || penalty<0){
+            System.err.println("输入的数值不允许为负数！");
+            return false;
+        }
+        return getBaseMapper().updateSerialByID(serialID,bounty,penalty);
+    }
+
+    @Override
+    public boolean deleteSerialByID(Integer serialID) {
+        return getBaseMapper().deleteSerialByID(serialID);
     }
 }
