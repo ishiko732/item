@@ -1,11 +1,12 @@
 <template>
-  <div id="app">
-    <router-view />
-  </div>
+  <h1>档案管理</h1>
 </template>
 
 <script>
 export default {
-  name: 'App'
 }
 </script>
+
+<style scoped>
+
+</style>

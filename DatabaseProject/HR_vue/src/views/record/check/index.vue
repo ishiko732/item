@@ -1,5 +1,10 @@
 <template>
-<h1>复核档案</h1>
+<div>
+  <keep-alive>
+    <router-view></router-view>
+  </keep-alive>
+</div>
+
 </template>
 
 <script>

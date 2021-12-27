@@ -1,10 +1,9 @@
 <template>
-  <h1>查询档案</h1>
+  <h1>薪酬标准登记</h1>
 </template>
 
 <script>
 export default {
-  name: "recordManage"
 }
 </script>
 
