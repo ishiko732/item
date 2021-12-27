@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-// import store from '@/store'
+import store from '@/store'
 
 export function login(data_) {
   var FormData = require('form-data')
@@ -24,13 +24,21 @@ export function getInfo() {
 export function getUserName() {
   return request({
     url: '/auth/require_auth',
-    method: 'get'
+    method: 'get',
+    Headers: {
+      'Authorization': store.getters.Authorization,
+      'refreshToken': store.getters.refreshToken
+    }
   })
 }
 
 export function logout() {
   return request({
     url: '/auth/login',
-    method: 'delete'
+    method: 'delete',
+    Headers: {
+      'Authorization': store.getters.Authorization,
+      'refreshToken': store.getters.refreshToken
+    }
   })
 }
