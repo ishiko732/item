@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -61,7 +62,11 @@ public class AuthController {
     public Result requireAuth() {
         String token = (String) SecurityUtils.getSubject().getPrincipal();
         String name = JWTUtil.getUsername(token);//操作员的姓名
-        return Result.succ(HttpCodeEnum.OK, "You are authenticated："+name);
+        Long uid = JWTUtil.getUID(token);
+        Map<String,Object> ret=new HashMap<>();
+        ret.put("name",name);
+        ret.put("uid",uid);
+        return Result.succ(ret);
     }
 
     @GetMapping("/require_role")
