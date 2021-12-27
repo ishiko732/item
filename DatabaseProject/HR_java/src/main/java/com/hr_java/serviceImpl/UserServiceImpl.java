@@ -59,9 +59,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public Map<String, String> login(String username, String password) {
+        System.err.println(username+":"+password);
         User user = getUserByName(username);
         if (Objects.isNull(user.getUid())) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("账号不存在！");
         }
         if (user.getPassword().equals(MD5.md5(password))) {
             UserJWT userJWT = new UserJWT(user.getUid(), user.getName());
@@ -77,16 +78,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             ret.put("refreshToken", refreshToken);
             return ret;
         } else {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("账号或密码不正确");
         }
     }
 
     @Override
     public void logout() {
-        HttpServletResponse response = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();
-        if (!Objects.isNull(response)) {
-            response.reset();//有效地删除了所有标头和任何缓冲数据
-        }
+//        HttpServletResponse response = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();
+//        if (!Objects.isNull(response)) {
+//            response.reset();//有效地删除了所有标头和任何缓冲数据
+//        }
     }
 
     @Override

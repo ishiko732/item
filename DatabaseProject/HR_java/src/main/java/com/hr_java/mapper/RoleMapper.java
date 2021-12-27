@@ -29,4 +29,12 @@ public interface RoleMapper extends BaseMapper<Role> {
     @Select("select permission from permission_role where rid=#{id}")
     Set<String> getPermissionByRid(@Param("id")Integer id);
 
+    @Select("select * from role where rid=(select rid\n" +
+            "                              from user where uid=#{uid})")
+    @Results({
+            @Result(property = "rid",column = "rid"),
+            @Result(property = "permissions",javaType = Set.class,column="rid",
+                    many=@Many(select = "com.hr_java.mapper.RoleMapper.getPermissionByRid"))
+    })
+    Role getByUid(@Param("uid")Long uid);
 }

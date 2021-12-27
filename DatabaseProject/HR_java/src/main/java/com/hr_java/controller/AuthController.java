@@ -34,7 +34,7 @@ public class AuthController {
                         @RequestParam("password") String password) {
         Map<String,String> token = userService.login(username, password);
         if (Objects.isNull(token.get("Authorization"))) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("账号或密码不正确");
         }
         return Result.succ(token);
     }

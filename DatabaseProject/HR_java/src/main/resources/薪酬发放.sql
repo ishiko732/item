@@ -62,3 +62,8 @@ from serial
          join status s on rS.statusID = s.statusID
 where serial.statusId=(select statusId from status where msg='发放') and serial.payrollID='SG-202112000008'
 group by payrollID;
+
+
+#获取角色信息
+select * from role where rid=(select rid
+                              from user where uid=20210405080001)
