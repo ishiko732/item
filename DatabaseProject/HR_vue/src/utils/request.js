@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getRefreshToken, getToken } from '@/utils/auth'
+import { getRefreshToken, getToken, setToken } from '@/utils/auth'
 
 // 创建axios实例
 const service = axios.create({
@@ -68,6 +68,9 @@ service.interceptors.response.use(
       }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
+      if (response.headers.Authorization != null) {
+        setToken(response.headers.Authorization)
+      }
       return res
     }
   },
