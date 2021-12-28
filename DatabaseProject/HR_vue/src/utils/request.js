@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getRefreshToken, getToken, setToken } from '@/utils/auth'
+import Qs from 'qs'//引入qs
 
 // 创建axios实例
 const service = axios.create({
@@ -21,6 +22,9 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       config.headers['Authorization'] = getToken()
       config.headers['refreshToken'] = getRefreshToken()
+    }
+    if(config.data != null){
+      config.headers["Content-Type"] = 'multipart/form-data'
     }
     return config
   },

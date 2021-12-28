@@ -1,14 +1,13 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">欢迎来到人力资源管理系统</div>
-    <div class="dashboard-text">UID: {{ uid }} , 姓名: {{ name }}</div>
-    <div class="dashboard-text">角色: {{ role }}</div>
-    <el-card class="box-card">
-      权限列表
-      <div v-for="permission in permissions" :key="permission" class="text item">
-        {{ permission }}
-      </div>
-    </el-card>
+    <el-divider></el-divider>
+    <el-descriptions title="角色信息">
+      <el-descriptions-item label="档案ID">{{ uid }}</el-descriptions-item>
+      <el-descriptions-item label="姓名"> {{ name }}</el-descriptions-item>
+      <el-descriptions-item label="角色"> {{ role }}</el-descriptions-item>
+      <el-descriptions-item label="权限列表" :contentStyle="{'text-align': 'left'}"> {{ permissions }}</el-descriptions-item>
+    </el-descriptions>
   </div>
 </template>
 

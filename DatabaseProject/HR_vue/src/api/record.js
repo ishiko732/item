@@ -16,6 +16,16 @@ export function reDepartment(dep3id) {
   })
 }
 
+// 查询档案模糊
+export function selectRecord(data) {
+  console.log(data)
+  return request({
+    url: '/record/selectRecord',
+    method: 'post',
+    data
+  })
+}
+
 // 档案登记 必须字段rid，fid，pid，name，password
 export function register(data) {
   return request({
@@ -100,5 +110,20 @@ export function recoverById(id) {
     url: '/recheck/checkUser/' + id,
     method: 'put',
     data
+  })
+}
+
+// 获取职位
+export function selectPosition() {
+  return request({
+    url: '/record/position',
+    method: 'get',
+  })
+}
+// 获取职称
+export function selectJobtitle() {
+  return request({
+    url: '/record/jobTitles',
+    method: 'get',
   })
 }
