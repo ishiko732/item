@@ -60,7 +60,6 @@ export function check() {
   return request({
     url: url_,
     method: 'get',
-    data
   })
 }
 
@@ -82,6 +81,5 @@ export function deleteById(id) {
   return request({
     url: '/recheck/checkSerial/' + id,
     method: 'delete',
-    data
   })
 }
