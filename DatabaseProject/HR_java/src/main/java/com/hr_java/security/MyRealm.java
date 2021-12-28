@@ -82,16 +82,16 @@ public class MyRealm extends AuthorizingRealm {
                 HttpServletRequest request = servletRequestAttributes.getRequest();
                 HttpServletResponse response = servletRequestAttributes.getResponse();
                 String refreshToken = request.getHeader("refreshToken");
-                if(!Objects.isNull(refreshToken) &&!JWTUtil.verify_refreshToken(refreshToken,JWTUtil.getUID(token))){//验证长期token
+                if(!Objects.isNull(refreshToken) &&JWTUtil.verify_refreshToken(refreshToken,JWTUtil.getUID(refreshToken))){//验证长期token
                     String newToken = JWTUtil.sign(userJWT, user.getPassword());
                     System.err.println("临时token过期：置换新token完毕"+newToken);
                     assert response != null;
                     response.setHeader("Authorization", newToken);
                 }else{
-                    throw new AuthenticationException("JWT验证失败");
+                    throw new AuthenticationException("JWT验证失败B(token:"+token+")");
                 }
             }else{
-                throw new AuthenticationException("JWT验证失败");
+                throw new AuthenticationException("JWT验证失败A(token:"+token+")");
             }
         }
         if(!"正常".equals(user.getStatus())){
