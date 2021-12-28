@@ -1,11 +1,14 @@
 package com.hr_java.mapper;
 
 import com.hr_java.Model.entity.Role;
+import com.hr_java.Model.entity.Salary;
 import com.hr_java.Model.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -69,5 +72,31 @@ public interface UserMapper extends BaseMapper<User> {
                     one=@One(select ="com.hr_java.mapper.UserMapper.getStatusById"))
     })
     List<User> getUserList ();
+
+    @Select({
+            "<script>",
+            "select uid from user join position p on p.pid = user.pid",
+            "<where>" ,
+            "<if test='fid !=null'>",
+            "or fid=#{fid}",
+            "</if>",
+            "<if test='jtId !=null'>",
+            "or fid=#{jtId}",
+            "</if>",
+            "<if test='pid !=null'>",
+            "or user.pid=#{pid}",
+            "</if>",
+            "<if test='recheckTime1 !=null and recheckTime2 !=null '>",
+            "or (#{recheckTime1} >= registrantTime and registrantTime>= #{recheckTime2} )",
+            "</if>",
+            "</where>",
+            "</script>"
+    })
+    Set<Long> selectUid(@Param("fid")String fid,
+                         @Param("jtId")String jtId,
+                         @Param("pid")String pid,
+                         @Param("recheckTime1") LocalDateTime time1,
+                         @Param("recheckTime2") LocalDateTime time2
+    );
 
 }

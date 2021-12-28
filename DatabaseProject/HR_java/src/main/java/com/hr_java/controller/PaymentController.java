@@ -58,13 +58,16 @@ public class PaymentController {
     @GetMapping("/selectSalary")
     @RequiresPermissions(logical = Logical.AND, value = {"薪酬标准查询"}) //需要包含权限值那些
     public Result selectSalary(String salaryId, String salaryName, String MRUName, String registerName, String checkUserName, String time1, String time2) {
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime localDateTime1 = LocalDateTime.parse(time1, fmt);
-        LocalDateTime localDateTime2 = LocalDateTime.parse(time2, fmt);
-        if (localDateTime1.compareTo(localDateTime2) < 0) {
-            LocalDateTime temp = localDateTime1;
-            localDateTime1 = localDateTime2;
-            localDateTime2 = temp;
+        LocalDateTime localDateTime1 = null, localDateTime2 = null;
+        if (!Objects.isNull(time1)) {
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            localDateTime1 = LocalDateTime.parse(time1, fmt);
+            localDateTime2 = LocalDateTime.parse(time2, fmt);
+            if (localDateTime1.compareTo(localDateTime2) < 0) {
+                LocalDateTime temp = localDateTime1;
+                localDateTime1 = localDateTime2;
+                localDateTime2 = temp;
+            }
         }
         Set<Salary> salaries = salaryService.selectSalaryList(salaryId, salaryName, MRUName, registerName, checkUserName, localDateTime1, localDateTime2);
         return Result.succ(salaries);

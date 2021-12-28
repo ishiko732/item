@@ -164,4 +164,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public List<User> getUserList() {
         return getBaseMapper().getUserList();
     }
+
+    @Override
+    public List<User> selectUser(String fid, String jtId, String pid,LocalDateTime time1, LocalDateTime time2) {
+        List<User> userList = getUserList();
+        Set<Long> uids = getBaseMapper().selectUid(fid, jtId, pid, time1, time2);
+        userList.removeIf(user -> !uids.contains(user.getUid()));
+        return userList;
+    }
 }
