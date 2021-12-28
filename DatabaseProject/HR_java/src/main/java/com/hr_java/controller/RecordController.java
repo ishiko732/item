@@ -2,12 +2,9 @@ package com.hr_java.controller;
 
 import com.hr_java.Model.VO.QueryRecordVO;
 import com.hr_java.Model.VO.Result;
-import com.hr_java.Model.entity.Salary;
-import com.hr_java.Model.entity.User;
-import com.hr_java.Model.entity.Transfer;
-import com.hr_java.service.DepartmentService;
-import com.hr_java.service.TransferService;
-import com.hr_java.service.UserService;
+import com.hr_java.Model.entity.*;
+import com.hr_java.mapper.JobTitlesMapper;
+import com.hr_java.service.*;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +24,10 @@ public class RecordController {
     DepartmentService departmentService;
     @Autowired
     UserService userService;
+    @Autowired
+    JobTitlesService jobTitlesService;
+    @Autowired
+    PositionService positionService;
 
 
     @GetMapping(value = "/department")//获取部门列表
@@ -98,5 +99,17 @@ public class RecordController {
         System.err.println(queryRecordVO.getFid());
         List<User> users = userService.selectUser(queryRecordVO.getFid(), queryRecordVO.getJtId(), queryRecordVO.getPid(), localDateTime1, localDateTime2);
         return Result.succ(users);
+    }
+
+    @GetMapping("/jobTitles")
+    public Result selectJobTitles() {
+        List<JobTitles> list = jobTitlesService.list();
+        return Result.succ(list);
+    }
+
+    @GetMapping("/position")
+    public Result selectPosition() {
+        List<Position> list = positionService.list();
+        return Result.succ(list);
     }
 }

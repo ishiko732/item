@@ -1,7 +1,8 @@
 package com.hr_java.mapper;
 
-import com.hr_java.Model.entity.JobTitles;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hr_java.Model.entity.JobTitles;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author liuyuanfeng
- * @since 2021-12-12
+ * @since 2021-12-28
  */
 @Mapper
 public interface JobTitlesMapper extends BaseMapper<JobTitles> {
