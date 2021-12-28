@@ -1,10 +1,8 @@
 package com.hr_java.controller;
 
-import com.google.gson.Gson;
 import com.hr_java.Model.VO.QueryRecordVO;
 import com.hr_java.Model.VO.Result;
 import com.hr_java.Model.entity.*;
-import com.hr_java.mapper.JobTitlesMapper;
 import com.hr_java.service.*;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -15,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 //人力资源管理 前端控制器
 @RestController
@@ -101,7 +98,7 @@ public class RecordController {
                 localDateTime2 = temp;
             }
         }
-        List<User> users = userService.selectUser(queryRecordVO.getFid(), queryRecordVO.getJtId(), queryRecordVO.getPid(), localDateTime1, localDateTime2);
+        List<User> users = userService.selectUser(queryRecordVO.getFid(), queryRecordVO.getPcId(), queryRecordVO.getPid(), localDateTime1, localDateTime2);
         for (User user : users) {
             Position position = positionService.getById(user.getPid());
             user.setJobTitles(position.getName());

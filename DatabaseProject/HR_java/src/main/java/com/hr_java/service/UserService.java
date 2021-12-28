@@ -30,6 +30,6 @@ public interface UserService extends IService<User> {
 
     List<User> getUserList ();
 
-    List<User> selectUser(String fid, String jtId, String pid, LocalDateTime time1, LocalDateTime time2);
+    List<User> selectUser(String fid, String pcId, String pid, LocalDateTime time1, LocalDateTime time2);
 
 }

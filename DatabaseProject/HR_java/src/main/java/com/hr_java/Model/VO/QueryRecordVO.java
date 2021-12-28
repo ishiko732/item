@@ -14,7 +14,7 @@ public class QueryRecordVO implements Serializable {
     @Nullable
     private String fid;
     @Nullable
-    private String jtId;
+    private String pcId;
     @Nullable
     private String pid;
     @Nullable

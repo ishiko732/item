@@ -80,8 +80,8 @@ public interface UserMapper extends BaseMapper<User> {
             "<if test='fid !=null'>",
             "or fid=#{fid}",
             "</if>",
-            "<if test='jtId !=null'>",
-            "or fid=#{jtId}",
+            "<if test='pcId !=null'>",
+            "or pcId=#{pcId}",
             "</if>",
             "<if test='pid !=null'>",
             "or user.pid=#{pid}",
@@ -93,7 +93,7 @@ public interface UserMapper extends BaseMapper<User> {
             "</script>"
     })
     Set<Long> selectUid(@Param("fid")String fid,
-                         @Param("jtId")String jtId,
+                         @Param("pcId")String pcId,
                          @Param("pid")String pid,
                          @Param("recheckTime1") LocalDateTime time1,
                          @Param("recheckTime2") LocalDateTime time2
