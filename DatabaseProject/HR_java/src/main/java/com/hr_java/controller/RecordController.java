@@ -1,5 +1,6 @@
 package com.hr_java.controller;
 
+import com.google.gson.Gson;
 import com.hr_java.Model.VO.QueryRecordVO;
 import com.hr_java.Model.VO.Result;
 import com.hr_java.Model.entity.*;
@@ -28,11 +29,14 @@ public class RecordController {
     JobTitlesService jobTitlesService;
     @Autowired
     PositionService positionService;
+    @Autowired
+    PositionClassificationService classificationService;
 
 
     @GetMapping(value = "/department")//获取部门列表
     public Result getDepartment() {
-        return Result.succ(departmentService.selectByDepAll());
+        List<Department> departments = departmentService.selectByDepAll();
+        return Result.succ(departments);
     }
 
     @GetMapping(value = "/reDepartment/{id}")//获取部门列表-反向
@@ -82,9 +86,10 @@ public class RecordController {
         return ret;
     }
 
-    @GetMapping("/selectRecord")
+    @PostMapping("/selectRecord")
     @RequiresPermissions(logical = Logical.AND, value = {"档案查询"}) //需要包含权限值那些
     public Result selectRecord(QueryRecordVO queryRecordVO) {
+        System.err.println(queryRecordVO);
         LocalDateTime localDateTime1 = null, localDateTime2 = null;
         if (!Objects.isNull(queryRecordVO.getTime1())) {
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -96,8 +101,13 @@ public class RecordController {
                 localDateTime2 = temp;
             }
         }
-        System.err.println(queryRecordVO.getFid());
         List<User> users = userService.selectUser(queryRecordVO.getFid(), queryRecordVO.getJtId(), queryRecordVO.getPid(), localDateTime1, localDateTime2);
+        for (User user : users) {
+            Position position = positionService.getById(user.getPid());
+            user.setJobTitles(position.getName());
+            Department department = departmentService.reSelectByDep(user.getFid());
+            user.setDepartment(department);
+        }
         return Result.succ(users);
     }
 
@@ -110,6 +120,18 @@ public class RecordController {
     @GetMapping("/position")
     public Result selectPosition() {
         List<Position> list = positionService.list();
+        return Result.succ(list);
+    }
+
+    @GetMapping("/position/{id}")
+    public Result getPositionByClassificationId(@PathVariable("id")Integer pcid) {
+        List<Position> list = classificationService.getByPCid(pcid);
+        return Result.succ(list);
+    }
+
+    @GetMapping("/classification")
+    public Result selectClassification() {
+        List<PositionClassification> list = classificationService.list();
         return Result.succ(list);
     }
 }

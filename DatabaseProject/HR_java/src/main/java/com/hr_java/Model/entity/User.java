@@ -125,4 +125,10 @@ public class User implements Serializable {
     @TableField(exist = false)
     private Role role;
 
+    @TableField(exist = false)
+    private Department department;
+
+    @TableField(exist = false)
+    private String jobTitles;
+
 }
