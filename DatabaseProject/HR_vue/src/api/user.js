@@ -2,11 +2,10 @@ import request from '@/utils/request'
 import store from '@/store'
 
 export function login(data_) {
-  var FormData = require('form-data')
-  var data = new FormData()
-  data.append('name', data_.name)
-  data.append('password', data_.password)
-  // console.log(data)
+  var data = {
+    'name':data_.name,
+    'password':data_.password
+  }
   return request({
     url: '/auth/login',
     method: 'post',
