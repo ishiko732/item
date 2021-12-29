@@ -10,7 +10,7 @@
       </el-row>
       <el-row>
         <el-form-item label="薪酬标准编号">
-          <el-input v-model="send.salaryId" placeholder="请输入内容" ></el-input>
+          <el-input v-model="send.salaryId" placeholder="系统自动生成" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="薪酬标准名称">
           <el-input v-model="send.salaryName" placeholder="请输入内容" ></el-input>
