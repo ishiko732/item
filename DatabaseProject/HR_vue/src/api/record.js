@@ -94,13 +94,9 @@ export function checkById(data) {
 
 // 删除档案
 export function deleteById(id) {
-  var FormData = require('form-data');
-  var data = new FormData();
-  data.append('statusID', '-1');
   return request({
-    url: '/recheck/checkUser/' + id,
+    url: '/recheck/checkUser/' + id + '?statusID=-1',
     method: 'put',
-    data
   })
 }
 
