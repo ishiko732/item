@@ -71,12 +71,8 @@ export function checkById(data) {
 
 // 删除薪酬标准
 export function deleteById(id) {
-  var data = {
-    'statusID':-1
-  }
   return request({
     url: '/recheck/checkSalary/' + id,
     method: 'delete',
-    data
   })
 }

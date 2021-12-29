@@ -127,6 +127,12 @@ export const constantRoutes = [
         component: () => import('@/views/payment/check/index'),
         meta: { title: '标准复核', icon: 'dashboard', permission: '薪酬标准复核' }
       },
+      {
+        path: 'delete',
+        name: 'delete',
+        component: () => import('@/views/payment/check/delete'),
+        meta: { title: '删除复核', icon: 'dashboard', permission: '薪酬标准复核' }
+      },
     ]
   },
 

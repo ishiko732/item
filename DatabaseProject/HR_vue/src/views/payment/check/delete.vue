@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h1>标准复核</h1>
+    <h1>删除标准</h1>
     <div v-if="records != null">
       <el-divider></el-divider>
-      <el-tag>待审核的薪酬标准总数：<span>{{payments.length}}</span>条</el-tag>
+      <el-tag type="danger">可删除的薪酬标准总数：<span>{{payments.length}}</span>条</el-tag>
       <el-table
         :data="payments"
         style="width: 100%">
@@ -28,7 +28,7 @@
         <el-table-column
           label="复核">
           <template slot-scope="scope">
-            <el-link type="primary" @click="cancelDialog(scope.row)">复核</el-link>
+            <el-link type="primary" @click="cancelDialog(scope.row)">删除</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -37,7 +37,7 @@
       <el-form :inline="true"  class="demo-form-inline">
         <el-row>
           <el-form-item>
-            <el-button type="primary" @click="checkPayment_success">提交</el-button>
+            <el-button type="danger" @click="checkPayment_success" >删除</el-button>
           </el-form-item>
         </el-row>
         <el-row>
@@ -60,12 +60,6 @@
             <el-input :disabled="true" v-model="send.registerTime" ></el-input>
           </el-form-item>
         </el-row>
-        <el-input
-          type="textarea"
-          :rows="2"
-          placeholder="请输入内容"
-          v-model="message">
-        </el-input>
       </el-form>
       <el-divider></el-divider>
       <el-table
@@ -92,7 +86,7 @@
 </template>
 
 <script>
-import { check,checkById} from '@/api/payment'
+import { check,checkById,deleteById} from '@/api/payment'
 export default {
   name: "checkRecord",
   data(){
@@ -143,12 +137,11 @@ export default {
             "money": 400
         }
       ],
-      message:''
     }
   },
   methods:{
     getPayment(){
-      check(0).then(response => {
+      check(1).then(response => {
         const { data } = response
         this.payments=data;
         console.log(this.payments);
@@ -173,21 +166,16 @@ export default {
     },
     checkPayment_success(){
       this.dialogVisible = false
-      var data={
-        "rSalaryId":this.send.rsalaryId,
-        "statusID":1,
-        "message":this.message
-      }
-      checkById(data).then(response => {
+      deleteById(this.send.rsalaryId,).then(response => {
         const { data } = response
         this.getPayment()
         this.$message({
-          message: '审核成功',
+          message: '删除成功',
           type: 'success'
         });
       }).catch(error => {
         this.$message({
-          message: '审核失败',
+          message: '删除失败',
           type: 'error'
         });
       })
