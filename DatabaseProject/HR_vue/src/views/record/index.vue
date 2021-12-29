@@ -168,21 +168,21 @@ export default {
     },
     selectRecords(){
       this.loading=true
-      var FormData = require('form-data');
-      var data = new FormData();
+      var data={}
       if(this.dep[2]!=null){
-        data.append('fid', String(this.dep[2]));
+        data.fid= String(this.dep[2])
       }
       if(this.job!=""){
-        data.append('pcId', String(this.job));
+        data.pcId=String(this.job)
       }
       if(this.pos!=""){
-        data.append('pid', String(this.pos));
+        data.pid=String(this.pos)
       }
       if(this.time!=''){
-        data.append('time1', String(this.time[0]));
-        data.append('time2', String(this.time[1]));
+        data.time1=String(this.time[0])
+        data.time2=String(this.time[1])
       }
+      console.log(data)
       selectRecord(data).then(response => {
         const { data } = response
         this.records=data;
