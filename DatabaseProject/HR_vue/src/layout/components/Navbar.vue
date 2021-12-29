@@ -7,7 +7,7 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img src="https://avatars.githubusercontent.com/u/62931549?v=4" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -16,11 +16,11 @@
               Home
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
+          <a target="_blank" href="https://github.com/GDOU-LYF">
             <el-dropdown-item>Github</el-dropdown-item>
           </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
+          <a target="_blank" href="https://github.com/GDOU-LYF/item/tree/main/DatabaseProject">
+            <el-dropdown-item>Items</el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">Log Out</span>
