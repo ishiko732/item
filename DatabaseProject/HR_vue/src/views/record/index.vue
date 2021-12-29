@@ -126,7 +126,6 @@ export default {
       time: '',
       loading: false,
       dialogVisible: false,
-      records:null,
       people:null,
       };
   },

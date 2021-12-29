@@ -60,15 +60,16 @@ export function transfer(data_) {
 
 // 复核查询
 export function check(id) {
+  let url_
   if (id != null) {
     url_ = '/recheck/checkUser?id=' + id
   }else {
     url_ = '/recheck/checkUser'
   }
+  console.log(url_)
   return request({
     url: url_,
     method: 'get',
-    data
   })
 }
 
@@ -82,8 +83,10 @@ export function checkMessageById(id) {
 
 // 确认复核
 export function checkById(data) {
+  var id=data.id
+  data.id=null
   return request({
-    url: '/recheck/checkUser/' + data.id,
+    url: '/recheck/checkUser/' + id,
     method: 'put',
     data
   })
