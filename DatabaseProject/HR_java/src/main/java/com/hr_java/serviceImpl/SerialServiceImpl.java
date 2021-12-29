@@ -47,6 +47,7 @@ public class SerialServiceImpl extends ServiceImpl<SerialMapper, Serial> impleme
                 payrollVO.setSerials(serialVOS);
             }
         }
+        payrollVOS.removeIf(payrollVO -> !payrollVO.getStatus().equals("待审核"));
         return payrollVOS;
     }
 

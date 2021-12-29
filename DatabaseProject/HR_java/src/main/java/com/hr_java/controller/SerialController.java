@@ -78,9 +78,9 @@ public class SerialController {
     //查询薪酬发放内容
     @GetMapping(value = "/payroll")
     @RequiresPermissions(logical = Logical.AND, value = {"薪酬标准查询"}) //需要包含权限值那些
-    public Result selectPayroll(Integer year,Integer month,boolean isCascade){
+    public Result selectPayroll(Integer year,Integer month,String isCascade){
         System.err.println(isCascade);
-        Set<PayrollVO> payrollVOS = serialService.selectPayrolls(isCascade);
+        Set<PayrollVO> payrollVOS = serialService.selectPayrolls("1".equals(isCascade));
         return Result.succ(payrollVOS);
     }
 
