@@ -4,21 +4,20 @@ import request from '@/utils/request'
 export function generalpayroll() {
   return request({
     url: '/serial/generalSalary',
-    method: 'get',
+    method: 'post',
   })
 }
 
 // 查询薪酬发放内容 isCascade=1 并查询serials条目
-export function selectPayroll(data_) {
-  var data = {
-    'year': data_.year,
-    'month': data_.month,
-    'isCascade': data_.isCascade
-  }
+export function selectPayroll() {
+  // var data = {
+  //   // 'year': data_.year,
+  //   // 'month': data_.month,
+  //   // 'isCascade': data_.isCascade
+  // }
   return request({
-    url: '/serial/payroll',
+    url: '/serial/payroll?isCascade=1',
     method: 'get',
-    data
   })
 }
 
@@ -31,13 +30,9 @@ export function selectlpayrollByPayrollId(payrollId) {
 }
 
 // 更新某人员的奖金和罚金
-export function updatepayrollBySerialId(data_) {
-  var data = {
-    'bounty':data_.bounty,
-    'penalty':data_.penalty
-  }
+export function updatepayrollBySerialId(data) {
   return request({
-    url: '/serial/payroll/' + data_.serialID,
+    url: '/serial/payroll/' + data.serialID +"?bounty="+data.bounty+"&penalty="+data.penalty,
     method: 'put',
   })
 }
