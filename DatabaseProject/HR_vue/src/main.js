@@ -36,7 +36,7 @@ Vue.use(ElementUI)
 Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.roles == null || store.getters.permissions.includes(to.meta.permission)) {
+  if (to.meta.permission == null || store.getters.permissions.includes(to.meta.permission)) {
     next()
   } else {
     next({
