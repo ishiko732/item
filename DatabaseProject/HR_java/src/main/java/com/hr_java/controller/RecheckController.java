@@ -43,6 +43,8 @@ public class RecheckController {
     RoleService roleService;
     @Autowired
     RecheckSerialService recheckSerialService;
+    @Autowired
+    DepartmentService departmentService;
     //复核用户
     @GetMapping(value = "/checkUser")
     @RequiresPermissions(logical = Logical.AND, value = {"档案复核"}) //需要包含权限值那些
@@ -71,6 +73,7 @@ public class RecheckController {
             return Result.fail("不存在！");
         }
         User user=isTransferUser(recheckUser);
+        user.setDepartment(departmentService.reSelectByDep(user.getFid()));
         recheckUser.setUser(user);
         return Result.succ(recheckUser);
     }

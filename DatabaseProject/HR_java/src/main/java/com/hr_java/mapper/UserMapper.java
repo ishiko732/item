@@ -1,5 +1,6 @@
 package com.hr_java.mapper;
 
+import com.hr_java.Model.entity.Department;
 import com.hr_java.Model.entity.Role;
 import com.hr_java.Model.entity.Salary;
 import com.hr_java.Model.entity.User;
@@ -48,7 +49,11 @@ public interface UserMapper extends BaseMapper<User> {
             @Result(property = "role",javaType = Role.class,column="rid",
                     one = @One(select="com.hr_java.mapper.RoleMapper.getById")),
             @Result(property = "status",javaType = String.class,column = "uid",
-                    one=@One(select ="com.hr_java.mapper.UserMapper.getStatusById"))
+                    one=@One(select ="com.hr_java.mapper.UserMapper.getStatusById")),
+            @Result(property = "department",javaType = Department.class,column = "fid",
+                    one=@One(select ="com.hr_java.mapper.DepartmentMapper.reselectById")),
+            @Result(property = "jobTitles",javaType = String.class,column = "pid",
+                    one=@One(select ="com.hr_java.mapper.JobTitlesMapper.getJobTitleByPid"))
     })
     User getById(@Param("id")Long id);
 

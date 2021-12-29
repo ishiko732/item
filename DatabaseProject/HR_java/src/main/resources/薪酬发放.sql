@@ -67,3 +67,15 @@ group by payrollID;
 #获取角色信息
 select * from role where rid=(select rid
                               from user where uid=20210405080001)
+
+
+#模糊查询档案
+select * from user join position p on p.pid = user.pid
+join dep3 on d3ID=p.fid
+join jobTitles jT on p.jtId = jT.jtId;;
+
+
+select jt.name
+from position
+join jobTitles jT on position.jtId = jT.jtId
+where pid=1
