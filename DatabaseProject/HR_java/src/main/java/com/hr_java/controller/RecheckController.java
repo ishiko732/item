@@ -188,6 +188,7 @@ public class RecheckController {
     @RequiresPermissions(logical = Logical.AND, value = {"薪酬标准查询"}) //需要包含权限值那些
     public Result checkSerialByYear_Month(Integer year,Integer month){
         Set<RecheckSerial> recheckSerials = recheckSerialService.getList();
+        recheckSerials.removeIf(recheckSerial -> !recheckSerial.getStatusID().equals(0));
         return Result.succ(recheckSerials);
     }
 
@@ -195,7 +196,7 @@ public class RecheckController {
     @RequiresPermissions(logical = Logical.AND, value = {"薪酬标准复核","薪酬标准查询"}) //需要包含权限值那些
     public Result getSerialById(@PathVariable Integer id){//获取薪酬标准某个资料
         RecheckSerial recheckSerialerial = recheckSerialService.getById(id);
-        if(Objects.isNull(recheckSerialerial)){
+        if(Objects.isNull(recheckSerialerial)||recheckSerialerial.getStatusID()!=0){
             return Result.fail("不存在！");
         }
         return Result.succ(recheckSerialerial);
