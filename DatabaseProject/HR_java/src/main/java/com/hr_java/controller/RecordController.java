@@ -135,9 +135,21 @@ public class RecordController {
         return Result.succ(list);
     }
 
+    @GetMapping("/positionByPid/{id}")
+    public Result getPositionBypid(@PathVariable("id")Integer pid) {
+        Position position = positionService.getById(pid);
+        return Result.succ(position);
+    }
+
     @GetMapping("/classification")
     public Result selectClassification() {
         List<PositionClassification> list = classificationService.list();
         return Result.succ(list);
+    }
+
+    @GetMapping("/classification/{id}")
+    public Result getClassificationBypid(@PathVariable("id")Integer pcid) {
+        PositionClassification classification = classificationService.getById(pcid);
+        return Result.succ(classification);
     }
 }
