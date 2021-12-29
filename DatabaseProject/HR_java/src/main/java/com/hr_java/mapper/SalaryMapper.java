@@ -87,10 +87,12 @@ public interface SalaryMapper extends BaseMapper<Salary> {
             "</script>"
     })
     @Results({
-            @Result(property = "id",column = "id"),
+            @Result(property = "salaryId",column = "salaryId"),
             @Result(property = "total_Salary",column = "total_Salary"),
             @Result(property = "role",javaType = Role.class,column="role_id",
                     one = @One(select="mapper.RoleMapper.get")),
+            @Result(property = "subsidies",javaType = Set.class,column="salaryId",
+                    many = @Many(select = "com.hr_java.mapper.SalaryMapper.getSubsidyBySalaryId"))
     })
     Set<Salary> selectSalaryList(@Param("salaryId")String salaryId,
                                  @Param("salaryName")String salaryName,
