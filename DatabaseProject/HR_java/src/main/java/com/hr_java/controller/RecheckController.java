@@ -145,7 +145,7 @@ public class RecheckController {
         reCheckSalary.setSalary(salary);
         return Result.succ(reCheckSalary);
     }
-    @PutMapping(value = "/checkSalary/{rid}")
+    @PostMapping(value = "/checkSalary/{rid}")
     @RequiresPermissions(logical = Logical.AND, value = {"薪酬标准复核","薪酬标准查询","薪酬标准变更"}) //需要包含权限值那些
     public Result checkSalaryById(@PathVariable("rid")Integer id,ReCheckSalary reCheckSalary,Salary salary){//更新资料
         Result succ;

@@ -39,6 +39,7 @@ export function insertPayment(data) {
 
 // 复核查询
 export function check(id) {
+  var url_=''
   if (id != null) {
     url_ = '/recheck/checkSalary?id=' + id
   }else {
@@ -47,7 +48,6 @@ export function check(id) {
   return request({
     url: url_,
     method: 'get',
-    data
   })
 }
 
@@ -61,9 +61,10 @@ export function checkMessageById(id) {
 
 // 确认复核
 export function checkById(data) {
+  var id=data.rSalaryId
   return request({
-    url: '/recheck/checkUser/' + data.id,
-    method: 'put',
+    url: '/recheck/checkSalary/' + id,
+    method: 'post',
     data
   })
 }
@@ -74,7 +75,7 @@ export function deleteById(id) {
     'statusID':-1
   }
   return request({
-    url: '/recheck/checkUser/' + id,
+    url: '/recheck/checkSalary/' + id,
     method: 'delete',
     data
   })
