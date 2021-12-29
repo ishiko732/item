@@ -54,8 +54,8 @@ public interface SalaryMapper extends BaseMapper<Salary> {
             "values (#{salaryId},#{subsidyName},#{money})")
     boolean insertSubsidies(Subsidy subsidy);
 
-    @Insert("insert into salary(salaryId, registerName, MRUName, basePay)\n" +
-            "values (#{salaryId},#{registerName},#{MRUName},#{basePay})")
+    @Insert("insert into salary(salaryId, registerName, MRUName, basePay,salaryName)\n" +
+            "values (#{salaryId},#{registerName},#{MRUName},#{basePay},#{salaryName})")
     boolean insertSalary(Salary salary);
 
     @Select("select count(*)+1 from salary")

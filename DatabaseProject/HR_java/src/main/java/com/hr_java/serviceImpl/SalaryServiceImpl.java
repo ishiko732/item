@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -42,6 +43,9 @@ public class SalaryServiceImpl extends ServiceImpl<SalaryMapper, Salary> impleme
     @Override
     public boolean insertSalary(Salary salary) {
         Long salaryId = getBaseMapper().getSalaryEndId();
+        if(Objects.isNull(salary.getSalaryName())){
+            salary.setSalaryName("新标准"+salaryId);
+        }
         salary.setSalaryId(salaryId);
         boolean b = getBaseMapper().insertSalary(salary);
         boolean s=true;
