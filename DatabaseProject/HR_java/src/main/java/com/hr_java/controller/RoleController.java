@@ -42,4 +42,9 @@ public class RoleController {
         Long uid = JWTUtil.getUID(token);//操作员的uid
         return Result.succ(roleService.getByUid(uid));
     }
+
+    @RequestMapping("/roles/list")
+    public Result list() {
+        return Result.succ(roleService.list());
+    }
 }

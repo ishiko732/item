@@ -44,6 +44,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public Boolean register(User user) {
         user.setUid(createUID(user));
+        String token = (String) SecurityUtils.getSubject().getPrincipal();
+        Long uid = JWTUtil.getUID(token);
+        LocalDateTime now = LocalDateTime.now();
+        user.setBooker(uid);
+        user.setRegistrantTime(now);
         System.out.println(user);
         user.setPassword(MD5.md5(user.getPassword()));//设置MD5密码
         int insertUser = getBaseMapper().insert(user);

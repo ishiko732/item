@@ -44,6 +44,7 @@ public class RecordController {
     @PostMapping(value = "/register")
     @RequiresPermissions(logical = Logical.AND, value = {"档案登记"}) //需要包含权限值那些
     public Result register(User user) {
+        System.err.println(user);
         Boolean register = userService.register(user);
         if (register) {
             return Result.succ(user);
