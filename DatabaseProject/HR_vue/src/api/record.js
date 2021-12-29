@@ -46,11 +46,11 @@ export function update(data) {
 
 // 档案调动 必须字段uid,rid,pid
 export function transfer(data_) {
-  var FormData = require('form-data');
-  var data = new FormData();
-  data.append('uid', data_.uid);
-  data.append('rid', data_.rid);
-  data.append('pid', data_.pid);
+  var data = {
+    'uid': data_.uid,
+    'rid': data_.rid,
+    'pid': data_.pid
+  }
   return request({
     url: '/record/transferPosition',
     method: 'post',
