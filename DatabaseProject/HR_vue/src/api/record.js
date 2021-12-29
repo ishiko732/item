@@ -28,6 +28,7 @@ export function selectRecord(data) {
 
 // 档案登记 必须字段rid，fid，pid，name，password
 export function register(data) {
+  console.log(data)
   return request({
     url: '/record/register',
     method: 'post',

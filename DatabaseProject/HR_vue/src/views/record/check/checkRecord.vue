@@ -221,6 +221,7 @@ export default {
       delete send["jobTitles"]
       delete send["role"]
       delete send['registrantTime']
+      delete send['password']
       checkById(send).then(response => {
         const { data } = response
         this.selectRecords(0);

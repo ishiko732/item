@@ -65,10 +65,10 @@
           </el-upload>
         </el-form-item> -->
       </el-row>
-      <el-form-item label="姓名">
+      <el-form-item label="姓名" required>
         <el-input v-model="ruleForm.name" placeholder="请输入内容"></el-input>
       </el-form-item>
-      <el-form-item label="密码">
+      <el-form-item label="密码" required>
         <el-input v-model="ruleForm.password" placeholder="password" show-password></el-input>
       </el-form-item>
       <el-form-item label="性别" prop="name">
