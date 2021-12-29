@@ -27,8 +27,7 @@ export function getPayment_mode(data_) {
 }
 
 // 新建薪酬标准
-export function insertPayment(data_) {
-  const data =JSON.stringify(data_)
+export function insertPayment(data) {
   return request({
     url: 'payment/Salary',
     method: 'post',

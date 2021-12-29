@@ -122,12 +122,6 @@ export const constantRoutes = [
         meta: { title: '标准登记', icon: 'dashboard', permission: '薪酬标准登记' }
       },
       {
-        path: 'update',
-        name: 'update',
-        component: () => import('@/views/payment/update'),
-        meta: { title: '标准变更', icon: 'dashboard', permission: '薪酬标准变更' }
-      },
-      {
         path: 'check',
         name: 'check',
         component: () => import('@/views/payment/check/index'),
