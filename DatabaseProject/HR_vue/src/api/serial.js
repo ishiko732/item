@@ -47,26 +47,16 @@ export function deletepayrollBySerialId(serialID) {
 
 // 获取薪酬发放列表(获取薪酬发放详细内容)
 export function check() {
-  if (id != null) {
-    url_ = '/recheck/checkSerial/' + id
-  }else {
-    url_ = '/recheck/checkSerial'
-  }
   return request({
-    url: url_,
+    url: '/recheck/checkSerial',
     method: 'get',
   })
 }
 
 // 审核发放
-export function checkById(data_) {
-  var data ={
-    'message':data_.message,
-    'statusID':data_statusID
-  }
-
+export function checkById(data) {
   return request({
-    url: '/recheck/checkSerial/' + data_.id,
+    url: '/recheck/checkSerial/' + data.id,
     method: 'put',
     data
   })
