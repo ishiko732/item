@@ -10,15 +10,15 @@ export function getPayment(salaryId) {
 
 // 获取薪酬标准-模糊
 export function getPayment_mode(data_) {
-  var FormData = require('form-data');
-  var data = new FormData();
-  data.append('salaryId', data_.salaryId);
-  data.append('salaryName', data_.salaryName);
-  data.append('MRUName', data_.MRUName);
-  data.append('registerName', data_.registerName);
-  data.append('checkUserName', data_.checkUserName);
-  data.append('time1', data_.time1);
-  data.append('time2', data_.time2);
+  var data ={
+    'salaryId': data_.salaryId,
+    'salaryName': data_.salaryName,
+    'MRUName': data_.MRUName,
+    'registerName': data_.registerName,
+    'checkUserName': data_.checkUserName,
+    'time1': data_.time1,
+    'time2': data_.time2,
+  }
   return request({
     url: '/payment/selectSalary',
     method: 'get',
@@ -69,9 +69,9 @@ export function checkById(data) {
 
 // 删除薪酬标准
 export function deleteById(id) {
-  var FormData = require('form-data');
-  var data = new FormData();
-  data.append('statusID', '-1');
+  var data = {
+    'statusID':-1
+  }
   return request({
     url: '/recheck/checkUser/' + id,
     method: 'delete',

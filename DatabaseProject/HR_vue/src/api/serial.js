@@ -10,11 +10,11 @@ export function generalpayroll() {
 
 // 查询薪酬发放内容 isCascade=1 并查询serials条目
 export function selectPayroll(data_) {
-  var FormData = require('form-data');
-  var data = new FormData();
-  data.append('year', data_.year);
-  data.append('month', data_.month);
-  data.append('isCascade', data_.isCascade);
+  var data = {
+    'year': data_.year,
+    'month': data_.month,
+    'isCascade': data_.isCascade
+  }
   return request({
     url: '/serial/payroll',
     method: 'get',
@@ -32,10 +32,10 @@ export function selectlpayrollByPayrollId(payrollId) {
 
 // 更新某人员的奖金和罚金
 export function updatepayrollBySerialId(data_) {
-  var FormData = require('form-data');
-  var data = new FormData();
-  data.append('bounty', data_.bounty);
-  data.append('penalty', data_.penalty);
+  var data = {
+    'bounty':data_.bounty,
+    'penalty':data_.penalty
+  }
   return request({
     url: '/serial/payroll/' + data_.serialID,
     method: 'put',
@@ -65,10 +65,11 @@ export function check() {
 
 // 审核发放
 export function checkById(data_) {
-  var FormData = require('form-data');
-  var data = new FormData();
-  data.append('message', data_.message);
-  data.append('statusID', data_statusID);
+  var data ={
+    'message':data_.message,
+    'statusID':data_statusID
+  }
+
   return request({
     url: '/recheck/checkSerial/' + data_.id,
     method: 'put',
