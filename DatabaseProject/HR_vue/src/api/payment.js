@@ -9,20 +9,22 @@ export function getPayment(salaryId) {
 }
 
 // 获取薪酬标准-模糊
-export function getPayment_mode(data_) {
-  var data ={
-    'salaryId': data_.salaryId,
-    'salaryName': data_.salaryName,
-    'MRUName': data_.MRUName,
-    'registerName': data_.registerName,
-    'checkUserName': data_.checkUserName,
-    'time1': data_.time1,
-    'time2': data_.time2,
-  }
+export function getPayment_mode() {
+  // var data = null
+  // if(data_.salaryId !=null){
+  //   data ={
+  //     'salaryId': data_.salaryId,
+  //     'salaryName': data_.salaryName,
+  //     'MRUName': data_.MRUName,
+  //     'registerName': data_.registerName,
+  //     'checkUserName': data_.checkUserName,
+  //     'time1': data_.time1,
+  //     'time2': data_.time2,
+  //   }
+  // }
   return request({
     url: '/payment/selectSalary',
     method: 'get',
-    data
   })
 }
 
