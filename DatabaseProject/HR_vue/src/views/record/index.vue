@@ -11,16 +11,17 @@
     </el-cascader>
     <!-- <el-divider></el-divider> -->
     <span class="demonstration">职位分类</span>
-    <el-select v-model="job" placeholder="请选择">
+    <el-select v-model="job" placeholder="请选择" @change="selectJob">
       <el-option
         v-for="item in jobtitle"
-        :key="item.jtId"
+        :key="item.pcId"
         :label="item.name"
-        :value="item.jtId">
+        :value="item.pcId"
+        @change="handleChange">
       </el-option>
     </el-select>
     <span class="demonstration">职位名称</span>
-    <el-select v-model="pos" placeholder="请选择">
+    <el-select v-model="pos" placeholder="请选择" @change="handleChange">
       <el-option
         v-for="item in position"
         :key="item.pid"
@@ -35,7 +36,7 @@
         type="daterange"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
-        value-format="yyyy-mm-dd hh:mm:ss"
+        value-format="yyyy-MM-dd hh:mm:ss"
         :default-time="['00:00:00', '23:59:59']">
       </el-date-picker>
     </div>
@@ -88,7 +89,7 @@
         title="信息"
         :visible.sync="dialogVisible"
         width="30%"
-        :before-close="handleClose">
+        >
         <div v-for="(value, name) in people">
           {{ name }}: {{ value }}
         </div>
@@ -104,7 +105,7 @@
 </template>
 
 <script>
-import { department, reDepartment, register, selectJobtitle, selectPosition,selectRecord } from '@/api/record'
+import { department, reDepartment, register, selectJobtitle, selectPosition,selectRecord, selectClassification } from '@/api/record'
 export default {
   name: "selectRecord",
   data(){
@@ -143,10 +144,19 @@ export default {
         console.log(error)
       })
     },
-    getPosition(){
-      selectPosition().then(response => {
+    getClassification(){
+      selectClassification().then(response => {
+        const { data } = response
+        this.jobtitle=data;
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getPosition(pcid){
+      selectPosition(pcid).then(response => {
         const { data } = response
         this.position=data;
+        this.$forceUpdate()
       }).catch(error => {
         console.log(error)
       })
@@ -159,7 +169,7 @@ export default {
         data.append('fid', String(this.dep[2]));
       }
       if(this.job!=""){
-        data.append('jtId', String(this.job));
+        data.append('pcId', String(this.job));
       }
       if(this.pos!=""){
         data.append('pid', String(this.pos));
@@ -182,11 +192,14 @@ export default {
       this.dialogVisible = true
       console.log(row)
     },
+    selectJob(event,item){
+      this.getPosition(event);
+    },
 
   },
   created(){
     this.getDepartment();
-    this.getJobtitle();
+    this.getClassification();
     this.getPosition();
   }
 

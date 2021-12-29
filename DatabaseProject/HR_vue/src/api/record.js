@@ -114,9 +114,15 @@ export function recoverById(id) {
 }
 
 // 获取职位
-export function selectPosition() {
+export function selectPosition(id) {
+  let url_;
+  if(id==null){
+    url_='/record/position'
+  }else{
+    url_='/record/position/' + id
+  }
   return request({
-    url: '/record/position',
+    url: url_,
     method: 'get',
   })
 }
@@ -124,6 +130,22 @@ export function selectPosition() {
 export function selectJobtitle() {
   return request({
     url: '/record/jobTitles',
+    method: 'get',
+  })
+}
+
+// 获取职称类别
+export function selectClassification() {
+  return request({
+    url: 'record/classification',
+    method: 'get',
+  })
+}
+
+// 获取当前登录用户ID和姓名 uid，name
+export function getMNR() {
+  return request({
+    url: 'auth/require_auth',
     method: 'get',
   })
 }

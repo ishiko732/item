@@ -7,3 +7,11 @@ export function getRoleByrid(rid) {
     method: 'get',
   })
 }
+
+// 获取角色列表
+export function getRoleList() {
+  return request({
+    url: '/role/roles/list' ,
+    method: 'get',
+  })
+}

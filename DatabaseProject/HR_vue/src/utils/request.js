@@ -24,7 +24,9 @@ service.interceptors.request.use(
       config.headers['refreshToken'] = getRefreshToken()
     }
     if(config.data != null){
-      config.headers["Content-Type"] = 'multipart/form-data'
+      config.headers["Content-Type"] = 'application/x-www-form-urlencoded'
+      config.headers['Accept']= 'application/json'
+      config.data=Qs.stringify(config.data)
     }
     return config
   },
