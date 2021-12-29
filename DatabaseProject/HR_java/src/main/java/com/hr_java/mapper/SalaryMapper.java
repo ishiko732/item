@@ -88,6 +88,7 @@ public interface SalaryMapper extends BaseMapper<Salary> {
     })
     @Results({
             @Result(property = "id",column = "id"),
+            @Result(property = "total_Salary",column = "total_Salary"),
             @Result(property = "role",javaType = Role.class,column="role_id",
                     one = @One(select="mapper.RoleMapper.get")),
     })
