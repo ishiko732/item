@@ -3,7 +3,7 @@
     <h1>删除档案</h1>
     <div v-if="records != null">
       <el-divider></el-divider>
-      <el-tag>当前可删除的人力资源档案总数<span>{{records.length}}</span>例</el-tag>
+      <el-tag type="danger">当前可删除的人力资源档案总数<span>{{records.length}}</span>例</el-tag>
       <el-table
         :data="records"
         style="width: 100%">
@@ -214,7 +214,7 @@ export default {
     checkRecord_success(){
       deleteById(this.ruleForm.id).then(response => {
         const { data } = response
-        this.selectRecords(0);
+        this.selectRecords(1);
         this.$message({
           message: '删除成功',
           type: 'success'

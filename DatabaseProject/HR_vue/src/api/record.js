@@ -102,13 +102,9 @@ export function deleteById(id) {
 
 // 恢复档案
 export function recoverById(id) {
-  var FormData = require('form-data');
-  var data = new FormData();
-  data.append('statusID', '1');
   return request({
-    url: '/recheck/checkUser/' + id,
+    url: '/recheck/checkUser/' + id + '?statusID=0',
     method: 'put',
-    data
   })
 }
 
