@@ -108,6 +108,14 @@ public class RecordController {
         }
         return Result.succ(users);
     }
+    @GetMapping("/{uid}")
+    @RequiresPermissions(logical = Logical.AND, value = {"档案查询"}) //需要包含权限值那些
+    public Result getById(@PathVariable("uid") Long uid) {
+        System.err.println(uid);
+        User user = userService.getById(uid);
+        user.setDepartment(departmentService.reSelectByDep(user.getFid()));
+        return Result.succ(user);
+    }
 
     @GetMapping("/jobTitles")
     public Result selectJobTitles() {
