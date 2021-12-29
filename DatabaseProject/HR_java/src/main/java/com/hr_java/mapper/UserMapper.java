@@ -50,8 +50,6 @@ public interface UserMapper extends BaseMapper<User> {
                     one = @One(select="com.hr_java.mapper.RoleMapper.getById")),
             @Result(property = "status",javaType = String.class,column = "uid",
                     one=@One(select ="com.hr_java.mapper.UserMapper.getStatusById")),
-            @Result(property = "department",javaType = Department.class,column = "fid",
-                    one=@One(select ="com.hr_java.mapper.DepartmentMapper.reselectById")),
             @Result(property = "jobTitles",javaType = String.class,column = "pid",
                     one=@One(select ="com.hr_java.mapper.JobTitlesMapper.getJobTitleByPid"))
     })

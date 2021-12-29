@@ -60,6 +60,7 @@ public class RecheckController {
         for (RecheckUser recheckUser : recheckUsers) {
             User user=isTransferUser(recheckUser);
             user.setPassword(null);
+            user.setDepartment(departmentService.reSelectByDep(user.getFid()));
             recheckUser.setUser(user);
         }
         return Result.succ(recheckUsers);
