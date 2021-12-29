@@ -65,7 +65,8 @@ export const constantRoutes = [
         path: 'updateRecord',
         name: '变更档案',
         component: () => import('@/views/record/updateRecord'),
-        meta: { title: '变更档案', icon: 'dashboard', permission: '档案变更' }
+        meta: { title: '变更档案', icon: 'dashboard', permission: '档案变更'},
+        hidden:true
       },
       {
         path: '/checkRecord',

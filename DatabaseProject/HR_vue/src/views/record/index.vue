@@ -84,6 +84,12 @@
             <el-link type="primary" @click="cancelDialog(scope.row)">查看明细</el-link>
           </template>
         </el-table-column>
+        <el-table-column
+        label="变更">
+        <template slot-scope="scope">
+          <el-link type="primary" @click="updateRecord(scope.row)">变更</el-link>
+        </template>
+      </el-table-column>
       </el-table>
       <el-dialog
         title="信息"
@@ -191,6 +197,15 @@ export default {
       this.people = row
       this.dialogVisible = true
       console.log(row)
+    },
+    updateRecord(row){
+      this.people = row
+      this.$router.push({
+        path:'/record/updateRecord',
+        query:{
+          uid:this.people.uid
+        }
+      })
     },
     selectJob(event,item){
       this.getPosition(event);

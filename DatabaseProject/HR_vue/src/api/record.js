@@ -126,6 +126,15 @@ export function selectPosition(id) {
     method: 'get',
   })
 }
+
+// 获取职位 通过pid
+export function getPositionByPid(id) {
+  return request({
+    url: '/record/positionByPid/' + id,
+    method: 'get',
+  })
+}
+
 // 获取职称
 export function selectJobtitle() {
   return request({
@@ -137,7 +146,16 @@ export function selectJobtitle() {
 // 获取职称类别
 export function selectClassification() {
   return request({
-    url: 'record/classification',
+    url: '/record/classification',
+    method: 'get',
+  })
+}
+
+// 获取职称类别通过PCID
+export function selectClassificationByPcId(pcid) {
+  console.log(pcid)
+  return request({
+    url: '/record/classification/' + pcid,
     method: 'get',
   })
 }
@@ -146,6 +164,14 @@ export function selectClassification() {
 export function getMNR() {
   return request({
     url: 'auth/require_auth',
+    method: 'get',
+  })
+}
+
+// 获取详细档案
+export function getRecord(uid) {
+  return request({
+    url: 'record/' + uid,
     method: 'get',
   })
 }

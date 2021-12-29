@@ -1,10 +1,12 @@
 <template>
-<h1>复核档案</h1>
+  <div>
+    <h1>复核档案</h1>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "transferRecord"
+  name: "checkRecord"
 }
 </script>
 
