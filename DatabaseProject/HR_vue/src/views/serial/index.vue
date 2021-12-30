@@ -42,7 +42,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog title="薪酬发放登记明细" :visible.sync="dialogVisible" width="90%">
+    <el-dialog title="薪酬发放登记明细" :visible.sync="dialogVisible" width="90%" @close='handleCancle'>
       <div>薪酬发放单编号：{{serial.payrollID}}</div>
       <div>机构：{{serial.dep1}}/{{serial.dep2}}/{{serial.dep3}}</div>
       <div>总人数：{{serial.count}}，基本薪酬总额：{{serial.sum}}</div>
@@ -69,6 +69,12 @@
           <el-input v-model="scope.row.penalty" @input="inputMoney(scope.row)" style="width:100px"></el-input>
         </template>
       </el-table-column>
+      <el-table-column
+      label="删除成员">
+      <template slot-scope="scope">
+        <el-button type="danger" @click="deleteMember(scope.$index,scope.row)">删除</el-button>
+      </template>
+    </el-table-column>
       </el-table>
       <!-- <div v-for="(value, name) in serial">
         {{ name }}: {{ value }}
@@ -124,28 +130,53 @@ export default {
       this.serial=row
       this.dialogVisible = true
     },
+    handleCancle () {
+      this.getSerials();
+      this.dialogVisible = false
+    },
     inputMoney(row){
 
     },
-    sendUpdate(){
-      var people=this.serial.serials;
-      console.log(people)
-      for(var i=0;i<people.length;i++){
-        updatepayrollBySerialId(people[i]).then(response => {
-          const { data } = response
-            this.$message({
-            message: '更新成功：'+people[i].uid,
-            type: 'success'
-          });
-        }).catch(error => {
-          this.$message({
-          message: '更新失败：'+people[i].uid,
+    deleteMember(index,row){
+      // console.log(index)
+      // console.log(row.serialID)
+      var serialId=row.serialID
+      deletepayrollBySerialId(serialId).then(response => {
+        const { data } = response
+        this.serial.serials.splice(index,1)
+        this.$message({
+          message: '删除成功：'+serialId,
+          type: 'success'
+        });
+      }).catch(error => {
+        this.$message({
+          message: '删除失败：'+serialId,
           type: 'error'
         });
-          console.log("error:"+people[i].uid)
-        })
+      })
+    },
+    sendUpdate(){
+      var people=this.serial.serials;
+      for(var i=0;i<people.length;i++){
+        var user=people[i]
+        if(user.bounty!=0 || user.penalty!=0){
+          updatepayrollBySerialId(user).then(response => {
+            const { data } = response
+              this.$message({
+              message: '更新成功：'+user.uid,
+              type: 'success'
+            });
+          }).catch(error => {
+            this.$message({
+              message: '更新失败：'+user.uid,
+              type: 'error'
+            });
+            console.log("error:"+user.uid)
+          })
+        }
       }
       this.dialogVisible=false;
+
     }
   },
   created(){
