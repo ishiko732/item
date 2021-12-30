@@ -40,7 +40,7 @@ router.beforeEach((to, from, next) => {
     next()
   } else {
     next({
-      path: '/404'
+      path: '/401'
     })
   }
 })
