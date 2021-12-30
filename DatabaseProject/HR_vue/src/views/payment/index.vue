@@ -34,10 +34,13 @@
       </el-table>
     </div>
 
-    <el-dialog title="薪酬标准详细内容" :visible.sync="dialogVisible" width="30%">
-      <div v-for="(value, name) in message">
+    <el-dialog title="薪酬标准详细内容" :visible.sync="dialogVisible">
+      <el-descriptions title="薪酬标准信息" column="2">
+        <el-descriptions-item :label="name" v-for="(value, name) in message">{{ value }}</el-descriptions-item>
+      </el-descriptions>
+      <!-- <div v-for="(value, name) in message">
         {{ name }}: {{ value }}
-      </div>
+      </div> -->
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="dialogVisible = false">好的</el-button>
     </span>

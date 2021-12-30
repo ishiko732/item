@@ -94,11 +94,11 @@
       <el-dialog
         title="信息"
         :visible.sync="dialogVisible"
-        width="30%"
         >
-        <div v-for="(value, name) in people">
-          {{ name }}: {{ value }}
-        </div>
+      <el-descriptions title="档案信息" column="2">
+          <el-descriptions-item :label="name" v-for="(value, name) in people">{{ value }}</el-descriptions-item>
+      </el-descriptions>
+
         <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="dialogVisible = false">好的</el-button>
         </span>

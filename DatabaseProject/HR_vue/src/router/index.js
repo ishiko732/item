@@ -103,7 +103,7 @@ export const constantRoutes = [
         path: 'transferRecord',
         name: '调动档案',
         component: () => import('@/views/record/transferRecord'),
-        meta: { title: '调动档案', icon: 'dashboard', permission: '档案调动' }
+        meta: { title: '调动档案', icon: 'dashboard', permission: '档案恢复' }
       },
     ]
   },
